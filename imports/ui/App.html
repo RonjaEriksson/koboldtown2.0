@@ -1,0 +1,29 @@
+<body>
+    {{> mainContainer}}
+</body>
+
+
+<template name="mainContainer">
+    <div class="container">
+        <header>
+            <h1>{{userName}}'s town</h1>
+        </header>
+
+        <ul>
+            {{#each kobold in kobolds}}
+                {{> showKobold kobold koboldToShow}}
+            {{/each}}
+        </ul>
+    </div>
+</template>
+
+<template name="showKobold">
+    <div class="clickable js-click-name" style="color: {{color}};">
+        {{name}}
+        {{#if isKoboldToShow id}}
+            <br>
+            Färg: {{color}}
+        {{/if}}
+    </div>
+    <br>
+</template>
