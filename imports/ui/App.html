@@ -8,22 +8,48 @@
         <header>
             <h1>{{userName}}'s town</h1>
         </header>
-
+        Resources
         <ul>
-            {{#each kobold in kobolds}}
-                {{> showKobold kobold koboldToShow}}
+            {{#each resource in resources}}
+                {{> showResource resource}}
             {{/each}}
         </ul>
+
+
+        Kobolds
+        <ul>
+            {{#each kobold in kobolds}}
+                {{> showKobold kobold}}
+            {{/each}}
+        </ul>
+
     </div>
 </template>
 
 <template name="showKobold">
     <div class="clickable js-click-name" style="color: {{color}};">
         {{name}}
-        {{#if isKoboldToShow id}}
-            <br>
-            Färg: {{color}}
-        {{/if}}
     </div>
+
+    {{#if isKoboldToShow}}
+        <div class="details" style="border-color: {{color}};">
+            Color: {{color}}
+        </div>
+    {{/if}}
+    
+    <br>
+</template>
+
+<template name="showResource">
+    <div class="clickable js-click-name" style="color: {{color}};">
+        {{name}}
+    </div>
+
+    {{#if isResourceToShow}}
+    <div class="details" style="border-color: {{color}};">
+        Stockpile: {{stockpile}}
+    </div>
+    {{/if}}
+
     <br>
 </template>

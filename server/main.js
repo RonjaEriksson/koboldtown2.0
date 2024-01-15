@@ -1,5 +1,8 @@
 import { Meteor } from 'meteor/meteor';
+import { Random } from 'meteor/random'
+import { TownCollection } from '../imports/api/KoboldCollection';
 import { KoboldCollection } from '/imports/api/KoboldCollection';
+import '/imports/api/townMethods';
 
 function getRandomArrayIndex(arrayLength) {
     return Math.floor(Math.random() * +arrayLength);
@@ -36,26 +39,22 @@ const colors = [
     "yellow",
     "gold",
     "silver",
-    "copper",
+    "sienna",
     "brown",
     "white",
     "pink",
     "grey",
+    "navy",
+    "olive",
+    "salmon",
+    "tan",
+    "teal",
+    "cyan",
+    "magenta",
+    "azure",
+    "aqua",
 ]
 
 
 Meteor.startup(() => {
-    if (KoboldCollection.find({ townId: 6 }).count() === 0) {
-        for (let i = 0; i < 8; i++) {
-            const name = names[getRandomArrayIndex(names.length)];
-            const color = colors[getRandomArrayIndex(colors.length)];
-            console.log(getRandomArrayIndex(names.length));
-            console.log(name, color);
-            KoboldCollection.insert({
-                townId: 6,
-                name,
-                color,
-            });
-        }
-    }
 });

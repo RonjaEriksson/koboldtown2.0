@@ -1,8 +1,17 @@
 body {
   padding: 10px;
   font-family: sans-serif;
+  background-color:black;
+  color: white;
 }
 
 .clickable {
     cursor: pointer;
+}
+
+.details {
+    border-style: solid;
+    max-width: 15%;
+    margin-left: 1%;
+    margin-top: 15px;
 }

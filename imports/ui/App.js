@@ -1,15 +1,37 @@
 import { Template } from 'meteor/templating';
 import { KoboldCollection } from "../api/KoboldCollection";
+import { TownCollection } from "../api/TownCollection";
+import { Random } from 'meteor/random'
+import { ResourceCollection } from "../api/ResourceCollection";
 import './App.html';
+import '/imports/api/townMethods';
+
 
 Template.mainContainer.onCreated(function () {
 
+    const instance = Template.instance();
+    instance.currentTown = new ReactiveVar(null);
+
+    if (!TownCollection.findOne({ userId: localStorage.getItem("userId")}) || true) {
+        localStorage.setItem("userId", `${Random.id()}`);
+        Meteor.call("initTown", localStorage.getItem("userId"));
+    }
+    console.log("here")
+
+
+    instance.autorun(function auto_townId() {
+        instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId")}));
+    });
 });
 
 Template.mainContainer.helpers({
     kobolds() {
-        console.log(KoboldCollection.find({ townId: 6 }).fetch());
-        return KoboldCollection.find({ townId: 6 }).fetch();
+        const instance = Template.instance();
+        return KoboldCollection.find({ townId: instance.currentTown.get()?._id }).fetch();
+    },
+    resources() {
+        const instance = Template.instance();
+        return ReasourceCollection.find({ townId: instance.currentTown.get()?._id })
     },
 });
 
@@ -22,7 +44,7 @@ Template.showKobold.onCreated(function () {
 });
 
 Template.showKobold.helpers({
-    isKoboldToShow(id) {
+    isKoboldToShow() {
         const instance = Template.instance();
         return instance.showDetails.get();
     },
