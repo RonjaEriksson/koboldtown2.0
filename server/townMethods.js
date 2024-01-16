@@ -28,7 +28,6 @@ function generateStatsFromColor(color) {
     const colorValues = Object.keys(color || {});
 
     colorValues.sort((a,b) => color[b] - color[a]);
-    console.log(colorValues);
 
     const values = {
         highestValue: { value: colorValues[0], amount: color[colorValues[0]] },
@@ -52,9 +51,7 @@ function generateStatsFromColor(color) {
     stats[statMap[values.middleValue.value]] = middleStat;
     stats[statMap[values.lowestValue.value]] = lowestStat;
 
-    console.log(stats);
-    console.log(values);
-    console.log(color);
+    return stats;
 }
 
 const names = [
@@ -153,7 +150,7 @@ Meteor.methods({
             b: bGenes[getRandomArrayIndex(bGenes.length)],
         }
 
-        generateStatsFromColor(color);
+        const stats = generateStatsFromColor(color);
 
         KoboldCollection.insert({
             townId: currentTownId,
@@ -162,6 +159,9 @@ Meteor.methods({
             r: color.r,
             g: color.g,
             b: color.b,
+            physical: stats.physical,
+            mental: stats.mental,
+            social: stats.social,
         });
 
     },
