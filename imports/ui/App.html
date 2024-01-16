@@ -34,6 +34,16 @@
     {{#if isKoboldToShow}}
         <div class="details" style="border-color: {{color}};">
             Color: {{color}}
+            <br>
+            <select id="breedSelect">
+                <option selected>Breed With</option>
+                {{#each otherKobold in kobolds}}
+                    {{#unless isCurrentKobold otherKobold._id}}
+                        <option style="color: {{otherKoboldColor otherKobold._id}};" value="{{otherKobold._id}}">{{otherKobold.name}}</option>
+                    {{/unless}}
+                {{/each}}
+            </select>
+            <button class="js-breed">Confirm</button>
         </div>
     {{/if}}
     
