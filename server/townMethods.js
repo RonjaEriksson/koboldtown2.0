@@ -1,10 +1,17 @@
 import { check } from 'meteor/check';
-import { TownCollection } from './TownCollection';
-import {KoboldCollection } from './KoboldCollection'
+import { TownCollection } from '../imports/api/TownCollection';
+import {KoboldCollection } from '../imports/api/KoboldCollection'
 
 function getRandomArrayIndex(arrayLength) {
     return Math.floor(Math.random() * +arrayLength);
 };
+
+function generateRandomColor() {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    return `rgb(${r}, ${g}, ${b})`;
+}
 
 const names = [
     "Duv",
@@ -51,19 +58,23 @@ const colors = [
     "magenta",
     "azure",
     "aqua",
+    "violet",
+    "indigo",
+    "lavender",
+    "plum",
 ]
 
 
 Meteor.methods({
-    'initTown'(userId) {
-        check(userId, String);
+    'initTown'(thisUserId) {
+        check(thisUserId, String);
 
-        let currentTownId = TownCollection.findOne(userId)?._id;
-        if (!currentTownId || true) {
+        let currentTownId = TownCollection.find({ userId: thisUserId }).fetch()[0]?._id;
+        if (!currentTownId) {
             currentTownId = TownCollection.insert({
-                userId,
+                userId: thisUserId,
                 userName: "RymdensRegent"
-            })
+            });
         }
         if (KoboldCollection.find({ townId: currentTownId }).count() === 0) {
             for (let i = 0; i < 8; i++) {
@@ -76,5 +87,20 @@ Meteor.methods({
                 });
             }
         }
+    },
+    'addWanderingKobold'(thisUserId) {
+        check(thisUserId, String);
+
+        let currentTownId = TownCollection.find({ userId: thisUserId }).fetch()[0]?._id;
+        if (!currentTownId) {
+            console.error("Found no town to add Kobold to");
+            return;
+        }
+        KoboldCollection.insert({
+            townId: currentTownId,
+            name: names[getRandomArrayIndex(names.length)],
+            color: generateRandomColor(),
+        })
+        
     },
 });

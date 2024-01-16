@@ -1,9 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random'
-import { TownCollection } from '../imports/api/KoboldCollection';
+import { TownCollection } from '../imports/api/TownCollection';
 import { KoboldCollection } from '/imports/api/KoboldCollection';
-import '/imports/api/townMethods';
+import './townMethods';
 
+Meteor.publish("town", function () {
+    return TownCollection.find();
+});
 function getRandomArrayIndex(arrayLength) {
     return Math.floor(Math.random() * +arrayLength);
 };
