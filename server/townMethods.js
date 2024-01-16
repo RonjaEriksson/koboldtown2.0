@@ -18,10 +18,43 @@ function generateRandomColor() {
 }
 
 function generateStatsFromColor(color) {
-    let values = {};
-    for (const key of Object.keys(color || {})) {
-        values.highestValue = values.highestValue.amount > color[key] ? value.highestValue : { value: key, amount: color[key] };
-    }
+
+    const statMap = {
+        'r': "physical",
+        'g': "social",
+        'b': "mental",
+    };
+
+    const colorValues = Object.keys(color || {});
+
+    colorValues.sort((a,b) => color[b] - color[a]);
+    console.log(colorValues);
+
+    const values = {
+        highestValue: { value: colorValues[0], amount: color[colorValues[0]] },
+        middleValue: { value: colorValues[1], amount: color[colorValues[1]] },
+        lowestValue: { value: colorValues[2], amount: color[colorValues[2]] },
+        };
+
+    const totalAmount = values.highestValue.amount + values.middleValue.amount + values.lowestValue.amount;
+
+    const highRatio = values.highestValue.amount/totalAmount;
+    const midRatio = values.middleValue.amount/totalAmount;
+    const lowRatio = values.lowestValue.amount/totalAmount;
+
+    const stats = {};
+
+    let highestStat = Math.ceil(highRatio*5);
+    let middleStat = Math.round(midRatio*5);
+    let lowestStat = Math.round(lowRatio*5);
+
+    stats[statMap[values.highestValue.value]] = highestStat;
+    stats[statMap[values.middleValue.value]] = middleStat;
+    stats[statMap[values.lowestValue.value]] = lowestStat;
+
+    console.log(stats);
+    console.log(values);
+    console.log(color);
 }
 
 const names = [
@@ -107,6 +140,7 @@ Meteor.methods({
 
         if (!motherKobold || !fatherKobold) {
             console.error("Did not find both parent kobolds.")
+            return;
         }
 
         rGenes = [motherKobold.r, fatherKobold.r];
@@ -118,6 +152,8 @@ Meteor.methods({
             g: gGenes[getRandomArrayIndex(gGenes.length)],
             b: bGenes[getRandomArrayIndex(bGenes.length)],
         }
+
+        generateStatsFromColor(color);
 
         KoboldCollection.insert({
             townId: currentTownId,
