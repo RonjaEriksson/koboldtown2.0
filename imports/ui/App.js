@@ -20,6 +20,12 @@ Template.mainContainer.onCreated(function () {
             Meteor.call("initTown", localStorage.getItem("userId"));
         }
     });
+
+    const tick = 1000;
+
+    setInterval(function() {
+        Meteor.call("doTick", localStorage.getItem("userId"));
+    }, tick);
 });
 
 Template.mainContainer.helpers({

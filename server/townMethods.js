@@ -220,4 +220,8 @@ Meteor.methods({
         });
 
     },
+    'doTick'(thisUserId) {
+        check(thisUserId,String);
+        console.log("here");
+    },
 });
