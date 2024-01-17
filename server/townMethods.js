@@ -89,19 +89,65 @@ Meteor.methods({
             });
         }
         if (KoboldCollection.find({ townId: currentTownId }).count() === 0) {
-            for (let i = 0; i < 6; i++) {
-                const name = names[getRandomArrayIndex(names.length)];
-                const color = generateRandomColor();
-                KoboldCollection.insert({
-                    townId: currentTownId,
-                    name,
-                    color: `rgb(${color.r}, ${color.g}, ${color.b})`,
-                    r: color.r,
-                    g: color.g,
-                    b: color.b,
+
+            let stats = generateStatsFromColor(
+                {
+                    r: 255,
+                    g: 0,
+                    b: 0,
                 });
-            }
+            
+            KoboldCollection.insert({
+                townId: currentTownId,
+                name: names[getRandomArrayIndex(names.length)],
+                color: `rgb(${255}, ${0}, ${0})`,
+                r: 255,
+                g: 0,
+                b: 0,
+                physical: stats.physical,
+                mental: stats.mental,
+                social: stats.social,
+            });
+
+                stats = generateStatsFromColor(
+                {
+                    r: 0,
+                    g: 255,
+                    b: 0,
+                });
+            
+            KoboldCollection.insert({
+                townId: currentTownId,
+                name: names[getRandomArrayIndex(names.length)],
+                color: `rgb(${0}, ${255}, ${0})`,
+                r: 0,
+                g: 255,
+                b: 0,
+                physical: stats.physical,
+                mental: stats.mental,
+                social: stats.social,
+             });
+
+                 stats = generateStatsFromColor(
+                {
+                    r: 0,
+                    g: 0,
+                    b: 255,
+                });
+            
+            KoboldCollection.insert({
+                townId: currentTownId,
+                name: names[getRandomArrayIndex(names.length)],
+                color: `rgb(${0}, ${0}, ${255})`,
+                r: 0,
+                g: 0,
+                b: 255,
+                physical: stats.physical,
+                mental: stats.mental,
+                social: stats.social,
+            });
         }
+        console.log(KoboldCollection.find().fetch());
     },
     'addWanderingKobold'(thisUserId) {
         check(thisUserId, String);
@@ -126,6 +172,8 @@ Meteor.methods({
         check(motherKoboldId, String);
         check(fatherKoboldId, String);
 
+        const mutationTreshhold = 15;
+
         let currentTownId = TownCollection.find({ userId: thisUserId }).fetch()[0]?._id;
         if (!currentTownId) {
             console.error("Found no town to add Kobold to.");
@@ -140,14 +188,21 @@ Meteor.methods({
             return;
         }
 
-        rGenes = [motherKobold.r, fatherKobold.r];
-        gGenes = [motherKobold.g, fatherKobold.g];
-        bGenes = [motherKobold.b, fatherKobold.b];
+        rGenes = [motherKobold.r, fatherKobold.r, Math.round((motherKobold.r+fatherKobold.r)/2)];
+        gGenes = [motherKobold.g, fatherKobold.g,Math.round((motherKobold.g+fatherKobold.g)/2)];
+        bGenes = [motherKobold.b, fatherKobold.b, Math.round((motherKobold.b+fatherKobold.b)/2)];
 
         color = {
             r: rGenes[getRandomArrayIndex(rGenes.length)],
             g: gGenes[getRandomArrayIndex(gGenes.length)],
             b: bGenes[getRandomArrayIndex(bGenes.length)],
+        }
+
+        const mutationRoll = Math.ceil(20*Math.random());
+
+        if (mutationRoll >= mutationTreshhold) {
+            const mutatingColor = Object.keys(color)[getRandomArrayIndex(Object.keys(color).length)];
+            color[mutatingColor] = Math.round((Math.floor(Math.random()*256) + color[mutatingColor])/2);
         }
 
         const stats = generateStatsFromColor(color);
