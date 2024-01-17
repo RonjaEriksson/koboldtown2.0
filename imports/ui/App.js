@@ -10,7 +10,7 @@ Template.mainContainer.onCreated(function () {
 
     const instance = Template.instance();
     instance.currentTown = new ReactiveVar(null);
-    //localStorage.setItem("userId", `${Random.id()}`); //uncomment this when you want to reset town
+    localStorage.setItem("userId", `${Random.id()}`); //uncomment this when you want to reset town
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
         if (!instance.currentTown.get()) {

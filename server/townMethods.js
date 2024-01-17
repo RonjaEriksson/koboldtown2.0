@@ -1,6 +1,7 @@
 import { check } from 'meteor/check';
 import { TownCollection } from '../imports/api/TownCollection';
 import {KoboldCollection } from '../imports/api/KoboldCollection'
+import {ResourceCollection } from '../imports/api/ResourceCollection'
 
 function getRandomArrayIndex(arrayLength) {
     return Math.floor(Math.random() * +arrayLength);
@@ -147,7 +148,26 @@ Meteor.methods({
                 social: stats.social,
             });
         }
-        console.log(KoboldCollection.find().fetch());
+        if (ResourceCollection.find({ townId: currentTownId }).count() === 0) {
+            ResourceCollection.insert({
+                    townId: currentTownId,
+                    stone: {
+                        amount: 0,
+                        visible: true,
+                        gain: 0,
+                    },
+                    wood: {
+                        amount: 0,
+                        visible: true,
+                        gain:0,
+                    },
+                    grain : {
+                        amount: 0,
+                        visible: true,
+                        gain: 0,
+                    },
+            });
+        }
     },
     'addWanderingKobold'(thisUserId) {
         check(thisUserId, String);
@@ -221,7 +241,13 @@ Meteor.methods({
 
     },
     'doTick'(thisUserId) {
+        let currentTownId = TownCollection.find({ userId: thisUserId }).fetch()[0]?._id;
+        if (!currentTownId) {
+            console.error("Found no town to progress time in.");
+            return;
+        }
         check(thisUserId,String);
-        console.log("here");
+        const townResources = ResourceCollection.find({townId: currentTownId}).fetch()[0];
+        console.log(townResources);
     },
 });
