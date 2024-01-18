@@ -84,90 +84,113 @@ Meteor.methods({
 
         let currentTownId = TownCollection.find({ userId: thisUserId }).fetch()[0]?._id;
         if (!currentTownId) {
-            currentTownId = TownCollection.insert({
-                userId: thisUserId,
-                userName: "RymdensRegent"
-            });
-        }
-        if (KoboldCollection.find({ townId: currentTownId }).count() === 0) {
 
-            let stats = generateStatsFromColor(
+            const redStats = generateStatsFromColor(
                 {
                     r: 255,
                     g: 0,
                     b: 0,
                 });
             
-            KoboldCollection.insert({
-                townId: currentTownId,
-                name: names[getRandomArrayIndex(names.length)],
-                color: `rgb(${255}, ${0}, ${0})`,
-                r: 255,
-                g: 0,
-                b: 0,
-                physical: stats.physical,
-                mental: stats.mental,
-                social: stats.social,
-            });
-
-                stats = generateStatsFromColor(
+            const greenStats = generateStatsFromColor(
                 {
                     r: 0,
                     g: 255,
                     b: 0,
                 });
-            
-            KoboldCollection.insert({
-                townId: currentTownId,
-                name: names[getRandomArrayIndex(names.length)],
-                color: `rgb(${0}, ${255}, ${0})`,
-                r: 0,
-                g: 255,
-                b: 0,
-                physical: stats.physical,
-                mental: stats.mental,
-                social: stats.social,
-             });
 
-                 stats = generateStatsFromColor(
+            const blueStats = generateStatsFromColor(
                 {
                     r: 0,
                     g: 0,
                     b: 255,
                 });
-            
-            KoboldCollection.insert({
-                townId: currentTownId,
-                name: names[getRandomArrayIndex(names.length)],
-                color: `rgb(${0}, ${0}, ${255})`,
-                r: 0,
-                g: 0,
-                b: 255,
-                physical: stats.physical,
-                mental: stats.mental,
-                social: stats.social,
-            });
-        }
-        if (ResourceCollection.find({ townId: currentTownId }).count() === 0) {
-            ResourceCollection.insert({
-                    townId: currentTownId,
-                    stone: {
-                        amount: 0,
+
+            const town = {
+                userId: thisUserId,
+                userName: "RymdensRegent",
+                kobolds: [
+                    {
+                        name: names[getRandomArrayIndex(names.length)],
+                        color: `rgb(${255}, ${0}, ${0})`,
+                        r: 255,
+                        g: 0,
+                        b: 0,
+                        physical: redStats.physical,
+                        mental: redStats.mental,
+                        social: redStats.social,
+                    },
+                    {
+                        name: names[getRandomArrayIndex(names.length)],
+                        color: `rgb(${0}, ${255}, ${0})`,
+                        r: 0,
+                        g: 255,
+                        b: 0,
+                        physical: greenStats.physical,
+                        mental: greenStats.mental,
+                        social: greenStats.social,
+                    },
+                    {
+                        name: names[getRandomArrayIndex(names.length)],
+                        color: `rgb(${0}, ${0}, ${255})`,
+                        r: 0,
+                        g: 0,
+                        b: 255,
+                        physical: blueStats.physical,
+                        mental: blueStats.mental,
+                        social: blueStats.social,
+                    },
+
+                ],
+                resources: [
+                    {
+                        name: "stone",
+                        stockpile: 0,
                         visible: true,
                         gain: 0,
+                        color: "gray",
                     },
-                    wood: {
-                        amount: 0,
+                    {
+                        name: "wood",
+                        stockpile: 0,
                         visible: true,
                         gain:0,
+                        color: "brown",
                     },
-                    grain : {
-                        amount: 0,
+                    {
+                        name: "food",
+                        stockpile: 0,
                         visible: true,
                         gain: 0,
+                        color: "green",
                     },
-            });
+                ],
+                jobs : [
+                       {
+                        name: "scavenge",
+                        produces: [
+                            "food",
+                            "stone",
+                            "wood",
+                        ],
+                        highProduction: {
+                            food: 3,
+                            stone: 4,
+                            wood: 4,
+                        },
+                        lowProduction: {
+                            food: 0,
+                            stone: 0,
+                            wood: 0,
+                        },
+                        numberOfJobs: "unlimited",
+                        }
+                ]
+            }
+            TownCollection.insert(town);
         }
+        
+        
     },
     'addWanderingKobold'(thisUserId) {
         check(thisUserId, String);
@@ -178,14 +201,23 @@ Meteor.methods({
             return;
         }
         const color = generateRandomColor();
-        KoboldCollection.insert({
-            townId: currentTownId,
-            name: names[getRandomArrayIndex(names.length)],
-            color: `rgb(${color.r}, ${color.g}, ${color.b})`,
-            r: color.r,
-            g: color.g,
-            b: color.b,
-        })       
+        const stats = generateStatsFromColor(color)
+        TownCollection.update(
+            {townId: currentTownId},
+            {$addToSet: {
+                kobolds: {
+                    name: names[getRandomArrayIndex(names.length)],
+                    color: `rgb(${color.r}, ${color.g}, ${color.b})`,
+                    r: color.r,
+                    g: color.g,
+                    b: color.b,
+                    physical: stats.physical,
+                    mental: stats.mental,
+                    social: stats.social,
+                    }
+                }
+            }
+        );     
     },
     'mateKobolds'(thisUserId, motherKoboldId, fatherKoboldId) {
         check(thisUserId, String)
@@ -227,20 +259,25 @@ Meteor.methods({
 
         const stats = generateStatsFromColor(color);
 
-        KoboldCollection.insert({
-            townId: currentTownId,
-            name: names[getRandomArrayIndex(names.length)],
-            color: `rgb(${color.r}, ${color.g}, ${color.b})`,
-            r: color.r,
-            g: color.g,
-            b: color.b,
-            physical: stats.physical,
-            mental: stats.mental,
-            social: stats.social,
-        });
+        TownCollection.update(
+            {townId: currentTownId},
+            {$addToSet: {
+                kobolds: {
+                    name: names[getRandomArrayIndex(names.length)],
+                    color: `rgb(${color.r}, ${color.g}, ${color.b})`,
+                    r: color.r,
+                    g: color.g,
+                    b: color.b,
+                    physical: stats.physical,
+                    mental: stats.mental,
+                    social: stats.social,
+                    }
+                }
+            }
+        );
 
     },
-    'doTick'(thisUserId) {
+    'save'(thisUserId) {
         let currentTownId = TownCollection.find({ userId: thisUserId }).fetch()[0]?._id;
         if (!currentTownId) {
             console.error("Found no town to progress time in.");

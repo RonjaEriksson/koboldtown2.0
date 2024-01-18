@@ -9,6 +9,8 @@ import './App.html';
 Template.mainContainer.onCreated(function () {
 
     const instance = Template.instance();
+
+    Meteor.subscribe('town');
     instance.currentTown = new ReactiveVar(null);
     localStorage.setItem("userId", `${Random.id()}`); //uncomment this when you want to reset town
     instance.autorun(function auto_townId() {
@@ -21,25 +23,43 @@ Template.mainContainer.onCreated(function () {
         }
     });
 
-    const tick = 1000;
-
+    const saveInterval = 60000;
     setInterval(function() {
-        Meteor.call("doTick", localStorage.getItem("userId"));
-    }, tick);
+        Meteor.call("save", localStorage.getItem("userId"));
+    }, saveInterval);
+
+    const checkCompletionInterval = 60000;
+    setInterval(function() {
+    }, checkCompletionInterval);
+
+    const resourceInterval = 1000;
+    setInterval(function () {
+        const town = instance.currentTown.get();
+        console.log(town);
+        const resources = town?.resources;
+        for (const resource of Object.keys(resources || {})) {
+            resources[resource].stockpile += resources[resource].gain;
+        }
+    }, resourceInterval);
 });
 
 Template.mainContainer.helpers({
+    notReady() {
+        const instance = Template.instance();
+        return !instance.currentTown.get();
+    },
     kobolds() {
         const instance = Template.instance();
-        return KoboldCollection.find({ townId: instance.currentTown.get()?._id }).fetch();
+        return instance.currentTown.get()?.kobolds;
     },
     resources() {
         const instance = Template.instance();
-        return ResourceCollection.find({ townId: instance.currentTown.get()?._id })
+        return instance.currentTown.get()?.resources;
     },
-    currentTown() {
+    jobs() {
         const instance = Template.instance();
-        return instance.currentTown;
+        const jobs = instance.currentTown.get()?.jobs;
+        return Object.keys(jobs || {});
     }
 });
 
@@ -53,17 +73,11 @@ Template.showKobold.onCreated(function () {
 
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
-        if (!instance.currentTown.get()) {
-            if (!localStorage.getItem("userId")) {
-                localStorage.setItem("userId", `${Random.id()}`);
-            }
-            Meteor.call("initTown", localStorage.getItem("userId"));
-        }
-    });
+        });
 });
 
 Template.showKobold.helpers({
-    isKoboldToShow() {
+    showDetails() {
         const instance = Template.instance();
         return instance.showDetails.get();
     },
@@ -72,7 +86,7 @@ Template.showKobold.helpers({
         return KoboldCollection.find({ townId: instance.currentTown.get()?._id }).fetch();
     },
     otherKoboldColor(koboldId) {
-        return KoboldCollection.find(koboldId).fetch()[0]?.color;
+        return currentTown.get()?.kobolds;
     },
     isCurrentKobold(otherKoboldId) {
         const instance = Template.instance();
@@ -90,3 +104,32 @@ Template.showKobold.events({
         Meteor.call("mateKobolds",localStorage.getItem("userId"), motherId, fatherId);
     },
 })
+
+Template.showResource.onCreated(function () {
+    const instance = Template.instance();
+    instance.showDetails = new ReactiveVar(false);
+    instance.currentTown = new ReactiveVar(null);
+
+    instance.autorun(function auto_townId() {
+        instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
+        });
+});
+
+Template.showResource.helpers({
+    showDetails() {
+        const instance = Template.instance();
+        return instance.showDetails.get();
+    },
+});
+
+Template.showResource.events({
+    "click .js-click-name"(event, instance) {
+        instance.showDetails.set(!instance.showDetails.get());
+    },
+    "click .js-assign"(event, instance) {
+        const fatherId = document.getElementById("jobSelect").value;
+        const motherId = instance.data._id;
+        Meteor.call("assignToJob",localStorage.getItem("userId"), motherId, fatherId);
+    },
+})
+

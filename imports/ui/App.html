@@ -4,26 +4,29 @@
 
 
 <template name="mainContainer">
-    <div class="container">
-        <header>
-            <h1>{{userName}}'s town</h1>
-        </header>
-        Resources
-        <ul>
-            {{#each resource in resources}}
-                {{> showResource resource}}
-            {{/each}}
-        </ul>
+    {{#if notReady}} 
+    Kobolds gathering...
+    {{else}}
+        <div class="container">
+            <header>
+                <h1>{{userName}}'s town</h1>
+            </header>
+            Resources
+            <ul>
+                {{#each resource in resources}}
+                    {{> showResource resource}}
+                {{/each}}
+            </ul>
 
 
-        Kobolds
-        <ul>
-            {{#each kobold in kobolds}}
-                {{> showKobold kobold}}
-            {{/each}}
-        </ul>
-
-    </div>
+            Kobolds
+            <ul>
+                {{#each kobold in kobolds}}
+                    {{> showKobold kobold}}
+                {{/each}}
+            </ul>
+        </div>
+    {{/if}}
 </template>
 
 <template name="showKobold">
@@ -31,7 +34,7 @@
         {{name}}
     </div>
 
-    {{#if isKoboldToShow}}
+    {{#if showDetails}}
         <div class="details" style="border-color: {{color}};">
             Color: {{color}}
             <br>
@@ -62,11 +65,19 @@
         {{name}}
     </div>
 
-    {{#if isResourceToShow}}
-    <div class="details" style="border-color: {{color}};">
-        Stockpile: {{stockpile}}
-    </div>
+    {{#if visible}}
+        {{#if showDetails}}
+            <div class="details" style="border-color: {{color}};">
+                Stockpile: {{stockpile}}
+            </div>
+        {{/if}}
     {{/if}}
 
     <br>
+</template>
+
+<template name="showJobs">
+    <div class="clickable js-click-name" style="color: {{color}};">
+        {{name}}
+    </div>
 </template>
