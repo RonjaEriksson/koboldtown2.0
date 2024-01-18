@@ -39,9 +39,14 @@ function generateStatsFromColor(color) {
 
     const totalAmount = values.highestValue.amount + values.middleValue.amount + values.lowestValue.amount;
 
+    const highRatio = 0.33;
+    const midRatio = 0.33;
+    const lowRatio = 0.33;
+    if (!totalAmount === 0) {
     const highRatio = values.highestValue.amount/totalAmount;
     const midRatio = values.middleValue.amount/totalAmount;
     const lowRatio = values.lowestValue.amount/totalAmount;
+    }
 
     const stats = {};
 
@@ -231,14 +236,14 @@ Meteor.methods({
 
         const mutationTreshhold = 15;
 
-        let currentTownId = TownCollection.find({ userId: thisUserId }).fetch()[0]?._id;
-        if (!currentTownId) {
+        let kobolds = TownCollection.find({ userId: thisUserId }, {projection: {kobolds: 1}}).fetch()[0]?.kobolds;
+        if (!kobolds) {
             console.error("Found no town to add Kobold to.");
             return;
         }
 
-        let motherKobold = KoboldCollection.find(motherKoboldId).fetch()[0];
-        let fatherKobold = KoboldCollection.find(fatherKoboldId).fetch()[0];
+        let motherKobold = kobolds.find( e => e.id === motherKoboldId);
+        let fatherKobold = kobolds.find(e => e.id === fatherKoboldId);
 
         if (!motherKobold || !fatherKobold) {
             console.error("Did not find both parent kobolds.")
@@ -265,7 +270,7 @@ Meteor.methods({
         const stats = generateStatsFromColor(color);
 
         TownCollection.update(
-            {townId: currentTownId},
+            {userId: thisUserId},
             {$addToSet: {
                 kobolds: {
                     name: names[getRandomArrayIndex(names.length)],
