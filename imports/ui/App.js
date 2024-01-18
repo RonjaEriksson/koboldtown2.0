@@ -129,10 +129,5 @@ Template.showResource.events({
     "click .js-click-name"(event, instance) {
         instance.showDetails.set(!instance.showDetails.get());
     },
-    "click .js-assign"(event, instance) {
-        const fatherId = document.getElementById("jobSelect").value;
-        const motherId = instance.data._id;
-        Meteor.call("assignToJob",localStorage.getItem("userId"), motherId, fatherId);
-    },
 })
 

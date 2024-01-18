@@ -39,13 +39,13 @@ function generateStatsFromColor(color) {
 
     const totalAmount = values.highestValue.amount + values.middleValue.amount + values.lowestValue.amount;
 
-    const highRatio = 0.33;
-    const midRatio = 0.33;
-    const lowRatio = 0.33;
-    if (!totalAmount === 0) {
-    const highRatio = values.highestValue.amount/totalAmount;
-    const midRatio = values.middleValue.amount/totalAmount;
-    const lowRatio = values.lowestValue.amount/totalAmount;
+    let highRatio = 0.33;
+    let midRatio = 0.33;
+    let lowRatio = 0.33;
+    if (!(totalAmount === 0)) {
+        highRatio = values.highestValue.amount/totalAmount;
+        midRatio = values.middleValue.amount/totalAmount;
+        lowRatio = values.lowestValue.amount/totalAmount;
     }
 
     const stats = {};
