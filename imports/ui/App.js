@@ -23,23 +23,13 @@ Template.mainContainer.onCreated(function () {
         }
     });
 
-    const saveInterval = 60000;
-    setInterval(function() {
-        Meteor.call("save", localStorage.getItem("userId"));
-    }, saveInterval);
-
     const checkCompletionInterval = 60000;
     setInterval(function() {
     }, checkCompletionInterval);
 
     const resourceInterval = 1000;
     setInterval(function () {
-        const town = instance.currentTown.get();
-        console.log(town);
-        const resources = town?.resources;
-        for (const resource of Object.keys(resources || {})) {
-            resources[resource].stockpile += resources[resource].gain;
-        }
+        Meteor.call("increaseResource", localStorage.getItem("userId"));
     }, resourceInterval);
 });
 
@@ -47,6 +37,10 @@ Template.mainContainer.helpers({
     notReady() {
         const instance = Template.instance();
         return !instance.currentTown.get();
+    },
+    townName() {
+        const instance = Template.instance();
+        return instance.currentTown.get()?.townName
     },
     kobolds() {
         const instance = Template.instance();
@@ -58,8 +52,7 @@ Template.mainContainer.helpers({
     },
     jobs() {
         const instance = Template.instance();
-        const jobs = instance.currentTown.get()?.jobs;
-        return Object.keys(jobs || {});
+        return jobs = instance.currentTown.get()?.jobs;
     }
 });
 
@@ -83,15 +76,20 @@ Template.showKobold.helpers({
     },
     kobolds() {
         const instance = Template.instance();
-        return KoboldCollection.find({ townId: instance.currentTown.get()?._id }).fetch();
+        return instance.currentTown.get()?.kobolds;
     },
     otherKoboldColor(koboldId) {
-        return currentTown.get()?.kobolds;
+        const instance = Template.instance();
+        return instance.currentTown.get()?.kobolds?.find(e => e.id === koboldId)?.color;
     },
     isCurrentKobold(otherKoboldId) {
         const instance = Template.instance();
-        return otherKoboldId === instance.data._id;
-    }
+        return otherKoboldId === instance.data.id;
+    },
+    jobs() {
+        const instance = Template.instance();
+        return instance.currentTown.get()?.jobs?.filter(e => e.spotsOpen);
+    },
 });
 
 Template.showKobold.events({
@@ -100,8 +98,13 @@ Template.showKobold.events({
     },
     "click .js-breed"(event, instance) {
         const fatherId = document.getElementById("breedSelect").value;
-        const motherId = instance.data._id;
+        const motherId = instance.data.id;
         Meteor.call("mateKobolds",localStorage.getItem("userId"), motherId, fatherId);
+    },
+    "click .js-chose-job"(event, instance) {
+        const job = document.getElementById("jobSelect").value;
+        console.log(job);
+        Meteor.call("assignJob",localStorage.getItem("userId"), instance.data.id, job, true);
     },
 })
 

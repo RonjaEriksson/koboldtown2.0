@@ -7,25 +7,32 @@
     {{#if notReady}} 
     Kobolds gathering...
     {{else}}
-        <div class="container">
-            <header>
-                <h1>{{userName}}'s town</h1>
-            </header>
-            Resources
-            <ul>
-                {{#each resource in resources}}
-                    {{> showResource resource}}
-                {{/each}}
-            </ul>
+    <div class="container">
+        <header>
+            <h1>{{townName}}</h1>
+        </header>
+        Resources
+        <ul>
+            {{#each resource in resources}}
+            {{> showResource resource}}
+            {{/each}}
+        </ul>
 
 
-            Kobolds
-            <ul>
-                {{#each kobold in kobolds}}
-                    {{> showKobold kobold}}
-                {{/each}}
-            </ul>
-        </div>
+        Kobolds
+        <ul>
+            {{#each kobold in kobolds}}
+            {{> showKobold kobold}}
+            {{/each}}
+        </ul>
+
+        Jobs
+        <ul>
+            {{#each job in jobs}}
+            {{> showJob job}}
+            {{/each}}
+        </ul>
+    </div>
     {{/if}}
 </template>
 
@@ -35,26 +42,38 @@
     </div>
 
     {{#if showDetails}}
-        <div class="details" style="border-color: {{color}};">
-            Color: {{color}}
-            <br>
-            Physical: {{physical}}
-            <br>
-            Mental: {{mental}}
-            <br>
-            Social: {{social}}
-            <br>
+<div class="details" style="border-color: {{color}};">
+    Color: {{color}}
+    <br>
+    Physical: {{physical}}
+    <br>
+    Mental: {{mental}}
+    <br>
+    Social: {{social}}
+    <br>
+    Current job: {{#if job}}{{job}}{{else}}None{{/if}}
+    <button class="js-quit-job">Quit job</button>
+    <br>
+    <select id="breedSelect">
+        <option selected>Breed With</option>
+        {{#each otherKobold in kobolds}}
+            {{#unless isCurrentKobold otherKobold.id}}
+                <option style="color: {{otherKoboldColor otherKobold.id}};" value="{{otherKobold.id}}">{{otherKobold.name}}</option>
+            {{/unless}}
+        {{/each}}
+    </select>
+    <button class="js-breed">Confirm</button>
+    
+    <br>
 
-            <select id="breedSelect">
-                <option selected>Breed With</option>
-                {{#each otherKobold in kobolds}}
-                    {{#unless isCurrentKobold otherKobold._id}}
-                        <option style="color: {{otherKoboldColor otherKobold._id}};" value="{{otherKobold._id}}">{{otherKobold.name}}</option>
-                    {{/unless}}
-                {{/each}}
-            </select>
-            <button class="js-breed">Confirm</button>
-        </div>
+    <select id="jobSelect">
+        <option selected>Chose job</option>
+        {{#each job in jobs}}
+            <option style="color: {{job.color}};" value="{{job.name}}">{{job.name}}</option>
+        {{/each}}
+    </select>
+    <button class="js-chose-job">Confirm</button>
+</div>
     {{/if}}
     
     <br>
@@ -62,7 +81,7 @@
 
 <template name="showResource">
     <div class="clickable js-click-name" style="color: {{color}};">
-        {{name}}
+        {{name}}: {{stockpile}}
     </div>
 
     {{#if visible}}
@@ -76,7 +95,7 @@
     <br>
 </template>
 
-<template name="showJobs">
+<template name="showJob">
     <div class="clickable js-click-name" style="color: {{color}};">
         {{name}}
     </div>

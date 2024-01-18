@@ -2,6 +2,7 @@ import { check } from 'meteor/check';
 import { TownCollection } from '../imports/api/TownCollection';
 import {KoboldCollection } from '../imports/api/KoboldCollection'
 import {ResourceCollection } from '../imports/api/ResourceCollection'
+import { Random } from 'meteor/random'
 
 function getRandomArrayIndex(arrayLength) {
     return Math.floor(Math.random() * +arrayLength);
@@ -108,10 +109,12 @@ Meteor.methods({
 
             const town = {
                 userId: thisUserId,
-                userName: "RymdensRegent",
+                townName: "Kobold Ville",
+                dragonName: "RymdensRegent",
                 kobolds: [
                     {
                         name: names[getRandomArrayIndex(names.length)],
+                        id: Random.id(),
                         color: `rgb(${255}, ${0}, ${0})`,
                         r: 255,
                         g: 0,
@@ -122,6 +125,7 @@ Meteor.methods({
                     },
                     {
                         name: names[getRandomArrayIndex(names.length)],
+                        id: Random.id(),
                         color: `rgb(${0}, ${255}, ${0})`,
                         r: 0,
                         g: 255,
@@ -132,6 +136,7 @@ Meteor.methods({
                     },
                     {
                         name: names[getRandomArrayIndex(names.length)],
+                        id: Random.id(),
                         color: `rgb(${0}, ${0}, ${255})`,
                         r: 0,
                         g: 0,
@@ -168,23 +173,22 @@ Meteor.methods({
                 jobs : [
                        {
                         name: "scavenge",
-                        produces: [
+                        color: "darkGrey",
+                        resources: [
                             "food",
                             "stone",
                             "wood",
                         ],
-                        highProduction: {
-                            food: 3,
-                            stone: 4,
-                            wood: 4,
+                        production : {
+                            food : 3, 
+                            stone: 3,
+                            wood: 3,
                         },
-                        lowProduction: {
-                            food: 0,
-                            stone: 0,
-                            wood: 0,
+                        relevantSkills: [
+                        "nature",
+                        ],
+                        spotsOpen: "unlimited",
                         },
-                        numberOfJobs: "unlimited",
-                        }
                 ]
             }
             TownCollection.insert(town);
@@ -207,6 +211,7 @@ Meteor.methods({
             {$addToSet: {
                 kobolds: {
                     name: names[getRandomArrayIndex(names.length)],
+                    id: Random.id(),
                     color: `rgb(${color.r}, ${color.g}, ${color.b})`,
                     r: color.r,
                     g: color.g,
@@ -264,6 +269,7 @@ Meteor.methods({
             {$addToSet: {
                 kobolds: {
                     name: names[getRandomArrayIndex(names.length)],
+                    id: Random.id(),
                     color: `rgb(${color.r}, ${color.g}, ${color.b})`,
                     r: color.r,
                     g: color.g,
@@ -277,14 +283,58 @@ Meteor.methods({
         );
 
     },
-    'save'(thisUserId) {
-        let currentTownId = TownCollection.find({ userId: thisUserId }).fetch()[0]?._id;
-        if (!currentTownId) {
-            console.error("Found no town to progress time in.");
+    'increaseResource'(thisUserId) {
+        check(thisUserId, String);
+
+        const townResources = TownCollection.find({userId:thisUserId}, {projection: {resources: 1, jobs: 1}}).fetch()[0]?.resources;
+        if(!townResources) {
+            console.error("Found no town to update resources for.");
             return;
         }
-        check(thisUserId,String);
-        const townResources = ResourceCollection.find({townId: currentTownId}).fetch()[0];
-        console.log(townResources);
+        for (const resource of townResources) {
+            resource.stockpile += resource.gain;
+        }
+
+        TownCollection.update({userId: thisUserId}, {$set:{resources: townResources}})
     },
+
+    'assignJob'(thisUserId, koboldId, jobName, starting) {
+        check(thisUserId, String);
+        check(koboldId, String);
+        check(jobName, String);
+        check(starting, Boolean);
+
+        const town = TownCollection.find({userId:thisUserId}, {projection: {resources: 1, jobs : 1, kobolds: 1}}).fetch()[0];
+
+        const kobold = town?.kobolds?.find(e => e.id === koboldId);
+        if (!kobold) {
+            console.error("Did not find selected kobold.");
+            return;
+        }
+        const job = town?.jobs?.find(e => e.name === jobName);
+       if(!job) {
+           console.error("Did not find chosen job.");
+           return;
+       }
+        kobold.job = job.name;
+        
+        for(const resourceName of job.resources) {
+            const resource = town.resources.find(e => e.name === resourceName);
+            if(starting) {
+                resource.gain += job.production[resourceName];
+            } else {
+                resource.gain -= job.production[resourceName];
+            }
+        }
+        if(job.spotsOpen != "unlimited") {
+            if(starting) {
+                job.spotsOpen--;
+            } else {
+                job.spotsOpen++;
+            }
+        }
+
+        TownCollection.update({userId: thisUserId}, {$set:{resources: town.resources, kobolds: town.kobolds }})
+    },
+
 });
