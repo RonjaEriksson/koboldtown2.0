@@ -4,6 +4,24 @@ import {KoboldCollection } from '../imports/api/KoboldCollection'
 import {ResourceCollection } from '../imports/api/ResourceCollection'
 import { Random } from 'meteor/random'
 
+function expeditionWait(wait) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve('resolved');
+    }, wait);
+  });
+}
+
+async function doExpedition(expo) {
+    if (!expo) {
+        return;
+    }
+    const result = await expeditionWait(expo.wait);
+    console.log(result);
+    console.log("doneWaiting");
+
+}
+
 function getRandomArrayIndex(arrayLength) {
     return Math.floor(Math.random() * +arrayLength);
 };
@@ -340,6 +358,23 @@ Meteor.methods({
         }
 
         TownCollection.update({userId: thisUserId}, {$set:{resources: town.resources, kobolds: town.kobolds }})
+    },
+    'addExpedition'(thisUserId, expeditionId) {
+        check(thisUserId, String);
+        check(expeditionId, String);
+        
+
+    },
+    'handleExpeditions'(thisUserId) {
+        check(thisUserId, String);
+        const town = TownCollection.find({userId:thisUserId}, {projection: {expeditions: 1, kobolds: 1}}).fetch()[0];
+        for(const expedition of Object.keys(town.expeditions || {})) {
+            const expo = {
+                wait: 1000,
+            }
+            doExpedition(expo);
+            console.log("in loop");
+        }
     },
 
 });

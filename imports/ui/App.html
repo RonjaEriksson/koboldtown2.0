@@ -32,6 +32,13 @@
             {{> showJob job}}
             {{/each}}
         </ul>
+
+        Expeditions
+        <ul>
+            {{#each expo in expos}}
+            {{> showExpo expo}}
+            {{/each}}
+        </ul>
     </div>
     {{/if}}
 </template>
@@ -96,6 +103,12 @@
 </template>
 
 <template name="showJob">
+    <div class="clickable js-click-name" style="color: {{color}};">
+        {{name}}
+    </div>
+</template>
+
+<template name="showExpo">
     <div class="clickable js-click-name" style="color: {{color}};">
         {{name}}
     </div>

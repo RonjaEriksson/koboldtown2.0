@@ -3,6 +3,7 @@ import { KoboldCollection } from "../api/KoboldCollection";
 import { TownCollection } from "../api/TownCollection";
 import { Random } from 'meteor/random'
 import { ResourceCollection } from "../api/ResourceCollection";
+import { ExpeditionCollection } from "../api/ExpeditionCollection";
 import './App.html';
 
 
@@ -11,6 +12,7 @@ Template.mainContainer.onCreated(function () {
     const instance = Template.instance();
 
     Meteor.subscribe('town');
+    Meteor.subscribe("expedition");
     instance.currentTown = new ReactiveVar(null);
     localStorage.setItem("userId", `${Random.id()}`); //uncomment this when you want to reset town
     instance.autorun(function auto_townId() {
@@ -31,6 +33,8 @@ Template.mainContainer.onCreated(function () {
     setInterval(function () {
         Meteor.call("increaseResource", localStorage.getItem("userId"));
     }, resourceInterval);
+
+    Meteor.call("handleExpeditions", localStorage.getItem("userId"));
 });
 
 Template.mainContainer.helpers({
@@ -53,7 +57,11 @@ Template.mainContainer.helpers({
     jobs() {
         const instance = Template.instance();
         return jobs = instance.currentTown.get()?.jobs;
-    }
+    },
+    expos() {
+        console.log(ExpeditionCollection.find({},{projection: {name:1, length:1, skills: 1,}}).fetch());
+        return ExpeditionCollection.find({},{projection: {name:1, length:1, skills: 1,}}).fetch();
+    },
 });
 
 Template.mainContainer.events({
