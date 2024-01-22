@@ -111,8 +111,11 @@ Template.showKobold.events({
     },
     "click .js-chose-job"(event, instance) {
         const job = document.getElementById("jobSelect").value;
-        console.log(job);
         Meteor.call("assignJob",localStorage.getItem("userId"), instance.data.id, job, true);
+    },
+    "click .js-quit-job"(event, instance) {    
+        console.log(instance.data.job);
+        Meteor.call("assignJob",localStorage.getItem("userId"), instance.data.id,instance.data.job , false);
     },
 })
 
@@ -134,6 +137,37 @@ Template.showResource.helpers({
 });
 
 Template.showResource.events({
+    "click .js-click-name"(event, instance) {
+        instance.showDetails.set(!instance.showDetails.get());
+    },
+})
+
+Template.showJob.onCreated(function () {
+    const instance = Template.instance();
+    instance.showDetails = new ReactiveVar(false);
+    instance.currentTown = new ReactiveVar(null);
+
+    instance.autorun(function auto_townId() {
+        instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
+        });
+});
+
+Template.showJob.helpers({
+    showDetails() {
+        const instance = Template.instance();
+        return instance.showDetails.get();
+    },
+    resourceProduction(resource) {
+        const instance = Template.instance();
+        return instance.data.production[resource];      
+    },
+    koboldsAtJob() {
+        const instance = Template.instance();
+        return instance.currentTown.get()?.kobolds?.filter(e => e.job === instance.data.name);
+    },
+});
+
+Template.showJob.events({
     "click .js-click-name"(event, instance) {
         instance.showDetails.set(!instance.showDetails.get());
     },

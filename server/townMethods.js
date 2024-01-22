@@ -339,7 +339,11 @@ Meteor.methods({
            console.error("Did not find chosen job.");
            return;
        }
-        kobold.job = job.name;
+       if (starting) {
+            kobold.job = job.name;
+        } else {
+            kobold.job = null;
+        }
         
         for(const resourceName of job.resources) {
             const resource = town.resources.find(e => e.name === resourceName);

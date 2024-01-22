@@ -59,7 +59,9 @@
     Social: {{social}}
     <br>
     Current job: {{#if job}}{{job}}{{else}}None{{/if}}
-    <button class="js-quit-job">Quit job</button>
+    {{#if job}}
+        <button class="js-quit-job">Quit job</button>
+    {{/if}}
     <br>
     <select id="breedSelect">
         <option selected>Breed With</option>
@@ -106,6 +108,25 @@
     <div class="clickable js-click-name" style="color: {{color}};">
         {{name}}
     </div>
+
+    {{#if showDetails}}
+<div class="details" style="border-color: {{color}};">
+    Produces:
+    <br>
+    <ul>
+        {{#each resource in resources}}
+        <li>{{resourceProduction resource}}&nbsp;{{resource}}</li>
+        {{/each}}
+    </ul>
+    Currently working this job:
+    <ul>
+        {{#each kobold in koboldsAtJob}}
+            <li style="color: {{kobold.color}}">{{kobold.name}}</li>
+        {{/each}}
+    </ul>
+    <br>
+</div>
+    {{/if}}
 </template>
 
 <template name="showExpo">
