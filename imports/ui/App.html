@@ -71,7 +71,7 @@
             {{/unless}}
         {{/each}}
     </select>
-    <button class="js-breed">Confirm</button>
+    <button disabled={{isBusy}} class="js-breed">Confirm</button>
     
     <br>
 
@@ -81,7 +81,7 @@
             <option style="color: {{job.color}};" value="{{job.name}}">{{job.name}}</option>
         {{/each}}
     </select>
-    <button class="js-chose-job">Confirm</button>
+    <button disabled={{isBusy}} class="js-chose-job">Confirm</button>
 </div>
     {{/if}}
     
@@ -89,11 +89,10 @@
 </template>
 
 <template name="showResource">
-    <div class="clickable js-click-name" style="color: {{color}};">
-        {{name}}: {{stockpile}}
-    </div>
-
     {{#if visible}}
+        <div class="clickable js-click-name" style="color: {{color}};">
+            {{name}}: {{stockpile}}
+        </div>
         {{#if showDetails}}
             <div class="details" style="border-color: {{color}};">
                 Stockpile: {{stockpile}}
@@ -110,22 +109,22 @@
     </div>
 
     {{#if showDetails}}
-<div class="details" style="border-color: {{color}};">
-    Produces:
-    <br>
-    <ul>
-        {{#each resource in resources}}
-        <li>{{resourceProduction resource}}&nbsp;{{resource}}</li>
-        {{/each}}
-    </ul>
-    Currently working this job:
-    <ul>
-        {{#each kobold in koboldsAtJob}}
-            <li style="color: {{kobold.color}}">{{kobold.name}}</li>
-        {{/each}}
-    </ul>
-    <br>
-</div>
+        <div class="details" style="border-color: {{color}};">
+            Produces:
+            <br>
+            <ul>
+                {{#each resource in resources}}
+                <li>{{resourceProduction resource}}&nbsp;{{resource}}</li>
+                {{/each}}
+            </ul>
+            Currently working this job:
+            <ul>
+                {{#each kobold in koboldsAtJob}}
+                    <li style="color: {{kobold.color}}">{{kobold.name}}</li>
+                {{/each}}
+            </ul>
+            <br>
+        </div>
     {{/if}}
 </template>
 
@@ -133,4 +132,31 @@
     <div class="clickable js-click-name" style="color: {{color}};">
         {{name}}
     </div>
+    {{#if showDetails}}
+<div class="details" style="border-color: {{color}};">
+    Your kobolds are looking for:
+    <br>
+    <ul>
+        {{#each resource in resources}}
+            <li>{{resource}}</li>
+        {{/each}}
+    </ul>
+    {{#each slot in slots}}
+        <select style="color: {{slot.color}}" class="js-party-select" data-index="{{@index}}">
+            <option selected style="color: {{slot.color}}">{{slot.name}}</option>
+            {{#each kobold in kobolds}}
+                {{#unless kobold.busy}}
+                    <option style="color: {{kobold.color}}" value="{{kobold.id}}">
+                        {{kobold.name}}
+                    </option>
+                {{/unless}}
+            {{/each}}
+        </select>
+        <br>
+    {{/each}}
+    <button class="js-launch-expo" disabled={{expoNotFilled}}>Launch expedition</button>
+
+    <br>
+</div>
+    {{/if}}
 </template>

@@ -3,6 +3,8 @@ import { TownCollection } from '../imports/api/TownCollection';
 import {KoboldCollection } from '../imports/api/KoboldCollection'
 import {ResourceCollection } from '../imports/api/ResourceCollection'
 import { Random } from 'meteor/random'
+import { ExpeditionCollection } from '../imports/api/ExpeditionCollection';
+import { SkillCollection } from '../imports/api/SkillCollection';
 
 function expeditionWait(wait) {
   return new Promise((resolve) => {
@@ -12,18 +14,43 @@ function expeditionWait(wait) {
   });
 }
 
-async function doExpedition(expo) {
+async function doExpedition(expo, thisUserId) {
     if (!expo) {
         return;
     }
-    const result = await expeditionWait(expo.wait);
-    console.log(result);
-    console.log("doneWaiting");
-
+    const wait = expo.finishes - +Date.now()
+    if (wait > 0) {
+        const result = await expeditionWait(wait);
+        console.log(result);
+    }
+    const town = TownCollection.find({ userId: thisUserId }, { projection: { resources: 1 } }).fetch()[0];
+    for (reward of expo.result.reward) {
+        const resource = town.resources.find(e => e.name === reward.name)
+        if (resource) {
+            resource.stockpile += reward.amount;
+            resource.visible = true;
+        } else {
+            const sourceResource = ResourceCollection.find({}).fetch().find(e => e.name === reward.name);
+            sourceResource.stockpile += reward.amount;
+            sourceResource.visible = true;
+            town.resources.push(sourceResource);
+        }
+    }
+    TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources } });
+    TownCollection.update({ userId: thisUserId }, { $pull: { expeditions: { id: expo.id } } });
+    for (koboldId of expo.koboldIds) {
+        Meteor.call('setKoboldBusy', thisUserId, kobold.id, false);
+    }
+    //add pushing to show the expo result message here
+    console.log(expo.result.text);
 }
 
 function getRandomArrayIndex(arrayLength) {
     return Math.floor(Math.random() * +arrayLength);
+};
+
+function rollD20() {
+    return Math.floor(Math.random() * 21);
 };
 
 function generateRandomColor() {
@@ -170,29 +197,8 @@ Meteor.methods({
                     },
 
                 ],
-                resources: [
-                    {
-                        name: "stone",
-                        stockpile: 0,
-                        visible: true,
-                        gain: 0,
-                        color: "gray",
-                    },
-                    {
-                        name: "wood",
-                        stockpile: 0,
-                        visible: true,
-                        gain:0,
-                        color: "brown",
-                    },
-                    {
-                        name: "food",
-                        stockpile: 0,
-                        visible: true,
-                        gain: 0,
-                        color: "green",
-                    },
-                ],
+                resources: ResourceCollection.find({}).fetch(),
+                //move this to a job collection
                 jobs : [
                        {
                         name: "scavenge",
@@ -361,24 +367,79 @@ Meteor.methods({
             }
         }
 
-        TownCollection.update({userId: thisUserId}, {$set:{resources: town.resources, kobolds: town.kobolds }})
+        TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources, kobolds: town.kobolds } });
     },
-    'addExpedition'(thisUserId, expeditionId) {
+    'addExpedition'(thisUserId, expeditionId, koboldIds) {
         check(thisUserId, String);
         check(expeditionId, String);
-        
-
+        check(koboldIds, [String]);
+        const town = TownCollection.find({ userId: thisUserId }, { projection: {kobolds: 1 } }).fetch()[0];
+        const expedition = ExpeditionCollection.findOne(expeditionId);
+        const expo = {
+            finishes: +Date.now() + expedition.length,
+            userId: thisUserId,
+            id: Random.id(),
+            koboldIds: koboldIds,
+        }
+        const kobolds = town.kobolds.filter(k => koboldIds.includes(k.id));
+        let checksPassed = 0;
+        let checksCritPassed = 0;
+        for (const skillcheck of expedition.skillchecks) {
+            const baseSkill = SkillCollection.findOne({ name: skillcheck.skill });
+            console.log(baseSkill);
+            let totalSkill = 0;
+            for (const kobold of kobolds) { 
+                totalSkill += kobold[baseSkill];
+                totalSkill += kobold?.skills?.[skillcheck.skill];
+            }
+            const baseRoll = rollD20();
+            console.log(baseRoll);
+            const roll = baseRoll + totalSkill;
+            if (roll > skillcheck.difficulty) {
+                checksPassed++;
+            }
+            if (roll > skillcheck.difficulty + 10) {
+                checksCritPassed++;
+            }
+        }
+        if (checksPassed === expedition.skillchecks.length) {
+            if (checksCritPassed >= expedition.skillchecks.length / 2) {
+                expo.result = expedition.greatOutcomes[getRandomArrayIndex(expedition.greatOutcomes.length)];
+            } else {
+                expo.result = expedition.goodOutcomes[getRandomArrayIndex(expedition.goodOutcomes.length)];
+            }
+        } else {
+            expo.result = expedition.badOutcomes[getRandomArrayIndex(expedition.badOutcomes.length)];
+        }
+        for (kobold of kobolds) {
+            if (kobold.job) {
+                Meteor.call('assignJob',thisUserId, kobold.id, kobold.job, false);
+            }
+            Meteor.call('setKoboldBusy', thisUserId, kobold.id, true);
+        }
+        doExpedition(expo, thisUserId);
+        TownCollection.update({ userId: thisUserId }, { $addToSet: {expeditions: expo}});
     },
     'handleExpeditions'(thisUserId) {
         check(thisUserId, String);
-        const town = TownCollection.find({userId:thisUserId}, {projection: {expeditions: 1, kobolds: 1}}).fetch()[0];
-        for(const expedition of Object.keys(town.expeditions || {})) {
-            const expo = {
-                wait: 1000,
+        const town = TownCollection.find({ userId: thisUserId }, { projection: { expeditions: 1, kobolds: 1 } }).fetch()[0];
+        if (town.expeditions) {
+            for (const expo of town.expeditions) {
+                console.log("this is expo in handle expeditions" + expo);
+                doExpedition(expo, thisUserId);
+                console.log("in loop");
             }
-            doExpedition(expo);
-            console.log("in loop");
         }
     },
+    'setKoboldBusy'(thisUserId, koboldId, busy) {
+        check(thisUserId, String);
+        check(koboldId, String);
+        check(busy, Boolean);
+        const town = TownCollection.find({ userId: thisUserId }, { projection: { kobolds: 1 } }).fetch()[0];
+        const kobolds = town.kobolds;
+        const kobold = kobolds.find(e => e.id === koboldId);
+        kobold.busy = busy;
+        TownCollection.update({ userId: thisUserId }, { $set: { kobolds: town.kobolds } });
+    }
 
 });
