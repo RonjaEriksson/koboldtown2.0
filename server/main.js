@@ -101,7 +101,7 @@ expos = [
                         amount: 3,
                     },
                     {
-                        name: "gem",
+                        name: "gems",
                         amount: 1,
                     },
                 ],
@@ -163,6 +163,158 @@ expos = [
         ],
 
     },
+    {
+        name: "Search for kobolds.",
+        color: "grey",
+        partySize: 2,
+        rewards: [
+            "new kobold",
+        ],
+        skills: [
+            "perception",
+            "persuasion",
+        ],
+        visibilityCheck: {
+        },
+        skillchecks: [
+            {
+                skill: "persuasion",
+                difficulty: 20,
+            },
+            {
+                skill: "perception",
+                difficulty: 10,
+            },
+        ],
+        greatOutcomes: [
+            {
+                text: "Your kobolds found a kobold willing to join your tribe!",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add Kobold',
+                    }
+                ]
+                
+            },
+        ],
+        goodOutcomes: [
+            {
+                text: "Your kobolds found a kobold that gifted them a gem.",
+                reward: [
+                    {
+                        name: "gems",
+                        amount: 1
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found a kobold that taught your kobolds in the secrets of nature.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add Skill',
+                        skill: 'nature',
+                        increase: 50,
+                    },
+
+                ]
+
+            },
+        ],
+        badOutcomes: [
+            {
+                text: "Your kobolds did not find any other kobolds.",
+                reward: [],
+            },
+            {
+                text: "Your found no other kobolds, but they did find some edibile plants.",
+                reward: [
+                    {
+                        name: "food",
+                        amount: 30,
+                    }
+                ],
+
+            },
+        ],
+        length: 300000,
+        cost:
+            [
+                {
+                    name: "food",
+                    amount: 200,
+                },
+            ],
+
+    },
+    {
+        name: "Mine for gems.",
+        color: "white",
+        partySize: 2,
+        rewards: [
+            "stone",
+            "gems",
+        ],
+        skills: [
+            "strength",
+        ],
+        visibilityCheck: {
+        },
+        skillchecks: [
+            {
+                skill: "strength",
+                difficulty: 10,
+            },
+        ],
+        greatOutcomes: [
+            {
+                text: "Your kobolds found a valuable gem!",
+                reward: [
+                    {
+                        name: 'gems',
+                        amount: 1,
+                    }
+                ],
+            },
+        ],
+        goodOutcomes: [
+            {
+                text: "Your kobolds found some stone.",
+                reward: [
+                    {
+                        name: "stone",
+                        amount: 30,
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found a lot of stone.",
+                reward: [
+                    {
+                        name: 'stone',
+                        amount: 300,
+                    }
+                ],
+
+            },
+        ],
+        badOutcomes: [
+            {
+                text: "Your kobolds did not find a suitable spot to mine.",
+                reward: [],
+            },
+        ],
+        length: 300000,
+        cost:
+            [
+                {
+                    name: "food",
+                    amount: 200,
+                },
+            ],
+
+    },
 ];
 
 const skills = [
@@ -176,6 +328,11 @@ const skills = [
         base: 'mental',
         color: 'grey',
     },
+    {
+        name: 'persuasion',
+        base: 'social',
+        color: 'yellow',
+    }
 ];
 
 const resources = [
@@ -206,6 +363,13 @@ const resources = [
         visible: false,
         gain: 0,
         color: "chocolate",
+    },
+    {
+        name: "gems",
+        stockpile: 0,
+        visible: false,
+        gain: 0,
+        color: "white",
     },
 ]
 

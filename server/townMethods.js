@@ -5,6 +5,7 @@ import {ResourceCollection } from '../imports/api/ResourceCollection'
 import { Random } from 'meteor/random'
 import { ExpeditionCollection } from '../imports/api/ExpeditionCollection';
 import { SkillCollection } from '../imports/api/SkillCollection';
+import { koboldName } from './koboldNames';
 
 function expeditionWait(wait) {
   return new Promise((resolve) => {
@@ -36,10 +37,21 @@ async function doExpedition(expo, thisUserId) {
             town.resources.push(sourceResource);
         }
     }
+    for (effect of expo.result.effect || []) {
+        switch (effect.name) {
+            case 'Add kobold':
+                Meteor.call('addWanderingKobold', thisUserId);
+                break;
+            case 'Add skill':
+                console.log(effect.skill);
+                break;
+        }
+    }
     TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources } });
     TownCollection.update({ userId: thisUserId }, { $pull: { expeditions: { id: expo.id } } });
     for (koboldId of expo.koboldIds) {
-        Meteor.call('setKoboldBusy', thisUserId, kobold.id, false);
+        console.log(koboldId);
+        Meteor.call('setKoboldBusy', thisUserId, koboldId, false);
     }
     //add pushing to show the expo result message here
     console.log(expo.result.text);
@@ -50,7 +62,7 @@ function getRandomArrayIndex(arrayLength) {
 };
 
 function rollD20() {
-    return Math.floor(Math.random() * 21);
+    return Math.ceil(Math.random() * 20);
 };
 
 function generateRandomColor() {
@@ -163,7 +175,7 @@ Meteor.methods({
                 dragonName: "RymdensRegent",
                 kobolds: [
                     {
-                        name: names[getRandomArrayIndex(names.length)],
+                        name: koboldName(),
                         id: Random.id(),
                         color: `rgb(${255}, ${0}, ${0})`,
                         r: 255,
@@ -174,7 +186,7 @@ Meteor.methods({
                         social: redStats.social,
                     },
                     {
-                        name: names[getRandomArrayIndex(names.length)],
+                        name: koboldName(),
                         id: Random.id(),
                         color: `rgb(${0}, ${255}, ${0})`,
                         r: 0,
@@ -185,7 +197,7 @@ Meteor.methods({
                         social: greenStats.social,
                     },
                     {
-                        name: names[getRandomArrayIndex(names.length)],
+                        name: koboldName(),
                         id: Random.id(),
                         color: `rgb(${0}, ${0}, ${255})`,
                         r: 0,
@@ -239,7 +251,7 @@ Meteor.methods({
             {townId: currentTownId},
             {$addToSet: {
                 kobolds: {
-                    name: names[getRandomArrayIndex(names.length)],
+                    name: koboldName(),
                     id: Random.id(),
                     color: `rgb(${color.r}, ${color.g}, ${color.b})`,
                     r: color.r,
@@ -297,7 +309,7 @@ Meteor.methods({
             {userId: thisUserId},
             {$addToSet: {
                 kobolds: {
-                    name: names[getRandomArrayIndex(names.length)],
+                    name: koboldName(),
                     id: Random.id(),
                     color: `rgb(${color.r}, ${color.g}, ${color.b})`,
                     r: color.r,
@@ -375,6 +387,9 @@ Meteor.methods({
         check(koboldIds, [String]);
         const town = TownCollection.find({ userId: thisUserId }, { projection: {kobolds: 1 } }).fetch()[0];
         const expedition = ExpeditionCollection.findOne(expeditionId);
+        if (!expedition) {
+            return;
+        }
         const expo = {
             finishes: +Date.now() + expedition.length,
             userId: thisUserId,
@@ -385,16 +400,17 @@ Meteor.methods({
         let checksPassed = 0;
         let checksCritPassed = 0;
         for (const skillcheck of expedition.skillchecks) {
-            const baseSkill = SkillCollection.findOne({ name: skillcheck.skill });
+            const baseSkill = SkillCollection.findOne({ name: skillcheck.skill }).base;
             console.log(baseSkill);
             let totalSkill = 0;
             for (const kobold of kobolds) { 
-                totalSkill += kobold[baseSkill];
-                totalSkill += kobold?.skills?.[skillcheck.skill];
+                totalSkill += kobold[baseSkill] || 0;
+                totalSkill += kobold?.skills?.[skillcheck.skill] || 0;
             }
             const baseRoll = rollD20();
             console.log(baseRoll);
             const roll = baseRoll + totalSkill;
+            console.log(roll);
             if (roll > skillcheck.difficulty) {
                 checksPassed++;
             }

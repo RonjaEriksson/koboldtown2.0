@@ -229,6 +229,16 @@ Template.showExpo.helpers({
 Template.showExpo.events({
     "click .js-click-name"(event, instance) {
         instance.showDetails.set(!instance.showDetails.get());
+        const newSlots = [];
+        for (let i = 1; i <= instance.data.partySize; i++) {
+            newSlots.push({
+                name: "Kobold " + i,
+                id: 0,
+                nr: i - 1,
+                color: "black",
+            });
+        };
+        instance.slots.set(newSlots);
     },
     "change .js-party-select"(event, instance) { 
         const index = event.currentTarget.dataset.index;
@@ -246,6 +256,7 @@ Template.showExpo.events({
         selectedOption.value = `${slot.id}`;
         selectedOption.innerText = `${slot.name}`;
         selectedOption.selected = true;
+        //Meteor.call('setKoboldBusy', localStorage.getItem('userId'), event.currentTarget.value, true); //this does not work as intended
         event.currentTarget.add(selectedOption, null);
         for (const kobold of instance.currentTown.get()?.kobolds) {
             if (!slots.map(e => e.id).includes(kobold.id) && !kobold.busy) {
@@ -288,6 +299,42 @@ Template.showExpo.events({
         const koboldIds = instance.slots.get().map(e => e.id);
         console.log(instance);
         Meteor.call("addExpedition", localStorage.getItem("userId"), instance.data._id, koboldIds);
+
+        const newSlots = [];
+        for (let i = 1; i <= instance.data.partySize; i++) {
+            newSlots.push({
+                name: "Kobold " + i,
+                id: 0,
+                nr: i - 1,
+                color: "black",
+            });
+        };
+        instance.slots.set(newSlots);
+        const slots = instance.slots.get();
+
+        const selects = document.getElementsByClassName("js-party-select");
+        console.log(selects);
+        for (let i = 0; i < selects.length; i++) {
+            selects[i].innerHTML = '';
+            const currentSlot = slots.find(e => e.nr === i);
+            console.log(currentSlot);
+            const selectedOption = document.createElement("option");
+            selectedOption.style = `color: ${currentSlot.color}`;
+            selectedOption.value = `${currentSlot.id}`;
+            selectedOption.innerText = `${currentSlot.name}`;
+            selectedOption.selected = true;
+            selects[i].add(selectedOption, null);
+            for (const kobold of instance.currentTown.get()?.kobolds) {
+                if (!koboldIds.includes(kobold.id) && !kobold.busy) {
+                    const koboldOption = document.createElement("option");
+                    koboldOption.style = `color: ${kobold.color}`;
+                    koboldOption.value = `${kobold.id}`;
+                    koboldOption.innerText = `${kobold.name}`;
+                    console.log(koboldOption);
+                    selects[i].add(koboldOption, null);
+                }
+            }
+        }
     },
 })
 
