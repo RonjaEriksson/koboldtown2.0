@@ -101,7 +101,21 @@ Template.showKobold.helpers({
     isBusy() { 
         const instance = Template.instance();
         return instance.data.busy;
-    }
+    },
+    otherIsBusy(otherKoboldId) {
+        const instance = Template.instance();
+        const otherKobold = instance.currentTown.get()?.kobolds?.find(k => k.id === otherKoboldId);
+        return otherKobold?.busy;
+    },
+    textColor() {
+        const instance = Template.instance();
+        const totalColor = instance.data.r + instance.data.g + instance.data.b;
+        if (totalColor > 400) {
+            return 'black';
+        } else {
+            return 'white';
+        }
+    },
 });
 
 Template.showKobold.events({
@@ -256,7 +270,6 @@ Template.showExpo.events({
         selectedOption.value = `${slot.id}`;
         selectedOption.innerText = `${slot.name}`;
         selectedOption.selected = true;
-        //Meteor.call('setKoboldBusy', localStorage.getItem('userId'), event.currentTarget.value, true); //this does not work as intended
         event.currentTarget.add(selectedOption, null);
         for (const kobold of instance.currentTown.get()?.kobolds) {
             if (!slots.map(e => e.id).includes(kobold.id) && !kobold.busy) {
@@ -269,7 +282,7 @@ Template.showExpo.events({
             }
         }
         console.log(event.currentTarget);
-        const selects = document.getElementsByClassName("js-party-select");
+        const selects = document.getElementsByClassName(`js-party-select-${instance.data.name}`);
         console.log(selects);
         for (let i = 0; i < selects.length; i++) {
             if (i != index) {
@@ -297,8 +310,6 @@ Template.showExpo.events({
     },
     'click .js-launch-expo'(event, instance) {
         const koboldIds = instance.slots.get().map(e => e.id);
-        console.log(instance);
-        Meteor.call("addExpedition", localStorage.getItem("userId"), instance.data._id, koboldIds);
 
         const newSlots = [];
         for (let i = 1; i <= instance.data.partySize; i++) {
@@ -312,7 +323,7 @@ Template.showExpo.events({
         instance.slots.set(newSlots);
         const slots = instance.slots.get();
 
-        const selects = document.getElementsByClassName("js-party-select");
+        const selects = document.getElementsByClassName(`js-party-select-${instance.data.name}`);
         console.log(selects);
         for (let i = 0; i < selects.length; i++) {
             selects[i].innerHTML = '';
@@ -335,6 +346,15 @@ Template.showExpo.events({
                 }
             }
         }
+
+        const koboldBusy = instance.currentTown.get()?.kobolds?.filter(e => e.busy && koboldIds.includes(e.id)).length;
+        if (koboldBusy) {
+            //insert message about busy kobolds here
+            console.log("in heeeeeerrrrrrrrrrrreeeeeeeee");
+            console.log(koboldBusy);
+            return;
+        }
+        Meteor.call("addExpedition", localStorage.getItem("userId"), instance.data._id, koboldIds);
     },
 })
 

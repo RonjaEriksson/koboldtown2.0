@@ -44,7 +44,7 @@
 </template>
 
 <template name="showKobold">
-    <div class="clickable js-click-name" style="color: {{color}};">
+    <div class="clickable js-click-name kobold-name" style="color:{{textColor}}; background-color:{{color}};">
         {{name}}
     </div>
 
@@ -67,7 +67,9 @@
         <option selected>Breed With</option>
         {{#each otherKobold in kobolds}}
             {{#unless isCurrentKobold otherKobold.id}}
-                <option style="color: {{otherKoboldColor otherKobold.id}};" value="{{otherKobold.id}}">{{otherKobold.name}}</option>
+                {{#unless otherIsBusy otherKobold.id}}
+                    <option style="color: {{otherKoboldColor otherKobold.id}};" value="{{otherKobold.id}}">{{otherKobold.name}}</option>
+                {{/unless}}
             {{/unless}}
         {{/each}}
     </select>
@@ -142,7 +144,7 @@
         {{/each}}
     </ul>
     {{#each slot in slots}}
-        <select style="color: {{slot.color}}" class="js-party-select" data-index="{{@index}}">
+        <select style="color: {{slot.color}}" class="js-party-select js-party-select-{{name}}" data-index="{{@index}}">
             <option selected style="color: {{slot.color}}">{{slot.name}}</option>
             {{#each kobold in kobolds}}
                 {{#unless kobold.busy}}

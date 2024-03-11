@@ -305,7 +305,7 @@ expos = [
                 reward: [],
             },
         ],
-        length: 300000,
+        length: 60000,
         cost:
             [
                 {
@@ -332,7 +332,12 @@ const skills = [
         name: 'persuasion',
         base: 'social',
         color: 'yellow',
-    }
+    },
+    {
+        name: 'strength',
+        base: 'physical',
+        color: 'red',
+    },
 ];
 
 const resources = [
@@ -382,7 +387,7 @@ Meteor.startup(() => {
         }
     }
 
-    //SkillCollection.remove({}); //uncomment this when loading in the skill collection from plaintext
+    SkillCollection.remove({}); //uncomment this when loading in the skill collection from plaintext
     if (SkillCollection.find().count() === 0) {
         for (const skill of skills) {
             SkillCollection.insert(skill);

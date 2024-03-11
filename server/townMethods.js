@@ -280,6 +280,7 @@ Meteor.methods({
 
         let motherKobold = kobolds.find( e => e.id === motherKoboldId);
         let fatherKobold = kobolds.find(e => e.id === fatherKoboldId);
+        console.log(kobolds);
 
         if (!motherKobold || !fatherKobold) {
             console.error("Did not find both parent kobolds.")
@@ -400,6 +401,7 @@ Meteor.methods({
         let checksPassed = 0;
         let checksCritPassed = 0;
         for (const skillcheck of expedition.skillchecks) {
+            console.log(skillcheck.skill);
             const baseSkill = SkillCollection.findOne({ name: skillcheck.skill }).base;
             console.log(baseSkill);
             let totalSkill = 0;
