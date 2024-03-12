@@ -13,60 +13,17 @@ Meteor.publish("town", function () {
 Meteor.publish("expedition", function () {
     return ExpeditionCollection.find();
 });
+/*
 Meteor.publish("skill", function () {
     return SkillCollection.find();
 });
-
+*/
+Meteor.publish("kobold", function () {
+    return KoboldCollection.find();
+});
 function getRandomArrayIndex(arrayLength) {
     return Math.floor(Math.random() * +arrayLength);
 };
-
-const names = [
-    "Duv",
-    "Rett",
-    "Viks",
-    "Surn",
-    "Toli",
-    "Snilgu",
-    "Algu",
-    "Rukro",
-    "Abli",
-    "Ilba",
-    "Dom",
-    "Ves",
-    "Gak",
-    "Hiks",
-    "Ahru",
-    "Modri",
-    "Regna",
-    "Okle",
-    "Ugna",
-    "Ehsi",
-];
-
-const colors = [
-    "blue",
-    "red",
-    "green",
-    "purple",
-    "yellow",
-    "gold",
-    "silver",
-    "sienna",
-    "brown",
-    "white",
-    "pink",
-    "grey",
-    "navy",
-    "olive",
-    "salmon",
-    "tan",
-    "teal",
-    "cyan",
-    "magenta",
-    "azure",
-    "aqua",
-];
 
 expos = [
     {
@@ -404,4 +361,5 @@ Meteor.startup(() => {
     for (townUserId of townUserIds) {
         Meteor.call('handleExpeditions', townUserId);
     }
+    //KoboldCollection.remove({});
 });

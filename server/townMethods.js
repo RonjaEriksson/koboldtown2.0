@@ -118,29 +118,6 @@ function generateStatsFromColor(color) {
     return stats;
 }
 
-const names = [
-    "Duv",
-    "Rett",
-    "Viks",
-    "Surn",
-    "Toli",
-    "Snilgu",
-    "Algu",
-    "Rukro",
-    "Abli",
-    "Ilba",
-    "Dom",
-    "Ves",
-    "Gak",
-    "Hiks",
-    "Ahru",
-    "Modri",
-    "Regna",
-    "Okle",
-    "Ugna",
-    "Ehsi",
-];
-
 Meteor.methods({
     'initTown'(thisUserId) {
         check(thisUserId, String);
@@ -169,50 +146,51 @@ Meteor.methods({
                     b: 255,
                 });
 
+            const kobolds = [
+                {
+                    name: koboldName(),
+                    userId: thisUserId,
+                    color: `rgb(${255}, ${0}, ${0})`,
+                    r: 255,
+                    g: 0,
+                    b: 0,
+                    physical: redStats.physical,
+                    mental: redStats.mental,
+                    social: redStats.social,
+                },
+                {
+                    name: koboldName(),
+                    userId: thisUserId,
+                    color: `rgb(${0}, ${255}, ${0})`,
+                    r: 0,
+                    g: 255,
+                    b: 0,
+                    physical: greenStats.physical,
+                    mental: greenStats.mental,
+                    social: greenStats.social,
+                },
+                {
+                    name: koboldName(),
+                    userId: thisUserId,
+                    color: `rgb(${0}, ${0}, ${255})`,
+                    r: 0,
+                    g: 0,
+                    b: 255,
+                    physical: blueStats.physical,
+                    mental: blueStats.mental,
+                    social: blueStats.social,
+                },
+
+            ];
+
             const town = {
                 userId: thisUserId,
                 townName: "Kobold Ville",
                 dragonName: "RymdensRegent",
-                kobolds: [
-                    {
-                        name: koboldName(),
-                        id: Random.id(),
-                        color: `rgb(${255}, ${0}, ${0})`,
-                        r: 255,
-                        g: 0,
-                        b: 0,
-                        physical: redStats.physical,
-                        mental: redStats.mental,
-                        social: redStats.social,
-                    },
-                    {
-                        name: koboldName(),
-                        id: Random.id(),
-                        color: `rgb(${0}, ${255}, ${0})`,
-                        r: 0,
-                        g: 255,
-                        b: 0,
-                        physical: greenStats.physical,
-                        mental: greenStats.mental,
-                        social: greenStats.social,
-                    },
-                    {
-                        name: koboldName(),
-                        id: Random.id(),
-                        color: `rgb(${0}, ${0}, ${255})`,
-                        r: 0,
-                        g: 0,
-                        b: 255,
-                        physical: blueStats.physical,
-                        mental: blueStats.mental,
-                        social: blueStats.social,
-                    },
-
-                ],
                 resources: ResourceCollection.find({}).fetch(),
                 //move this to a job collection
-                jobs : [
-                       {
+                jobs: [
+                    {
                         name: "scavenge",
                         color: "darkGrey",
                         resources: [
@@ -220,19 +198,24 @@ Meteor.methods({
                             "stone",
                             "wood",
                         ],
-                        production : {
-                            food : 3, 
+                        production: {
+                            food: 3,
                             stone: 3,
                             wood: 3,
                         },
                         relevantSkills: [
-                        "nature",
+                            "nature",
                         ],
                         spotsOpen: "unlimited",
-                        },
+                    },
                 ]
-            }
+            };
             TownCollection.insert(town);
+            //KoboldCollection.insertMany(kobolds); //try this
+            for (const kobold of kobolds) {
+                KoboldCollection.insert(kobold);
+                console.log(KoboldCollection.find().fetch());
+            }
         }
         
         
@@ -247,23 +230,19 @@ Meteor.methods({
         }
         const color = generateRandomColor();
         const stats = generateStatsFromColor(color)
-        TownCollection.update(
-            {townId: currentTownId},
-            {$addToSet: {
-                kobolds: {
-                    name: koboldName(),
-                    id: Random.id(),
-                    color: `rgb(${color.r}, ${color.g}, ${color.b})`,
-                    r: color.r,
-                    g: color.g,
-                    b: color.b,
-                    physical: stats.physical,
-                    mental: stats.mental,
-                    social: stats.social,
-                    }
-                }
-            }
-        );     
+
+        const kobold = {
+            name: koboldName(),
+            userId: thisUserId,
+            color: `rgb(${color.r}, ${color.g}, ${color.b})`,
+            r: color.r,
+            g: color.g,
+            b: color.b,
+            physical: stats.physical,
+            mental: stats.mental,
+            social: stats.social,
+        };
+        KoboldCollection.insert(kobold);
     },
     'mateKobolds'(thisUserId, motherKoboldId, fatherKoboldId) {
         check(thisUserId, String)
@@ -272,14 +251,14 @@ Meteor.methods({
 
         const mutationTreshhold = 15;
 
-        let kobolds = TownCollection.find({ userId: thisUserId }, {projection: {kobolds: 1}}).fetch()[0]?.kobolds;
+        let kobolds = KoboldCollection.find({ userId: thisUserId }).fetch();
         if (!kobolds) {
-            console.error("Found no town to add Kobold to.");
+            console.error("Found no kobolds in selected town.");
             return;
         }
 
-        let motherKobold = kobolds.find( e => e.id === motherKoboldId);
-        let fatherKobold = kobolds.find(e => e.id === fatherKoboldId);
+        let motherKobold = kobolds.find( e => e._id === motherKoboldId);
+        let fatherKobold = kobolds.find(e => e._id === fatherKoboldId);
         console.log(kobolds);
 
         if (!motherKobold || !fatherKobold) {
@@ -305,25 +284,18 @@ Meteor.methods({
         }
 
         const stats = generateStatsFromColor(color);
-
-        TownCollection.update(
-            {userId: thisUserId},
-            {$addToSet: {
-                kobolds: {
-                    name: koboldName(),
-                    id: Random.id(),
-                    color: `rgb(${color.r}, ${color.g}, ${color.b})`,
-                    r: color.r,
-                    g: color.g,
-                    b: color.b,
-                    physical: stats.physical,
-                    mental: stats.mental,
-                    social: stats.social,
-                    }
-                }
-            }
-        );
-
+        const kobold = {
+            name: koboldName(),
+            userId: thisUserId,
+            color: `rgb(${color.r}, ${color.g}, ${color.b})`,
+            r: color.r,
+            g: color.g,
+            b: color.b,
+            physical: stats.physical,
+            mental: stats.mental,
+            social: stats.social,
+        }
+        KoboldCollection.insert(kobold);
     },
     'increaseResource'(thisUserId) {
         check(thisUserId, String);
@@ -346,9 +318,8 @@ Meteor.methods({
         check(jobName, String);
         check(starting, Boolean);
 
-        const town = TownCollection.find({userId:thisUserId}, {projection: {resources: 1, jobs : 1, kobolds: 1}}).fetch()[0];
-
-        const kobold = town?.kobolds?.find(e => e.id === koboldId);
+        const town = TownCollection.findOne({ userId: thisUserId }, { projection: {resources: 1, jobs: 1,}});
+        const kobold = KoboldCollection.findOne(koboldId);
         if (!kobold) {
             console.error("Did not find selected kobold.");
             return;
@@ -357,13 +328,9 @@ Meteor.methods({
        if(!job) {
            console.error("Did not find chosen job.");
            return;
-       }
-       if (starting) {
-            kobold.job = job.name;
-        } else {
-            kobold.job = null;
         }
-        
+        jobName = starting ? jobName : null;
+
         for(const resourceName of job.resources) {
             const resource = town.resources.find(e => e.name === resourceName);
             if(starting) {
@@ -380,13 +347,13 @@ Meteor.methods({
             }
         }
 
-        TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources, kobolds: town.kobolds } });
+        TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources } });
+        KoboldCollection.update(koboldId, { $set: {job: jobName}})
     },
     'addExpedition'(thisUserId, expeditionId, koboldIds) {
         check(thisUserId, String);
         check(expeditionId, String);
         check(koboldIds, [String]);
-        const town = TownCollection.find({ userId: thisUserId }, { projection: {kobolds: 1 } }).fetch()[0];
         const expedition = ExpeditionCollection.findOne(expeditionId);
         if (!expedition) {
             return;
@@ -397,7 +364,7 @@ Meteor.methods({
             id: Random.id(),
             koboldIds: koboldIds,
         }
-        const kobolds = town.kobolds.filter(k => koboldIds.includes(k.id));
+        const kobolds = KoboldCollection.find({ _id: { $in: koboldIds}});
         let checksPassed = 0;
         let checksCritPassed = 0;
         for (const skillcheck of expedition.skillchecks) {
@@ -431,9 +398,9 @@ Meteor.methods({
         }
         for (kobold of kobolds) {
             if (kobold.job) {
-                Meteor.call('assignJob',thisUserId, kobold.id, kobold.job, false);
+                Meteor.call('assignJob',thisUserId, kobold._id, kobold.job, false);
             }
-            Meteor.call('setKoboldBusy', thisUserId, kobold.id, true);
+            Meteor.call('setKoboldBusy', thisUserId, kobold._id, true);
         }
         doExpedition(expo, thisUserId);
         TownCollection.update({ userId: thisUserId }, { $addToSet: {expeditions: expo}});
@@ -453,11 +420,7 @@ Meteor.methods({
         check(thisUserId, String);
         check(koboldId, String);
         check(busy, Boolean);
-        const town = TownCollection.find({ userId: thisUserId }, { projection: { kobolds: 1 } }).fetch()[0];
-        const kobolds = town.kobolds;
-        const kobold = kobolds.find(e => e.id === koboldId);
-        kobold.busy = busy;
-        TownCollection.update({ userId: thisUserId }, { $set: { kobolds: town.kobolds } });
+        KoboldCollection.update({ _id: koboldId}, { $set: { busy: busy } });
     }
 
 });

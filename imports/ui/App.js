@@ -13,7 +13,9 @@ Template.mainContainer.onCreated(function () {
 
     Meteor.subscribe('town');
     Meteor.subscribe("expedition");
+    Meteor.subscribe("kobold");
     instance.currentTown = new ReactiveVar(null);
+    instance.kobolds = new ReactiveVar(null);
     //localStorage.setItem("userId", `${Random.id()}`); //uncomment this when you want to reset town
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
@@ -23,6 +25,9 @@ Template.mainContainer.onCreated(function () {
             }
             Meteor.call("initTown", localStorage.getItem("userId"));
         }
+    });
+    instance.autorun(function auto_kobolds() {
+        instance.kobolds.set(KoboldCollection.find({ userId: localStorage.getItem("userId") }).fetch());
     });
 
     const checkCompletionInterval = 60000;
@@ -48,18 +53,17 @@ Template.mainContainer.helpers({
     },
     kobolds() {
         const instance = Template.instance();
-        return instance.currentTown.get()?.kobolds;
+        return instance.kobolds.get();
     },
     resources() {
         const instance = Template.instance();
-        return instance.currentTown.get()?.resources;
+        return instance.currentTown.get()?.resources?.filter(e => e.visible);
     },
     jobs() {
         const instance = Template.instance();
         return jobs = instance.currentTown.get()?.jobs;
     },
     expos() {
-        console.log(ExpeditionCollection.find({}).fetch());
         return ExpeditionCollection.find({},{projection: {name:1, length:1, skills: 1, rewards: 1, color: 1, partySize: 1,}}).fetch();
     },
 });
@@ -71,10 +75,15 @@ Template.showKobold.onCreated(function () {
     const instance = Template.instance();
     instance.showDetails = new ReactiveVar(false);
     instance.currentTown = new ReactiveVar(null);
+    instance.kobolds = new ReactiveVar(null);
 
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
-        });
+    });
+
+    instance.autorun(function auto_kobolds() {
+        instance.kobolds.set(KoboldCollection.find({ userId: localStorage.getItem("userId") }).fetch());
+    });
 });
 
 Template.showKobold.helpers({
@@ -84,15 +93,15 @@ Template.showKobold.helpers({
     },
     kobolds() {
         const instance = Template.instance();
-        return instance.currentTown.get()?.kobolds;
+        return instance.kobolds.get();
     },
     otherKoboldColor(koboldId) {
         const instance = Template.instance();
-        return instance.currentTown.get()?.kobolds?.find(e => e.id === koboldId)?.color;
+        return instance.kobolds.get()?.find(e => e._id === koboldId)?.color;
     },
     isCurrentKobold(otherKoboldId) {
         const instance = Template.instance();
-        return otherKoboldId === instance.data.id;
+        return otherKoboldId === instance.data._id;
     },
     jobs() {
         const instance = Template.instance();
@@ -104,13 +113,13 @@ Template.showKobold.helpers({
     },
     otherIsBusy(otherKoboldId) {
         const instance = Template.instance();
-        const otherKobold = instance.currentTown.get()?.kobolds?.find(k => k.id === otherKoboldId);
+        const otherKobold = instance.kobolds.get()?.find(k => k._id === otherKoboldId);
         return otherKobold?.busy;
     },
     textColor() {
         const instance = Template.instance();
         const totalColor = instance.data.r + instance.data.g + instance.data.b;
-        if (totalColor > 400) {
+        if (totalColor > 400 || instance.data.g > 200) {
             return 'black';
         } else {
             return 'white';
@@ -124,16 +133,15 @@ Template.showKobold.events({
     },
     "click .js-breed"(event, instance) {
         const fatherId = document.getElementById("breedSelect").value;
-        const motherId = instance.data.id;
+        const motherId = instance.data._id;
         Meteor.call("mateKobolds",localStorage.getItem("userId"), motherId, fatherId);
     },
     "click .js-chose-job"(event, instance) {
         const job = document.getElementById("jobSelect").value;
-        Meteor.call("assignJob",localStorage.getItem("userId"), instance.data.id, job, true);
+        Meteor.call("assignJob",localStorage.getItem("userId"), instance.data._id, job, true);
     },
     "click .js-quit-job"(event, instance) {    
-        console.log(instance.data.job);
-        Meteor.call("assignJob",localStorage.getItem("userId"), instance.data.id,instance.data.job , false);
+        Meteor.call("assignJob",localStorage.getItem("userId"), instance.data._id,instance.data.job , false);
     },
 })
 
@@ -168,10 +176,15 @@ Template.showJob.onCreated(function () {
     const instance = Template.instance();
     instance.showDetails = new ReactiveVar(false);
     instance.currentTown = new ReactiveVar(null);
+    instance.kobolds = new ReactiveVar(null);
 
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
-        });
+    });
+
+    instance.autorun(function auto_kobolds() {
+        instance.kobolds.set(KoboldCollection.find({ userId: localStorage.getItem("userId") }).fetch());
+    });
 });
 
 Template.showJob.helpers({
@@ -185,7 +198,7 @@ Template.showJob.helpers({
     },
     koboldsAtJob() {
         const instance = Template.instance();
-        return instance.currentTown.get()?.kobolds?.filter(e => e.job === instance.data.name);
+        return instance.kobolds.get()?.filter(e => e.job === instance.data.name);
     },
 });
 
@@ -199,9 +212,13 @@ Template.showExpo.onCreated(function () {
     const instance = Template.instance();
     instance.showDetails = new ReactiveVar(false);
     instance.currentTown = new ReactiveVar(null);
+    instance.kobolds = new ReactiveVar(null);
 
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
+    });
+    instance.autorun(function auto_kobolds() {
+        instance.kobolds.set(KoboldCollection.find({ userId: localStorage.getItem("userId") }).fetch());
     });
     instance.slots = new ReactiveVar([]);
     const newSlots = [];
@@ -227,7 +244,7 @@ Template.showExpo.helpers({
     },
     kobolds() {
         const instance = Template.instance();
-        return instance.currentTown.get()?.kobolds;
+        return instance.kobolds.get();
     },
     slots() {
         const instance = Template.instance();
@@ -235,7 +252,6 @@ Template.showExpo.helpers({
     },
     expoNotFilled() {
         const instance = Template.instance();
-        console.log(instance.slots.get().map(e => e.id).includes(0));
         return instance.slots.get().map(e => e.id).includes(0);
     }
 });
@@ -256,12 +272,12 @@ Template.showExpo.events({
     },
     "change .js-party-select"(event, instance) { 
         const index = event.currentTarget.dataset.index;
-        console.log(index);
         const slots = instance.slots.get();
+        const kobolds = instance.kobolds.get();
         const slot = slots.find(e => e.nr === +index);
-        slot.name = instance.currentTown.get()?.kobolds?.find(e => e.id === event.currentTarget.value)?.name;
+        slot.name = kobolds?.find(e => e._id === event.currentTarget.value)?.name;
         slot.id = event.currentTarget.value;
-        slot.color = instance.currentTown.get()?.kobolds?.find(e => e.id === event.currentTarget.value)?.color;
+        slot.color = kobolds?.find(e => e._id === event.currentTarget.value)?.color;
         instance.slots.set(slots);
         event.currentTarget.innerHTML = '';
         event.currentTarget.style = `color: ${slot.color}`;
@@ -271,37 +287,32 @@ Template.showExpo.events({
         selectedOption.innerText = `${slot.name}`;
         selectedOption.selected = true;
         event.currentTarget.add(selectedOption, null);
-        for (const kobold of instance.currentTown.get()?.kobolds) {
+        for (const kobold of instance.kobolds.get()) {
             if (!slots.map(e => e.id).includes(kobold.id) && !kobold.busy) {
                 const koboldOption = document.createElement("option");
                 koboldOption.style = `color: ${kobold.color}`;
                 koboldOption.value = `${kobold.id}`;
                 koboldOption.innerText = `${kobold.name}`;
-                console.log(koboldOption);
                 event.currentTarget.add(koboldOption, null);
             }
         }
-        console.log(event.currentTarget);
         const selects = document.getElementsByClassName(`js-party-select-${instance.data.name}`);
-        console.log(selects);
         for (let i = 0; i < selects.length; i++) {
             if (i != index) {
                 selects[i].innerHTML = '';
                 const currentSlot = slots.find(e => e.nr === i);
-                console.log(currentSlot);
                 const selectedOption = document.createElement("option");
                 selectedOption.style = `color: ${currentSlot.color}`;
                 selectedOption.value = `${currentSlot.id}`;
                 selectedOption.innerText = `${currentSlot.name}`;
                 selectedOption.selected = true;
                 selects[i].add(selectedOption, null);
-                for (const kobold of instance.currentTown.get()?.kobolds) {
-                    if (!slots.map(e => e.id).includes(kobold.id) && !kobold.busy) {
+                for (const kobold of instance.kobolds.get()) {
+                    if (!slots.map(e => e.id).includes(kobold._id) && !kobold.busy) {
                         const koboldOption = document.createElement("option");
                         koboldOption.style = `color: ${kobold.color}`;
-                        koboldOption.value = `${kobold.id}`;
+                        koboldOption.value = `${kobold._id}`;
                         koboldOption.innerText = `${kobold.name}`;
-                        console.log(koboldOption);
                         selects[i].add(koboldOption, null);
                     }
                 }
@@ -324,34 +335,29 @@ Template.showExpo.events({
         const slots = instance.slots.get();
 
         const selects = document.getElementsByClassName(`js-party-select-${instance.data.name}`);
-        console.log(selects);
         for (let i = 0; i < selects.length; i++) {
             selects[i].innerHTML = '';
             const currentSlot = slots.find(e => e.nr === i);
-            console.log(currentSlot);
             const selectedOption = document.createElement("option");
             selectedOption.style = `color: ${currentSlot.color}`;
             selectedOption.value = `${currentSlot.id}`;
             selectedOption.innerText = `${currentSlot.name}`;
             selectedOption.selected = true;
             selects[i].add(selectedOption, null);
-            for (const kobold of instance.currentTown.get()?.kobolds) {
+            for (const kobold of instance.kobolds.get()) {
                 if (!koboldIds.includes(kobold.id) && !kobold.busy) {
                     const koboldOption = document.createElement("option");
                     koboldOption.style = `color: ${kobold.color}`;
                     koboldOption.value = `${kobold.id}`;
                     koboldOption.innerText = `${kobold.name}`;
-                    console.log(koboldOption);
                     selects[i].add(koboldOption, null);
                 }
             }
         }
 
-        const koboldBusy = instance.currentTown.get()?.kobolds?.filter(e => e.busy && koboldIds.includes(e.id)).length;
+        const koboldBusy = instance.kobolds.get()?.filter(e => e.busy && koboldIds.includes(e.id)).length;
         if (koboldBusy) {
             //insert message about busy kobolds here
-            console.log("in heeeeeerrrrrrrrrrrreeeeeeeee");
-            console.log(koboldBusy);
             return;
         }
         Meteor.call("addExpedition", localStorage.getItem("userId"), instance.data._id, koboldIds);

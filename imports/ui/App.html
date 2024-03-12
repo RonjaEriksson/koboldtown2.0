@@ -66,9 +66,9 @@
     <select id="breedSelect">
         <option selected>Breed With</option>
         {{#each otherKobold in kobolds}}
-            {{#unless isCurrentKobold otherKobold.id}}
-                {{#unless otherIsBusy otherKobold.id}}
-                    <option style="color: {{otherKoboldColor otherKobold.id}};" value="{{otherKobold.id}}">{{otherKobold.name}}</option>
+            {{#unless isCurrentKobold otherKobold._id}}
+                {{#unless otherIsBusy otherKobold._id}}
+                    <option style="color: {{otherKoboldColor otherKobold._id}};" value="{{otherKobold._id}}">{{otherKobold.name}}</option>
                 {{/unless}}
             {{/unless}}
         {{/each}}
@@ -148,7 +148,7 @@
             <option selected style="color: {{slot.color}}">{{slot.name}}</option>
             {{#each kobold in kobolds}}
                 {{#unless kobold.busy}}
-                    <option style="color: {{kobold.color}}" value="{{kobold.id}}">
+                    <option style="color: {{kobold.color}}" value="{{kobold._id}}">
                         {{kobold.name}}
                     </option>
                 {{/unless}}
