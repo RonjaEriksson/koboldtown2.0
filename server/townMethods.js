@@ -47,11 +47,16 @@ async function doExpedition(expo, thisUserId) {
                 break;
         }
     }
-    TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources } });
+    const notice = {
+        text: expo.result.text,
+        dismissed: false,
+        time: Date.now(),
+    } 
+    TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources }, $addToSet: { notices: notice } });
     TownCollection.update({ userId: thisUserId }, { $pull: { expeditions: { id: expo.id } } });
     for (koboldId of expo.koboldIds) {
         console.log(koboldId);
-        Meteor.call('setKoboldBusy', thisUserId, koboldId, false);
+        Meteor.call('setKoboldBusy', koboldId, false);
     }
     //add pushing to show the expo result message here
     console.log(expo.result.text);
@@ -118,6 +123,15 @@ function generateStatsFromColor(color) {
     return stats;
 }
 
+function koboldTextColor(r, g, b) {
+    const totalColor = r + g + b;
+    if (totalColor > 400 || g > 200) {
+        return 'black';
+    } else {
+        return 'white';
+    }
+}
+
 Meteor.methods({
     'initTown'(thisUserId) {
         check(thisUserId, String);
@@ -157,6 +171,7 @@ Meteor.methods({
                     physical: redStats.physical,
                     mental: redStats.mental,
                     social: redStats.social,
+                    textColor: koboldTextColor(255, 0, 0),
                 },
                 {
                     name: koboldName(),
@@ -168,6 +183,7 @@ Meteor.methods({
                     physical: greenStats.physical,
                     mental: greenStats.mental,
                     social: greenStats.social,
+                    textColor: koboldTextColor(0, 255, 0),
                 },
                 {
                     name: koboldName(),
@@ -179,6 +195,7 @@ Meteor.methods({
                     physical: blueStats.physical,
                     mental: blueStats.mental,
                     social: blueStats.social,
+                    textColor: koboldTextColor(0, 0, 255),
                 },
 
             ];
@@ -241,6 +258,7 @@ Meteor.methods({
             physical: stats.physical,
             mental: stats.mental,
             social: stats.social,
+            textColor: koboldTextColor(color.r, color.g, color.b),
         };
         KoboldCollection.insert(kobold);
     },
@@ -294,6 +312,7 @@ Meteor.methods({
             physical: stats.physical,
             mental: stats.mental,
             social: stats.social,
+            textColor: koboldTextColor(color.r, color.g, color.b),
         }
         KoboldCollection.insert(kobold);
     },
@@ -400,7 +419,7 @@ Meteor.methods({
             if (kobold.job) {
                 Meteor.call('assignJob',thisUserId, kobold._id, kobold.job, false);
             }
-            Meteor.call('setKoboldBusy', thisUserId, kobold._id, true);
+            Meteor.call('setKoboldBusy', kobold._id, true);
         }
         doExpedition(expo, thisUserId);
         TownCollection.update({ userId: thisUserId }, { $addToSet: {expeditions: expo}});
@@ -416,8 +435,7 @@ Meteor.methods({
             }
         }
     },
-    'setKoboldBusy'(thisUserId, koboldId, busy) {
-        check(thisUserId, String);
+    'setKoboldBusy'(koboldId, busy) {
         check(koboldId, String);
         check(busy, Boolean);
         KoboldCollection.update({ _id: koboldId}, { $set: { busy: busy } });

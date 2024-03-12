@@ -16,7 +16,7 @@ Template.mainContainer.onCreated(function () {
     Meteor.subscribe("kobold");
     instance.currentTown = new ReactiveVar(null);
     instance.kobolds = new ReactiveVar(null);
-    //localStorage.setItem("userId", `${Random.id()}`); //uncomment this when you want to reset town
+    localStorage.setItem("userId", `${Random.id()}`); //uncomment this when you want to reset town
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
         if (!instance.currentTown.get()) {
@@ -78,7 +78,7 @@ Template.showKobold.onCreated(function () {
     instance.kobolds = new ReactiveVar(null);
 
     instance.autorun(function auto_townId() {
-        instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
+        instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }, { projection: {jobs:1,}}));
     });
 
     instance.autorun(function auto_kobolds() {
@@ -116,15 +116,6 @@ Template.showKobold.helpers({
         const otherKobold = instance.kobolds.get()?.find(k => k._id === otherKoboldId);
         return otherKobold?.busy;
     },
-    textColor() {
-        const instance = Template.instance();
-        const totalColor = instance.data.r + instance.data.g + instance.data.b;
-        if (totalColor > 400 || instance.data.g > 200) {
-            return 'black';
-        } else {
-            return 'white';
-        }
-    },
 });
 
 Template.showKobold.events({
@@ -150,9 +141,11 @@ Template.showResource.onCreated(function () {
     instance.showDetails = new ReactiveVar(false);
     instance.currentTown = new ReactiveVar(null);
 
+    /*
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
         });
+        */
 });
 
 Template.showResource.helpers({
@@ -178,9 +171,11 @@ Template.showJob.onCreated(function () {
     instance.currentTown = new ReactiveVar(null);
     instance.kobolds = new ReactiveVar(null);
 
+    /*
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
     });
+    */
 
     instance.autorun(function auto_kobolds() {
         instance.kobolds.set(KoboldCollection.find({ userId: localStorage.getItem("userId") }).fetch());
@@ -214,9 +209,11 @@ Template.showExpo.onCreated(function () {
     instance.currentTown = new ReactiveVar(null);
     instance.kobolds = new ReactiveVar(null);
 
+    /*
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
     });
+    */
     instance.autorun(function auto_kobolds() {
         instance.kobolds.set(KoboldCollection.find({ userId: localStorage.getItem("userId") }).fetch());
     });
@@ -227,7 +224,8 @@ Template.showExpo.onCreated(function () {
             name: "Kobold " + i,
             id: 0,
             nr: i - 1,
-            color: "black",
+            textColor: "black",
+            color: "white",
         });
     };
     instance.slots.set(newSlots);
@@ -253,6 +251,10 @@ Template.showExpo.helpers({
     expoNotFilled() {
         const instance = Template.instance();
         return instance.slots.get().map(e => e.id).includes(0);
+    },
+    availableKobolds() {
+        const instance = Template.instance();
+        return instance.kobolds.get()?.filter(k => !instance.slots.get()?.map(e => e.id).includes(k._id) && !k.busy)
     }
 });
 
@@ -265,7 +267,8 @@ Template.showExpo.events({
                 name: "Kobold " + i,
                 id: 0,
                 nr: i - 1,
-                color: "black",
+                textColor: "black",
+                color: "white",
             });
         };
         instance.slots.set(newSlots);
@@ -278,46 +281,8 @@ Template.showExpo.events({
         slot.name = kobolds?.find(e => e._id === event.currentTarget.value)?.name;
         slot.id = event.currentTarget.value;
         slot.color = kobolds?.find(e => e._id === event.currentTarget.value)?.color;
+        slot.textColor = kobolds?.find(e => e._id === event.currentTarget.value)?.textColor;
         instance.slots.set(slots);
-        event.currentTarget.innerHTML = '';
-        event.currentTarget.style = `color: ${slot.color}`;
-        const selectedOption = document.createElement("option");
-        selectedOption.style = `color: ${slot.color}`;
-        selectedOption.value = `${slot.id}`;
-        selectedOption.innerText = `${slot.name}`;
-        selectedOption.selected = true;
-        event.currentTarget.add(selectedOption, null);
-        for (const kobold of instance.kobolds.get()) {
-            if (!slots.map(e => e.id).includes(kobold.id) && !kobold.busy) {
-                const koboldOption = document.createElement("option");
-                koboldOption.style = `color: ${kobold.color}`;
-                koboldOption.value = `${kobold.id}`;
-                koboldOption.innerText = `${kobold.name}`;
-                event.currentTarget.add(koboldOption, null);
-            }
-        }
-        const selects = document.getElementsByClassName(`js-party-select-${instance.data.name}`);
-        for (let i = 0; i < selects.length; i++) {
-            if (i != index) {
-                selects[i].innerHTML = '';
-                const currentSlot = slots.find(e => e.nr === i);
-                const selectedOption = document.createElement("option");
-                selectedOption.style = `color: ${currentSlot.color}`;
-                selectedOption.value = `${currentSlot.id}`;
-                selectedOption.innerText = `${currentSlot.name}`;
-                selectedOption.selected = true;
-                selects[i].add(selectedOption, null);
-                for (const kobold of instance.kobolds.get()) {
-                    if (!slots.map(e => e.id).includes(kobold._id) && !kobold.busy) {
-                        const koboldOption = document.createElement("option");
-                        koboldOption.style = `color: ${kobold.color}`;
-                        koboldOption.value = `${kobold._id}`;
-                        koboldOption.innerText = `${kobold.name}`;
-                        selects[i].add(koboldOption, null);
-                    }
-                }
-            }
-        }
     },
     'click .js-launch-expo'(event, instance) {
         const koboldIds = instance.slots.get().map(e => e.id);
@@ -328,39 +293,34 @@ Template.showExpo.events({
                 name: "Kobold " + i,
                 id: 0,
                 nr: i - 1,
-                color: "black",
+                textColor: "black",
+                color: "white",
             });
         };
         instance.slots.set(newSlots);
-        const slots = instance.slots.get();
 
-        const selects = document.getElementsByClassName(`js-party-select-${instance.data.name}`);
-        for (let i = 0; i < selects.length; i++) {
-            selects[i].innerHTML = '';
-            const currentSlot = slots.find(e => e.nr === i);
-            const selectedOption = document.createElement("option");
-            selectedOption.style = `color: ${currentSlot.color}`;
-            selectedOption.value = `${currentSlot.id}`;
-            selectedOption.innerText = `${currentSlot.name}`;
-            selectedOption.selected = true;
-            selects[i].add(selectedOption, null);
-            for (const kobold of instance.kobolds.get()) {
-                if (!koboldIds.includes(kobold.id) && !kobold.busy) {
-                    const koboldOption = document.createElement("option");
-                    koboldOption.style = `color: ${kobold.color}`;
-                    koboldOption.value = `${kobold.id}`;
-                    koboldOption.innerText = `${kobold.name}`;
-                    selects[i].add(koboldOption, null);
-                }
-            }
-        }
-
-        const koboldBusy = instance.kobolds.get()?.filter(e => e.busy && koboldIds.includes(e.id)).length;
+        const koboldBusy = instance.kobolds.get()?.filter(e => e.busy && koboldIds.includes(e._id)).length;
         if (koboldBusy) {
             //insert message about busy kobolds here
+            console.log("Chosen kobolds are busy.");
             return;
         }
         Meteor.call("addExpedition", localStorage.getItem("userId"), instance.data._id, koboldIds);
     },
 })
 
+Template.noticeboard.onCreated(function () {
+    const instance = Template.instance();
+    instance.currentTown = new ReactiveVar(null);
+
+    instance.autorun(function auto_townId() {
+        instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }, { projection: { notices: 1 }}));
+    });
+})
+
+Template.noticeboard.helpers({
+    notices() {
+        const instance = Template.instance();
+        return instance.currentTown.get()?.notices;
+    },
+});

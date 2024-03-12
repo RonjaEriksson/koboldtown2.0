@@ -39,6 +39,10 @@
             {{> showExpo expo}}
             {{/each}}
         </ul>
+
+        Noticeboard
+        <br>
+        {{> noticeboard}}
     </div>
     {{/if}}
 </template>
@@ -144,14 +148,12 @@
         {{/each}}
     </ul>
     {{#each slot in slots}}
-        <select style="color: {{slot.color}}" class="js-party-select js-party-select-{{name}}" data-index="{{@index}}">
-            <option selected style="color: {{slot.color}}">{{slot.name}}</option>
-            {{#each kobold in kobolds}}
-                {{#unless kobold.busy}}
-                    <option style="color: {{kobold.color}}" value="{{kobold._id}}">
-                        {{kobold.name}}
-                    </option>
-                {{/unless}}
+        <select style="color: {{slot.textColor}}; background-color: {{ slot.color }};" class="js-party-select js-party-select-{{name}}" data-index="{{@index}}">
+            <option selected style="color: {{slot.textColor}}; background-color:{{slot.color}};">{{slot.name}}</option>
+            {{#each kobold in availableKobolds}}
+                <option style="background-color: {{ kobold.color }}; color:{{kobold.textColor}};" value="{{kobold._id}}">
+                    {{kobold.name}}
+                </option>
             {{/each}}
         </select>
         <br>
@@ -161,4 +163,13 @@
     <br>
 </div>
     {{/if}}
+</template>
+
+<template name="noticeboard">
+    <div class="noticeboard">
+        {{#each notice in notices}}
+            {{notice.text}}
+            <br>
+        {{/each}}
+    </div>
 </template>
