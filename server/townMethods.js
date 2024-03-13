@@ -45,12 +45,17 @@ async function doExpedition(expo, thisUserId) {
                 console.log("adding skill");
                 console.log(effect.skill);
                 break;
+            case 'Add friendship':
+                console.log("adding friendship");
+                console.log(effect.points);
+                break;
         }
     }
     const notice = {
         text: expo.result.text,
         dismissed: false,
         time: Date.now(),
+        id: Random.id(),
     } 
     TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources }, $addToSet: { notices: notice } });
     TownCollection.update({ userId: thisUserId }, { $pull: { expeditions: { id: expo.id } } });
@@ -418,7 +423,14 @@ Meteor.methods({
             Meteor.call('setKoboldBusy', kobold._id, true);
         }
         doExpedition(expo, thisUserId);
-        TownCollection.update({ userId: thisUserId }, { $addToSet: {expeditions: expo}});
+        //add custom text to each expo to show here
+        const notice = {
+            text: expedition.startTexts[getRandomArrayIndex(expedition.startTexts.length)],
+            dismissed: false,
+            time: Date.now(),
+            id: Random.id(),
+        } 
+        TownCollection.update({ userId: thisUserId }, { $addToSet: { expeditions: expo, notices: notice}});
     },
     'handleExpeditions'(thisUserId) {
         check(thisUserId, String);
@@ -433,6 +445,14 @@ Meteor.methods({
         check(koboldId, String);
         check(busy, Boolean);
         KoboldCollection.update({ _id: koboldId}, { $set: { busy: busy } });
-    }
+    },
+    'dismissNotice'(thisUserId, noticeId) {
+        check(thisUserId, String);
+        check(noticeId, String);
+        const town = TownCollection.find({ userId: thisUserId }, { projection: { notices: 1 } }).fetch()[0];
+        const notice = town.notices?.find(e => e.id === noticeId);
+        notice.dismissed = true;
+        TownCollection.update({ userId: thisUserId }, { $set: { notices: town.notices } });
+    },
 
 });

@@ -170,6 +170,7 @@
     <div class="noticeboard">
         {{#each notice in notices}}
             {{notice.text}}
+            <p class="clickable js-dismiss noticeboard-dismiss" data-notice="{{notice.id}}">X</p>
             <br>
         {{/each}}
     </div>

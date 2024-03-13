@@ -64,6 +64,7 @@ Template.mainContainer.helpers({
         return jobs = instance.currentTown.get()?.jobs;
     },
     expos() {
+        console.log(ExpeditionCollection.find({}).fetch());
         return ExpeditionCollection.find({},{projection: {name:1, length:1, skills: 1, rewards: 1, color: 1, partySize: 1,}}).fetch();
     },
 });
@@ -123,6 +124,7 @@ Template.showKobold.events({
     "click .js-click-name"(event, instance) {
         instance.showDetails.set(!instance.showDetails.get());
         instance.breedTarget.set(null);
+        instance.selectedJob.set(null);
     },
     "click .js-breed"(event, instance) {
         const fatherId = document.getElementById("breedSelect").value;
@@ -329,6 +331,13 @@ Template.noticeboard.onCreated(function () {
 Template.noticeboard.helpers({
     notices() {
         const instance = Template.instance();
-        return instance.currentTown.get()?.notices;
+        return instance.currentTown.get()?.notices?.reverse()?.filter(e => !e.dismissed);
+    },
+});
+
+Template.noticeboard.events({
+    'click .js-dismiss'(event, instance) {
+        const noticeId = event.currentTarget.dataset.notice;
+        Meteor.call('dismissNotice', localStorage.getItem("userId"), noticeId);
     },
 });

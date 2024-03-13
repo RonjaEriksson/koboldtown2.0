@@ -15,9 +15,19 @@ export const skills = [
         color: 'blue',
     },
     {
+        name: 'cooking',
+        base: 'mental',
+        color: 'brown',
+    },
+    {
         name: 'persuasion',
         base: 'social',
         color: 'yellow',
+    },
+    {
+        name: 'animal handling',
+        base: 'social',
+        color: 'lightgreen',
     },
     {
         name: 'intimidation',

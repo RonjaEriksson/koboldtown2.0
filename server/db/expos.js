@@ -12,6 +12,10 @@ export const expos = [
         ],
         visibilityCheck: {
         },
+        startTexts: [
+            "Your kobolds discuss what plants they might want to collect seeds from before heading out.",
+            "Your kobolds walk away from the den."
+        ],
         skillchecks: [
             {
                 skill: "nature",
@@ -107,6 +111,10 @@ export const expos = [
         ],
         visibilityCheck: {
         },
+        startTexts: [
+            "Your kobolds start walking, discussing what kobolds they meet out there.",
+            "'I hope any kobolds we meet are friendly' one of the kobolds says to the other as they start walking.",
+        ],
         skillchecks: [
             {
                 skill: "persuasion",
@@ -193,6 +201,10 @@ export const expos = [
         ],
         visibilityCheck: {
         },
+        startTexts: [
+            "Your kobolds set off, carrying pickaxes.",
+            "Your kobolds wave goodbye as they walk out of the den."
+        ],
         skillchecks: [
             {
                 skill: "strength",
@@ -260,6 +272,10 @@ export const expos = [
         ],
         visibilityCheck: {
         },
+        startTexts: [
+            "Your kobolds sets off, a spring in their step.",
+            "Your kobold excitedly hurries off on their walk.",
+        ],
         skillchecks: [
             {
                 skill: "strength",
@@ -383,6 +399,139 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
+                        increase: 100,
+                    },
+                ],
+            },
+            {
+                text: "Your kobold cloudgazed.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'arcana',
+                        increase: 100,
+                    },
+                ],
+            },
+            {
+                text: "Your kobold admired some bugs.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'nature',
+                        increase: 100,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'perception',
+                        increase: 100,
+                    },
+                ],
+            },
+            {
+                text: "Your kobold looked at a very pretty leaf.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'nature',
+                        increase: 100,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'perception',
+                        increase: 100,
+                    },
+                ],
+            },
+        ],
+        length: 60000,
+        cost:
+            [
+                {
+                    name: "food",
+                    amount: 200,
+                },
+            ],
+    },
+    //----------------------------------------------------------------------------------------------------------------
+    {
+        name: "Go on a picnic",
+        color: "pink",
+        partySize: 4,
+        rewards: [],
+        skills: [
+            "social",
+        ],
+        visibilityCheck: {
+        },
+        startTexts: [
+            "Your kobolds set off carrying baskets of food.",
+            "Your kobolds carry a beautiful cake as they leave for their picnic."
+        ],
+        skillchecks: [
+            {
+                skill: "persuasion",
+                difficulty: 10,
+            },
+        ],
+        greatOutcomes: [
+            {
+                text: "Your kobolds had a great time",
+                reward: [],
+                effect: [
+                    {
+                        name: "Add friendship",
+                        points: 10,
+                    }
+                ],
+            },
+            {
+                text: "Your kobolds confided in eachother.",
+                reward: [],
+                effect: [
+                    {
+                        name: "Add friendship",
+                        points: 10,
+                    }
+                ],
+            },
+        ],
+        goodOutcomes: [
+            {
+                text: "Your kobolds cloudgazed together.",
+                reward: [],
+                effect: [
+                    {
+                        name: "Add skill",
+                        skill: "arcana",
+                        increase: 100,
+                    },
+                ],
+            },
+            {
+                text: "Your kobolds came up with some interesting food combinations.",
+                reward: [],
+                effect: [
+                    {
+                        name: "Add skill",
+                        skill: "cooking",
+                        increase: 100,
+                    },
+                ],
+
+            },
+        ],
+        badOutcomes: [
+            {
+                text: "Your kobolds argued.",
+                reward: [],
+                effect: [
+                    {
+                        name: "Add skill",
+                        skill: "persuation",
                         increase: 100,
                     },
                 ],

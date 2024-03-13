@@ -31,3 +31,6 @@ body {
 .kobold-list {
     display: inline-block;
 }
+.noticeboard-dismiss {
+    display: inline-block;
+}
