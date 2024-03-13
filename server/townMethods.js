@@ -22,7 +22,6 @@ async function doExpedition(expo, thisUserId) {
     const wait = expo.finishes - +Date.now()
     if (wait > 0) {
         const result = await expeditionWait(wait);
-        console.log(result);
     }
     const town = TownCollection.find({ userId: thisUserId }, { projection: { resources: 1 } }).fetch()[0];
     for (reward of expo.result.reward) {
@@ -43,6 +42,7 @@ async function doExpedition(expo, thisUserId) {
                 Meteor.call('addWanderingKobold', thisUserId);
                 break;
             case 'Add skill':
+                console.log("adding skill");
                 console.log(effect.skill);
                 break;
         }
@@ -58,8 +58,6 @@ async function doExpedition(expo, thisUserId) {
         console.log(koboldId);
         Meteor.call('setKoboldBusy', koboldId, false);
     }
-    //add pushing to show the expo result message here
-    console.log(expo.result.text);
 }
 
 function getRandomArrayIndex(arrayLength) {
@@ -231,7 +229,6 @@ Meteor.methods({
             //KoboldCollection.insertMany(kobolds); //try this
             for (const kobold of kobolds) {
                 KoboldCollection.insert(kobold);
-                console.log(KoboldCollection.find().fetch());
             }
         }
         
@@ -277,7 +274,6 @@ Meteor.methods({
 
         let motherKobold = kobolds.find( e => e._id === motherKoboldId);
         let fatherKobold = kobolds.find(e => e._id === fatherKoboldId);
-        console.log(kobolds);
 
         if (!motherKobold || !fatherKobold) {
             console.error("Did not find both parent kobolds.")
@@ -429,9 +425,7 @@ Meteor.methods({
         const town = TownCollection.find({ userId: thisUserId }, { projection: { expeditions: 1, kobolds: 1 } }).fetch()[0];
         if (town.expeditions) {
             for (const expo of town.expeditions) {
-                console.log("this is expo in handle expeditions" + expo);
                 doExpedition(expo, thisUserId);
-                console.log("in loop");
             }
         }
     },

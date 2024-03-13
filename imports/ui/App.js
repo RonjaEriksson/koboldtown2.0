@@ -16,7 +16,7 @@ Template.mainContainer.onCreated(function () {
     Meteor.subscribe("kobold");
     instance.currentTown = new ReactiveVar(null);
     instance.kobolds = new ReactiveVar(null);
-    localStorage.setItem("userId", `${Random.id()}`); //uncomment this when you want to reset town
+    //localStorage.setItem("userId", `${Random.id()}`); //uncomment this when you want to reset town
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
         if (!instance.currentTown.get()) {
@@ -76,6 +76,8 @@ Template.showKobold.onCreated(function () {
     instance.showDetails = new ReactiveVar(false);
     instance.currentTown = new ReactiveVar(null);
     instance.kobolds = new ReactiveVar(null);
+    instance.breedTarget = new ReactiveVar(null);
+    instance.selectedJob = new ReactiveVar(null);
 
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }, { projection: {jobs:1,}}));
@@ -95,10 +97,6 @@ Template.showKobold.helpers({
         const instance = Template.instance();
         return instance.kobolds.get();
     },
-    otherKoboldColor(koboldId) {
-        const instance = Template.instance();
-        return instance.kobolds.get()?.find(e => e._id === koboldId)?.color;
-    },
     isCurrentKobold(otherKoboldId) {
         const instance = Template.instance();
         return otherKoboldId === instance.data._id;
@@ -111,21 +109,31 @@ Template.showKobold.helpers({
         const instance = Template.instance();
         return instance.data.busy;
     },
-    otherIsBusy(otherKoboldId) {
+    breedTarget() {
         const instance = Template.instance();
-        const otherKobold = instance.kobolds.get()?.find(k => k._id === otherKoboldId);
-        return otherKobold?.busy;
+        return instance.kobolds.get()?.find(k => k._id === instance.breedTarget.get());
+    },
+    selectedJob() {
+        const instance = Template.instance();
+        return instance.currentTown.get()?.jobs?.find(e => e.name === instance.selectedJob.get());
     },
 });
 
 Template.showKobold.events({
     "click .js-click-name"(event, instance) {
         instance.showDetails.set(!instance.showDetails.get());
+        instance.breedTarget.set(null);
     },
     "click .js-breed"(event, instance) {
         const fatherId = document.getElementById("breedSelect").value;
         const motherId = instance.data._id;
         Meteor.call("mateKobolds",localStorage.getItem("userId"), motherId, fatherId);
+    },
+    "change .js-breed-select"(event, instance) {
+        instance.breedTarget.set(event.currentTarget.value);
+    },
+    "change .js-select-job"(event, instance) {
+        instance.selectedJob.set(event.currentTarget.value);
     },
     "click .js-chose-job"(event, instance) {
         const job = document.getElementById("jobSelect").value;

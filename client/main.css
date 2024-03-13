@@ -27,3 +27,7 @@ body {
     display: inline-block;
     padding: 10px;
 }
+
+.kobold-list {
+    display: inline-block;
+}
