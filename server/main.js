@@ -8,7 +8,9 @@ import { ResourceCollection } from '/imports/api/ResourceCollection';
 import './townMethods';
 import { skills } from './db/skills'
 import { expos } from './db/expos'
-import {resources } from './db/resources'
+import { resources } from './db/resources'
+import { jobs } from './db/jobs'
+import { JobCollection } from '../imports/api/JobCollection';
 
 Meteor.publish("town", function () {
     return TownCollection.find();
@@ -23,6 +25,10 @@ Meteor.publish("skill", function () {
 */
 Meteor.publish("kobold", function () {
     return KoboldCollection.find();
+});
+
+Meteor.publish("job", function () {
+    return JobCollection.find();
 });
 function getRandomArrayIndex(arrayLength) {
     return Math.floor(Math.random() * +arrayLength);
@@ -44,6 +50,10 @@ Meteor.startup(() => {
         ResourceCollection.update({ name: resource.name }, { $set: resource }, { upsert: true });
     }
 
+    for (const job of jobs) {
+
+        JobCollection.update({ name: job.name }, { $set: job }, { upsert: true });
+    }
     const townUserIds = TownCollection.find({}, { projection: { userId: 1 } }).fetch().map(e => e.userId);
     for (townUserId of townUserIds) {
         Meteor.call('handleExpeditions', townUserId);

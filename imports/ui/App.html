@@ -56,12 +56,17 @@
 <div class="details" style="border-color: {{color}};">
     Color: {{color}}
     <br>
+    Level: {{level}}
+    <br>
     Physical: {{physical}}
     <br>
     Mental: {{mental}}
     <br>
     Social: {{social}}
     <br>
+    {{#each skill in skills}}
+        <p style="color: {{skill.color}};">{{skill.name}} : {{skill.level}}</p>
+    {{/each}}
     Current job: {{#if job}}{{job}}{{else}}None{{/if}}
     {{#if job}}
         <button class="js-quit-job">Quit job</button>

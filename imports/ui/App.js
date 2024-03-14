@@ -5,6 +5,8 @@ import { Random } from 'meteor/random'
 import { ResourceCollection } from "../api/ResourceCollection";
 import { ExpeditionCollection } from "../api/ExpeditionCollection";
 import './App.html';
+import { SkillCollection } from '../api/SkillCollection';
+import { JobCollection } from '../api/JobCollection';
 
 
 Template.mainContainer.onCreated(function () {
@@ -14,9 +16,11 @@ Template.mainContainer.onCreated(function () {
     Meteor.subscribe('town');
     Meteor.subscribe("expedition");
     Meteor.subscribe("kobold");
+    Meteor.subscribe("job");
     instance.currentTown = new ReactiveVar(null);
     instance.kobolds = new ReactiveVar(null);
     //localStorage.setItem("userId", `${Random.id()}`); //uncomment this when you want to reset town
+    //Meteor.call('addWanderingKobold', localStorage.getItem("userId")); //test of adding wandering kobold
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
         if (!instance.currentTown.get()) {
@@ -61,10 +65,27 @@ Template.mainContainer.helpers({
     },
     jobs() {
         const instance = Template.instance();
-        return jobs = instance.currentTown.get()?.jobs;
+        const jobs = JobCollection.find().fetch();
+        const validJobs = [];
+        for (const job of jobs) {
+            const reqs = job.requirements;
+            const buildingReqs = reqs.have?.buildings;
+            let valid = true;
+            for (const buildingReq of buildingReqs || []) {
+                const building = instance.currentTown.get().buildings?.find(e => e.name === buildingReq.name);
+                if (!building || !(building.level >= buildingReq.level)) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) {
+                validJobs.push(job);
+            }
+        }
+        console.log(validJobs);
+        return validJobs;
     },
     expos() {
-        console.log(ExpeditionCollection.find({}).fetch());
         return ExpeditionCollection.find({},{projection: {name:1, length:1, skills: 1, rewards: 1, color: 1, partySize: 1,}}).fetch();
     },
 });
@@ -104,7 +125,29 @@ Template.showKobold.helpers({
     },
     jobs() {
         const instance = Template.instance();
-        return instance.currentTown.get()?.jobs?.filter(e => e.spotsOpen);
+        const jobs = JobCollection.find({}).fetch();
+        console.log(jobs);
+        const validJobs = [];
+        for (const job of jobs) {
+            const reqs = job.requirements;
+            const buildingReqs = reqs.have?.buildings;
+            let valid = true;
+            for (const buildingReq of (buildingReqs || [])) {
+                const building = instance.currentTown.get().buildings?.find(e => e.name === buildingReq.name);
+                if (!building || !(building.level >= buildingReq.level)) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) {
+                validJobs.push(job);
+            }
+        }
+        console.log(validJobs);
+        return validJobs.filter(function (job) {
+            const townJob = instance.currentTown.get().jobs.find(e => e.name === job.name);
+            return !townJob || townJob.spotsOpen > 0 || townJob.spotsOpen === "unlimited";
+        });
     },
     isBusy() { 
         const instance = Template.instance();
@@ -118,6 +161,10 @@ Template.showKobold.helpers({
         const instance = Template.instance();
         return instance.currentTown.get()?.jobs?.find(e => e.name === instance.selectedJob.get());
     },
+    skills() {
+        const instance = Template.instance();
+        return Object.keys(instance.data.skills || {}).map(function (e) { return { name: e, level: instance.data.skills[e].level, color: instance.data.skills[e].color } });
+    }
 });
 
 Template.showKobold.events({

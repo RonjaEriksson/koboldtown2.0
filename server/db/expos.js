@@ -131,7 +131,7 @@ export const expos = [
                 reward: [],
                 effect: [
                     {
-                        name: 'Add Kobold',
+                        name: 'Add kobold',
                     }
                 ]
 
@@ -154,7 +154,32 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 50,
+                        increase: 500,
+                    },
+
+                ]
+
+            },
+            {
+                text: "Your kobolds found a group of kobolds and had a lively discussion.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 500,
+                    },
+
+                ]
+
+            }, {
+                text: "Your kobolds discussed magic with a mysterious blue kobold.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'arcana',
+                        increase: 500,
                     },
 
                 ]
@@ -167,7 +192,18 @@ export const expos = [
                 reward: [],
             },
             {
-                text: "Your found no other kobolds, but they did find some edibile plants.",
+                text: "Your kobolds had a tense meeting with a group of kobolds.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 100,
+                    }
+                ]
+            },
+            {
+                text: "Your party found no other kobolds, but they did find some edibile plants.",
                 reward: [
                     {
                         name: "food",
@@ -210,6 +246,10 @@ export const expos = [
                 skill: "strength",
                 difficulty: 10,
             },
+            {
+                skill: "mining",
+                difficulty: 5,
+            }
         ],
         greatOutcomes: [
             {
@@ -460,7 +500,7 @@ export const expos = [
     {
         name: "Go on a picnic",
         color: "pink",
-        partySize: 4,
+        partySize: 3,
         rewards: [],
         skills: [
             "social",
@@ -546,5 +586,202 @@ export const expos = [
                 },
             ],
 
+    },
+    //-------------------------------------------------------------------------
+    {
+        name: "Climb a mountain.",
+        color: "gray",
+        partySize: 1,
+        rewards: [
+            "Gaining skills"
+        ],
+        skills: [
+            "all",
+        ],
+        visibilityCheck: {
+        },
+        startTexts: [
+            "Your kobolds sets off, a backpack full of food for the journey.",
+            "Your kobold choses a good walking stick before setting off.",
+        ],
+        skillchecks: [
+            {
+                skill: "strength",
+                difficulty: 10,
+            },
+            {
+                skill: "agility",
+                difficulty: 10,
+            },
+            {
+                skill: "nature",
+                difficulty: 10,
+            },
+        ],
+        greatOutcomes: [
+            {
+                text: "Your kobold reached the summit, and found a really pretty rock.",
+                reward: [
+                    {
+                        name: 'gems',
+                        amount: 1,
+                    }
+                ],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'agility',
+                        increase: 50,
+                    },
+
+                ]
+            },
+            {
+                text: "Your kobold made it to the summit and admired the view.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'nature',
+                        increase: 50,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'arcana',
+                        increase: 50,
+                    },
+
+                ]
+            },
+        ],
+        goodOutcomes: [
+            {
+                text: "Your kobold struggled to make it up the mountain, but it was worth it in the end.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'strength',
+                        increase: 50,
+                    },
+
+                ]
+
+            },
+            {
+                text: "Your kobold found some edible roots on the way down from the mountain.",
+                reward: [
+                    {
+                        name: "food",
+                        amount: 30,
+                    },
+                ],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'nature',
+                        increase: 50,
+                    },
+
+                ]
+            },
+        ],
+        badOutcomes: [
+            {
+                text: "Your kobold gave up halfway up the mountain.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'strength',
+                        increase: 100,
+                    },
+                ],
+            },
+            {
+                text: "Your kobold didn't make it all the way up, but they saw some pretty birds'.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'nature',
+                        increase: 100,
+                    },
+                ],
+            },
+            {
+                text: "Your kobold drank from a mountain stream.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'survival',
+                        increase: 100,
+                    },
+                ],
+            },
+            {
+                text: "Your kobold was stopped by some rubble, they tried removing it but it was too heavy.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'strength',
+                        increase: 100,
+                    },
+                ],
+            },
+            {
+                text: "Your kobold was interrupted by bad weather.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'survival',
+                        increase: 100,
+                    },
+                ],
+            },
+            {
+                text: "Your kobold admired the wildlife living on the mountain.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'nature',
+                        increase: 100,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'perception',
+                        increase: 100,
+                    },
+                ],
+            },
+            {
+                text: "Your kobold threw some rocks down the side of the mountain.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'strength',
+                        increase: 100,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'agility',
+                        increase: 100,
+                    },
+                ],
+            },
+        ],
+        length: 60000,
+        cost:
+            [
+                {
+                    name: "food",
+                    amount: 200,
+                },
+            ],
     },
 ];
