@@ -15,6 +15,11 @@ export const skills = [
         color: 'red',
     },
     {
+        name: "smelting",
+        base: "mental",
+        color: "gold",
+    },
+    {
         name: 'arcana',
         base: 'mental',
         color: 'blue',

@@ -5,12 +5,15 @@ import { KoboldCollection } from '/imports/api/KoboldCollection';
 import { ExpeditionCollection } from '/imports/api/ExpeditionCollection';
 import { SkillCollection } from '/imports/api/SkillCollection';
 import { ResourceCollection } from '/imports/api/ResourceCollection';
+import { JobCollection } from '../imports/api/JobCollection';
+import { BuildingCollection } from '../imports/api/BuildingCollection';
 import './townMethods';
 import { skills } from './db/skills'
 import { expos } from './db/expos'
 import { resources } from './db/resources'
 import { jobs } from './db/jobs'
-import { JobCollection } from '../imports/api/JobCollection';
+import {buildings } from './db/buildings'
+
 
 Meteor.publish("town", function () {
     return TownCollection.find();
@@ -30,6 +33,10 @@ Meteor.publish("kobold", function () {
 Meteor.publish("job", function () {
     return JobCollection.find();
 });
+
+Meteor.publish("building", function () {
+    return BuildingCollection.find();
+});
 function getRandomArrayIndex(arrayLength) {
     return Math.floor(Math.random() * +arrayLength);
 };
@@ -45,7 +52,7 @@ Meteor.startup(() => {
         SkillCollection.update({ name: skill.name }, { $set: skill }, { upsert: true });
     }
 
-   // ResourceCollection.remove({}); //uncomment this when loading in the recource collection from plaintext
+   //ResourceCollection.remove({}); //uncomment this when loading in the recource collection from plaintext
     for (const resource of resources) {
         ResourceCollection.update({ name: resource.name }, { $set: resource }, { upsert: true });
     }
@@ -54,9 +61,18 @@ Meteor.startup(() => {
 
         JobCollection.update({ name: job.name }, { $set: job }, { upsert: true });
     }
-    const townUserIds = TownCollection.find({}, { projection: { userId: 1 } }).fetch().map(e => e.userId);
-    for (townUserId of townUserIds) {
-        Meteor.call('handleExpeditions', townUserId);
+
+    for (const building of buildings) {
+
+        BuildingCollection.update({ name: building.name }, { $set: building }, { upsert: true });
+    }
+    //is this what makes startup slow? 
+    
+    const towns = TownCollection.find({}, { projection: { userId: 1, expeditions: 1 } }).fetch();
+    for (town of towns) {
+        if (town?.expediditions?.length) {
+            Meteor.call('handleExpeditions', town.userId);
+        }
     }
     //KoboldCollection.remove({});
 });

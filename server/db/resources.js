@@ -34,4 +34,20 @@ export const resources = [
         gain: 0,
         color: "white",
     },
+    {
+        name: "metal",
+        base: "stone",
+        stockpile: 0,
+        visible: false,
+        gain: 0,
+        color: "silver",
+    },
+    {
+        name: "rations",
+        base: "food",
+        stockpile: 0,
+        visible: false,
+        gain: 0,
+        color: "orange",
+    },
 ]

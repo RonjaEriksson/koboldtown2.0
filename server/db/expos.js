@@ -88,7 +88,7 @@ export const expos = [
             },
         ],
         length: 300000,
-        cost:
+        costs:
             [
                 {
                     name: "food",
@@ -214,7 +214,7 @@ export const expos = [
             },
         ],
         length: 300000,
-        cost:
+        costs:
             [
                 {
                     name: "food",
@@ -290,7 +290,7 @@ export const expos = [
             },
         ],
         length: 60000,
-        cost:
+        costs:
             [
                 {
                     name: "food",
@@ -488,7 +488,7 @@ export const expos = [
             },
         ],
         length: 60000,
-        cost:
+        costs:
             [
                 {
                     name: "food",
@@ -578,7 +578,7 @@ export const expos = [
             },
         ],
         length: 60000,
-        cost:
+        costs:
             [
                 {
                     name: "food",
@@ -776,7 +776,7 @@ export const expos = [
             },
         ],
         length: 60000,
-        cost:
+        costs:
             [
                 {
                     name: "food",

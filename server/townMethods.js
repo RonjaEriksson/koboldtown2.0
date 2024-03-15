@@ -7,6 +7,7 @@ import { ExpeditionCollection } from '../imports/api/ExpeditionCollection';
 import { SkillCollection } from '../imports/api/SkillCollection';
 import { koboldName } from './koboldNames';
 import { JobCollection } from '../imports/api/JobCollection';
+import { BuildingCollection } from '../imports/api/BuildingCollection';
 
 const LEVEL_ONE_STAT_TOTAL = 5;
 
@@ -330,6 +331,13 @@ Meteor.methods({
         skill.exp += exp;
         if (exp > skill.level* skill.level * 1000) {
             skill.level++;
+            if (kobold.job) {
+                const job = kobold.job;
+                console.log(job);
+                //make this more elegant?
+                Meteor.call('assignJob', kobold.userId, kobold._id, job, false);
+                Meteor.call('assignJob', kobold.userId, kobold._id, job, true);
+            }
         }
         kobold.exp = kobold.exp ? kobold.exp : 0;
         kobold.level = kobold.level ? kobold.level : 0;
@@ -345,6 +353,12 @@ Meteor.methods({
             kobold.physical = stats.physical;
             kobold.mental = stats.mental;
             kobold.social = stats.social;
+
+            if (kobold.job) {
+                const job = kobold.job;
+                Meteor.call('assignJob', kobold.userId, kobold._id, job, false);
+                Meteor.call('assignJob', kobold.userId, kobold._id, job, true);
+            }
         }
         KoboldCollection.update(koboldId, { $set: { skills: kobold.skills, level: kobold.level, exp: kobold.exp, physical: kobold.physical, mental: kobold.mental, social: kobold.social } });
 
@@ -358,26 +372,44 @@ Meteor.methods({
             return;
         }
         for (const resource of townResources) {
-            resource.stockpile += resource.gain;
-        }
+            const baseResource = resource.base ? townResources.find(e => e.name === resource.base) : false;
+            if (!baseResource || (baseResource.stockpile + baseResource.gain) >= 0) {
+                resource.stockpile += resource.gain;
+                if (resource.stockpile < 0) {
+                    resource.stockpile = 0;
+                }
 
+            }
+        }
         TownCollection.update({userId: thisUserId}, {$set:{resources: townResources}})
     },
+    'addJobExp'(thisUserId) {
+        check(thisUserId, String);
+        const kobolds = KoboldCollection.find({ userId: thisUserId }).fetch();
+        const jobs = JobCollection.find({}).fetch();
+        for (const kobold of kobolds) {
+            if (kobold.job) {
+                const job = jobs.find(e => e.name === kobold.job.name)
+                for (const skill of job.skillGains)
+                    Meteor.call('increaseSkill', kobold._id, skill.name, skill.gain);
+            }
+        }
+    },
 
-    'assignJob'(thisUserId, koboldId, jobName, starting) {
+    'assignJob'(thisUserId, koboldId, job, starting) {
         check(thisUserId, String);
         check(koboldId, String);
-        check(jobName, String);
+        check(job, { name: String, gains: Array});
         check(starting, Boolean);
 
         const town = TownCollection.findOne({ userId: thisUserId }, { projection: {resources: 1, jobs: 1,}});
         const kobold = KoboldCollection.findOne(koboldId);
-        const job = JobCollection.findOne({ name: jobName });
+        const sourceJob = JobCollection.findOne({ name: job.name });
         if (!kobold) {
             console.error("Did not find selected kobold.");
             return;
         }
-       if(!job) {
+       if(!sourceJob) {
            console.error("Did not find chosen job.");
            return;
         }
@@ -385,22 +417,47 @@ Meteor.methods({
             console.error("Did not find chosen town.")
             return;
         }
-        const townJob = town.jobs.find(e => e.name === jobName);
+        let townJob = town.jobs.find(e => e.name === job.name);
         if (!townJob) {
             town.jobs.push({
-                name: jobName,
-                spotsOpen: job.spotsOpen,
+                name: job.name,
+                spotsOpen: sourceJob.spotsOpen,
             })
+            townJob = town.jobs.find(e => e.name === job.name);
         }
-        jobName = starting ? jobName : null;
+        job = starting ? { name: job.name, gains: [] } : job;
 
-        for(const resourceName of job.resources) {
-            const resource = town.resources.find(e => e.name === resourceName);
-            if(starting) {
-                resource.gain += job.production[resourceName];
-            } else {
-                resource.gain -= job.production[resourceName];
+        for(const resourceName of Object.keys(sourceJob.production)) {
+            let resource = town.resources.find(e => e.name === resourceName);
+            if (!resource) {
+                const sourceResource = ResourceCollection.find({}).fetch().find(e => e.name === resourceName);
+                sourceResource.visible = true;
+                town.resources.push(sourceResource);
+                resource = town.resources.find(e => e.name === resourceName);
             }
+            if (!resource.visible) {
+                resource.visible = true;
+            }
+            console.log(resourceName);
+            if (starting) {
+                const gain = {
+                    name: resourceName,
+                    gain: sourceJob.production[resourceName],
+                };
+                if (gain.gain > 0) {
+                    gain.gain += kobold[sourceJob.baseStat];
+                    for (const skill of sourceJob.relevantSkills) {
+                        gain.gain += (kobold?.skills?.[skill]?.level || 0);
+                    }
+                }
+                job.gains.push(gain);
+            }
+            if (starting) {
+                resource.gain += (job?.gains?.find(e => e.name === resourceName)?.gain || 0);
+            } else {
+                resource.gain -= (job?.gains?.find(e => e.name === resourceName)?.gain || 0);
+            }
+            console.log(resource);
         }
         if(townJob.spotsOpen != "unlimited") {
             if(starting) {
@@ -410,8 +467,12 @@ Meteor.methods({
             }
         }
 
+        if (!starting) {
+            job = null;
+        }
+
         TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources , jobs: town.jobs} });
-        KoboldCollection.update(koboldId, { $set: { job: jobName } });
+        KoboldCollection.update(koboldId, { $set: { job: job } });
     },
     'addExpedition'(thisUserId, expeditionId, koboldIds) {
         check(thisUserId, String);
@@ -420,6 +481,14 @@ Meteor.methods({
         const expedition = ExpeditionCollection.findOne(expeditionId);
         if (!expedition) {
             return;
+        }
+        const town = TownCollection.find({ userId: thisUserId }, { projection: { resources: 1, } }).fetch()[0];
+        for (const cost of expedition.costs) {
+            const resource = town.resources.find(e => e.name === cost.name);
+            if (!resource) {
+                console.error("Expedition cost resource not found");
+            }
+            resource.stockpile -= cost.amount;
         }
         const expo = {
             finishes: +Date.now() + expedition.length,
@@ -473,7 +542,7 @@ Meteor.methods({
             time: Date.now(),
             id: Random.id(),
         } 
-        TownCollection.update({ userId: thisUserId }, { $addToSet: { expeditions: expo, notices: notice}});
+        TownCollection.update({ userId: thisUserId }, { $addToSet: { expeditions: expo, notices: notice, resources: town.resources,}});
     },
     'handleExpeditions'(thisUserId) {
         check(thisUserId, String);
@@ -488,6 +557,33 @@ Meteor.methods({
         check(koboldId, String);
         check(busy, Boolean);
         KoboldCollection.update({ _id: koboldId}, { $set: { busy: busy } });
+    },
+    'build'(thisUserId, buildingId) {
+        check(thisUserId, String);
+        check(buildingId, String);
+        const town = TownCollection.find({ userId: thisUserId }, { projection: { buildings: 1 , resources: 1,} }).fetch()[0];
+        const building = BuildingCollection.find(buildingId).fetch()[0];
+        let townBuilding = town.buildings?.find(e => e.name === building.name);
+        if (!town.buildings) {
+            town.buildings = [];
+        }
+        if (!townBuilding) {
+            townBuilding = {
+                name: building.name,
+                level: 0,
+            };
+            town.buildings.push(townBuilding);
+            townBuilding = town.buildings?.find(e => e.name === building.name);
+        }
+        
+        const costMultiplier = townBuilding.level + 1;
+        for (cost of building.costs) {
+            const resource = town.resources.find(e => e.name === cost.name);
+            const realCost = cost.amount * costMultiplier;
+            resource.stockpile -= realCost;
+        }
+        townBuilding.level++; 
+        TownCollection.update({userId: thisUserId }, { $set: { buildings: town.buildings, resources: town.resources } });
     },
     'dismissNotice'(thisUserId, noticeId) {
         check(thisUserId, String);
