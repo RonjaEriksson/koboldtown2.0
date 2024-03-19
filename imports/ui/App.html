@@ -49,7 +49,7 @@
             {{/each}}
         </div>
     </div>
-    <div>
+    <div class="noticeSection">
         Noticeboard
         <br>
         {{> noticeboard}}
@@ -211,9 +211,11 @@
 <template name="noticeboard">
     <div class="noticeboard">
         {{#each notice in notices}}
-            {{notice.text}}
-            <p class="clickable js-dismiss noticeboard-dismiss" data-notice="{{notice.id}}">X</p>
-            <br>
+            <div class="notice">
+                <p class="notice-text">{{notice.text}}</p>
+                <p class="clickable js-dismiss noticeboard-dismiss" data-notice="{{notice.id}}">X</p>
+                <br>
+            </div>
         {{/each}}
     </div>
 </template>

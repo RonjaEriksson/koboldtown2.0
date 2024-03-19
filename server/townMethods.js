@@ -354,15 +354,13 @@ Meteor.methods({
                     if ((base.stockpile + base.gain) < 0) {
                         baseAvailable = false;
                     } else {
-                        resourceGain[base] += kobold.job.gains.find(e => e.name === base).gain;
+                        resourceGain[base] += kobold.job.gains.find(e => e.name === base.name).gain;
                     }
                 }
                 if (!baseResources || baseAvailable) {
                     for (resource of kobold.job.gains) {
                         if (resourceGain[resource.name] === undefined) {
-                            console.log(resourceGain[resource.name]);
                             resourceGain[resource.name] = 0;
-                            console.log(resourceGain[resource.name]);
                         }
                         const townResource = townResources.find(e => resource.name === e.name);
                         townResource.stockpile += resource.gain;

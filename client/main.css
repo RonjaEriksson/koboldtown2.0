@@ -14,6 +14,10 @@ body {
     width: 20%;
 }
 
+.notice-section {
+    width: 80%;
+}
+
 .clickable {
     cursor: pointer;
     margin-left:0;
@@ -21,7 +25,7 @@ body {
 
 .details {
     border-style: solid;
-    width: 75%;
+    width: 95%;
     //margin-left: 1%;
     margin-top: 15px;
 }
@@ -35,7 +39,16 @@ body {
 .noticeboard {
     border-style: solid;
     display: inline-block;
-    padding: 10px;
+    width: 90%;
+}
+
+.notice {
+    display: flex;
+    width: 100%;
+}
+
+.notice-text {
+    margin: 5px;
 }
 
 .kobold-list {
@@ -43,4 +56,5 @@ body {
 }
 .noticeboard-dismiss {
     display: inline-block;
+    margin: 5px;
 }
