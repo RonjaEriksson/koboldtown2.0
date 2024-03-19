@@ -5,14 +5,24 @@ body {
   color: white;
 }
 
+.container {
+    display: flex;
+    justify-content: left;
+}
+
+.section {
+    width: 20%;
+}
+
 .clickable {
     cursor: pointer;
+    margin-left:0;
 }
 
 .details {
     border-style: solid;
-    max-width: 15%;
-    margin-left: 1%;
+    width: 75%;
+    //margin-left: 1%;
     margin-top: 15px;
 }
 

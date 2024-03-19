@@ -4,49 +4,52 @@
 
 
 <template name="mainContainer">
-    {{#if notReady}} 
+    {{#if notReady}}
     Kobolds gathering...
     {{else}}
+    <header>
+        <h1>{{townName}}</h1>
+    </header>
     <div class="container">
-        <header>
-            <h1>{{townName}}</h1>
-        </header>
-        Resources
-        <ul>
+        <div class="section">
+            Resources
+
             {{#each resource in resources}}
             {{> showResource resource}}
             {{/each}}
-        </ul>
 
+        </div>
 
-        Kobolds
-        <ul>
+        <div class="section">
+            Kobolds
+            <br>
             {{#each kobold in kobolds}}
             {{> showKobold kobold}}
             {{/each}}
-        </ul>
+        </div>
 
-        Jobs
-        <ul>
+        <div class="section">
+            Jobs
             {{#each job in jobs}}
             {{> showJob job}}
             {{/each}}
-        </ul>
+        </div>
 
-        Expeditions
-        <ul>
+        <div class="section">
+            Expeditions
             {{#each expo in expos}}
             {{> showExpo expo}}
             {{/each}}
-        </ul>
+        </div>
 
-        Buildings
-        <ul>
+        <div>
+            Buildings
             {{#each building in buildings}}
             {{> showBuilding building}}
             {{/each}}
-        </ul>
-
+        </div>
+    </div>
+    <div>
         Noticeboard
         <br>
         {{> noticeboard}}
@@ -72,7 +75,9 @@
     Social: {{social}}
     <br>
     {{#each skill in skills}}
-        <p style="color: {{skill.color}};">{{skill.name}} : {{skill.level}}</p>
+        {{#if skill.level}}
+            <p style="color: {{skill.color}};">{{skill.name}} : {{skill.level}}</p>
+        {{/if}}
     {{/each}}
     Current job: {{#if job}}{{job.name}}{{else}}None{{/if}}
     {{#if job}}
@@ -114,6 +119,7 @@
         {{#if showDetails}}
             <div class="details" style="border-color: {{color}};">
                 Stockpile: {{stockpile}}
+                Gain: {{gain}}
             </div>
         {{/if}}
     {{/if}}
@@ -152,29 +158,31 @@
         {{name}}
     </div>
     {{#if showDetails}}
-        <div class="details" style="border-color: {{color}};">
-            Your kobolds are looking for:
-            <br>
-            <ul>
-                {{#each resource in resources}}
-                    <li>{{resource}}</li>
-                {{/each}}
-            </ul>
-            {{#each slot in slots}}
-                <select style="color: {{slot.textColor}}; background-color: {{ slot.color }};" class="js-party-select js-party-select-{{name}}" data-index="{{@index}}">
-                    <option selected style="color: {{slot.textColor}}; background-color:{{slot.color}};">{{slot.name}}</option>
-                    {{#each kobold in availableKobolds}}
-                        <option style="background-color: {{ kobold.color }}; color:{{kobold.textColor}};" value="{{kobold._id}}">
-                            {{kobold.name}}
-                        </option>
-                    {{/each}}
-                </select>
-                <br>
-            {{/each}}
-            <button class="js-launch-expo" disabled={{expoNotFilled}}>Launch expedition</button>
+<div class="details" style="border-color: {{color}};">
+    {{description}}
+    <br>
+    This expedition costs:
+    <br>
+    <ul>
+        {{#each cost in costs}}
+        <li>{{cost.name}} : {{cost.amount}}</li>
+        {{/each}}
+    </ul>
+    {{#each slot in slots}}
+    <select style="color: {{slot.textColor}}; background-color: {{ slot.color }};" class="js-party-select js-party-select-{{name}}" data-index="{{@index}}">
+        <option selected style="color: {{slot.textColor}}; background-color:{{slot.color}};">{{slot.name}}</option>
+        {{#each kobold in availableKobolds}}
+        <option style="background-color: {{ kobold.color }}; color:{{kobold.textColor}};" value="{{kobold._id}}">
+            {{kobold.name}}
+        </option>
+        {{/each}}
+    </select>
+    <br>
+    {{/each}}
+    <button class="js-launch-expo" disabled={{expoNotPrepared}}>Launch expedition</button>
 
-            <br>
-        </div>
+    <br>
+</div>
     {{/if}}
 </template>
 
@@ -185,9 +193,12 @@
     {{#if showDetails}}
         <div class="details" style="border-color: {{color}};">
             {{#if level}}Level: {{level}} {{else}} Unbuilt {{/if}}
+            <br>
             Cost:
+            <br>
             {{#each cost in costs}}
                 {{cost.name}} : {{totalCost cost}}
+            <br>
             {{/each}}
             <button class="js-build" disabled={{cannotAfford}}>{{#if level}}Upgrade{{else}}Build{{/if}}</button>
             

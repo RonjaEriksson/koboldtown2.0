@@ -57,6 +57,7 @@ Meteor.startup(() => {
         ResourceCollection.update({ name: resource.name }, { $set: resource }, { upsert: true });
     }
 
+    //JobCollection.remove({}); //uncomment this when loading in the job collection from plaintext
     for (const job of jobs) {
 
         JobCollection.update({ name: job.name }, { $set: job }, { upsert: true });
@@ -70,7 +71,7 @@ Meteor.startup(() => {
     
     const towns = TownCollection.find({}, { projection: { userId: 1, expeditions: 1 } }).fetch();
     for (town of towns) {
-        if (town?.expediditions?.length) {
+        if (town?.expeditions?.length) {
             Meteor.call('handleExpeditions', town.userId);
         }
     }

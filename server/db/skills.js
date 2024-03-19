@@ -25,12 +25,57 @@ export const skills = [
         color: 'blue',
     },
     {
+        name: 'crafting',
+        base: 'mental',
+        color: 'brown',
+    },
+    {
+        name: 'drawing',
+        base: 'mental',
+        color: 'brown',
+    },
+    {
+        name: 'harvesting',
+        base: 'mental',
+        color: 'chocolate',
+    },
+    {
         name: 'cooking',
         base: 'mental',
         color: 'brown',
     },
     {
+        name: 'healing',
+        base: 'mental',
+        color: 'pink',
+    },
+    {
+        name: 'writing',
+        base: 'mental',
+        color: 'navy',
+    },
+    {
+        name: 'glass blowing',
+        base: 'mental',
+        color: 'lightblue',
+    },
+    {
+        name: 'navigation',
+        base: 'mental',
+        color: 'lightblue',
+    },
+    {
         name: 'persuasion',
+        base: 'social',
+        color: 'yellow',
+    },
+    {
+        name: 'acting',
+        base: 'social',
+        color: 'yellow',
+    },
+    {
+        name: 'improv',
         base: 'social',
         color: 'yellow',
     },
@@ -63,5 +108,10 @@ export const skills = [
         name: 'swimming',
         base: 'physical',
         color: 'lightblue',
+    },
+    {
+        name: 'farming',
+        base: 'physical',
+        color: 'lightgreen',
     },
 ];

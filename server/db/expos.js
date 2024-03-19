@@ -1,17 +1,15 @@
 export const expos = [
     {
-        name: "Look for seeds.",
+        name: "Forage for food.",
         color: "darkGreen",
-        partySize: 2,
-        rewards: [
-            "seeds",
-        ],
+        partySize: 1,
+        description: "Go outside and look for diffrent kinds of food.",
         skills: [
             "nature",
-            "perception"
+            "perception",
+            "survival"
         ],
-        visibilityCheck: {
-        },
+        requirements: {},
         startTexts: [
             "Your kobolds discuss what plants they might want to collect seeds from before heading out.",
             "Your kobolds walk away from the den."
@@ -19,6 +17,10 @@ export const expos = [
         skillchecks: [
             {
                 skill: "nature",
+                difficulty: 7,
+            },
+            {
+                skill: "survival",
                 difficulty: 7,
             },
             {
@@ -32,7 +34,7 @@ export const expos = [
                 reward: [
                     {
                         name: "seeds",
-                        amount: 3,
+                        amount: 30,
                     },
                     {
                         name: "gems",
@@ -45,7 +47,43 @@ export const expos = [
                 reward: [
                     {
                         name: "seeds",
-                        amount: 5,
+                        amount: 50,
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found some fruits.",
+                reward: [
+                    {
+                        name: "fruits",
+                        amount: 10,
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found a lot of tasty nuts.",
+                reward: [
+                    {
+                        name: "nuts",
+                        amount: 50,
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found a patch of raspberries.",
+                reward: [
+                    {
+                        name: "berries",
+                        amount: 50,
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found a lot of diffrent kinds of food.",
+                reward: [
+                    {
+                        name: "food",
+                        amount: 10000,
                     },
                 ]
             },
@@ -56,16 +94,43 @@ export const expos = [
                 reward: [
                     {
                         name: "seeds",
-                        amount: 1
+                        amount: 10
                     },
                 ]
             },
             {
-                text: "Your kobolds found several plants with seeds.",
+                text: "Your kobolds found some blueberries.",
                 reward: [
                     {
-                        name: "seeds",
-                        amount: 3,
+                        name: "berries",
+                        amount: 10
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found an apple tree.",
+                reward: [
+                    {
+                        name: "fruits",
+                        amount: 10
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found hazelnuts on the ground.",
+                reward: [
+                    {
+                        name: "nuts",
+                        amount: 10
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found wild carrots.",
+                reward: [
+                    {
+                        name: "food",
+                        amount: 1000,
                     }
                 ]
 
@@ -77,17 +142,30 @@ export const expos = [
                 reward: [],
             },
             {
-                text: "Your kobolds find no seeds, but they find some fish.",
-                reward: [
+                text: "Your kobolds find no food, but their foraging skills improve.",
+                reward: [],
+                effect: [
                     {
-                        name: "food",
-                        amount: 30,
-                    }
-                ],
+                        name: 'Add skill',
+                        skill: 'nature',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'survival',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'perception',
+                        increase: 1000,
+                    },
+
+                ]
 
             },
         ],
-        length: 300000,
+        length: 30000,
         costs:
             [
                 {
@@ -102,9 +180,7 @@ export const expos = [
         name: "Search for kobolds.",
         color: "grey",
         partySize: 2,
-        rewards: [
-            "new kobold",
-        ],
+        description: "Try and find other kobolds to interact with.",
         skills: [
             "perception",
             "persuasion",
@@ -136,14 +212,75 @@ export const expos = [
                 ]
 
             },
+            {
+                text: "Your kobolds found a kobold that taught them a lot of things!",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'nature',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'arcana',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'healing',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'animal handling',
+                        increase: 1000,
+                    },
+
+                ]
+
+            },
         ],
         goodOutcomes: [
             {
-                text: "Your kobolds found a kobold that gifted them a gem.",
+                text: "Your kobolds found a kobold to trade with.",
                 reward: [
                     {
                         name: "gems",
-                        amount: 1
+                        amount: 1000,
+                    },
+                    {
+                        name: "metal",
+                        amount: 1000,
+                    },
+                    {
+                        name: "ink",
+                        amount: 1000,
+                    },
+                    {
+                        name: "books",
+                        amount: 100,
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds happened upon a kobold market and got some deals.",
+                reward: [
+                    {
+                        name: "rations",
+                        amount: 1000,
+                    },
+                    {
+                        name: "glass",
+                        amount: 1000,
+                    },
+                    {
+                        name: "maps",
+                        amount: 100,
+                    },
+                    {
+                        name: "books",
+                        amount: 100,
                     },
                 ]
             },
@@ -154,7 +291,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 500,
+                        increase: 2000,
                     },
 
                 ]
@@ -167,7 +304,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 500,
+                        increase: 1000,
                     },
 
                 ]
@@ -179,7 +316,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'arcana',
-                        increase: 500,
+                        increase: 1000,
                     },
 
                 ]
@@ -198,8 +335,24 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 100,
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'intimidation',
+                        increase: 1000,
                     }
+                ]
+            },
+            {
+                text: "Your kobolds only found a lizard, but they had a great time befriending it.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'animal handling',
+                        increase: 1000,
+                    },
                 ]
             },
             {
@@ -207,7 +360,7 @@ export const expos = [
                 reward: [
                     {
                         name: "food",
-                        amount: 30,
+                        amount: 3000,
                     }
                 ],
 
@@ -217,21 +370,22 @@ export const expos = [
         costs:
             [
                 {
-                    name: "food",
-                    amount: 200,
+                    name: "gourmet rations",
+                    amount: 2000,
+                },
+                {
+                    name: "jewlery",
+                    amount: 2000,
                 },
             ],
 
     },
     //--------------------------------------------------------------------------------
     {
-        name: "Mine for gems.",
+        name: "Mine outside.",
         color: "white",
-        partySize: 2,
-        rewards: [
-            "stone",
-            "gems",
-        ],
+        partySize: 1,
+        description: "Go outside and mine.",
         skills: [
             "strength",
         ],
@@ -253,33 +407,86 @@ export const expos = [
         ],
         greatOutcomes: [
             {
-                text: "Your kobolds found a valuable gem!",
+                text: "Your kobolds found some valueable gems!",
                 reward: [
                     {
                         name: 'gems',
-                        amount: 1,
+                        amount: 1000,
                     }
                 ],
-            },
-        ],
-        goodOutcomes: [
-            {
-                text: "Your kobolds found some stone.",
-                reward: [
+                effect: [
                     {
-                        name: "stone",
-                        amount: 30,
+                        name: 'Add skill',
+                        skill: 'mining',
+                        increase: 1000,
                     },
                 ]
             },
             {
-                text: "Your kobolds found a lot of stone.",
+                text: "Your kobolds found a vein of pure metal!",
+                reward: [
+                    {
+                        name: 'metal',
+                        amount: 1000,
+                    }
+                ],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'mining',
+                        increase: 1000,
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found a lot of sand!",
+                reward: [
+                    {
+                        name: 'sand',
+                        amount: 1000,
+                    }
+                ],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'mining',
+                        increase: 1000,
+                    },
+                ]
+            },
+        ],
+        goodOutcomes: [
+            {
+                text: "Your kobolds mined some stone.",
+                reward: [
+                    {
+                        name: "stone",
+                        amount: 3000,
+                    },
+                ],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'mining',
+                        increase: 1000,
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds mined a lot of stone.",
                 reward: [
                     {
                         name: 'stone',
-                        amount: 300,
+                        amount: 10000,
                     }
                 ],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'mining',
+                        increase: 1000,
+                    },
+                ]
 
             },
         ],
@@ -287,6 +494,23 @@ export const expos = [
             {
                 text: "Your kobolds did not find a suitable spot to mine.",
                 reward: [],
+            },
+            {
+                text: "Your kobolds only mined a little stone.",
+                reward: [
+                    {
+                        name: 'stone',
+                        amount: 1000,
+                    }
+                ],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'mining',
+                        increase: 1000,
+                    },
+                ]
+
             },
         ],
         length: 60000,
@@ -304,9 +528,7 @@ export const expos = [
         name: "Go on a walk.",
         color: "lightblue",
         partySize: 1,
-        rewards: [
-            "Gaining skills"
-        ],
+        description: "Your kobold takes a nice nature walk.",
         skills: [
             "all",
         ],
@@ -329,21 +551,42 @@ export const expos = [
                 skill: "nature",
                 difficulty: 10,
             },
+            {
+                skill: "animal handling",
+                difficulty: 10,
+            },
         ],
         greatOutcomes: [
             {
-                text: "Your kobold practiced understanding natue, and found some seeds.",
+                text: "Your kobold practiced understanding nature, and found some seeds.",
                 reward: [
                     {
                         name: 'seeds',
-                        amount: 3,
+                        amount: 300,
                     }
                 ],
                 effect: [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 50,
+                        increase: 1000,
+                    },
+
+                ]
+            },
+            {
+                text: "Your kobold watched a very cute lizard",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'nature',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'animal handling',
+                        increase: 1000,
                     },
 
                 ]
@@ -355,14 +598,14 @@ export const expos = [
                 reward: [
                     {
                         name: "stone",
-                        amount: 30,
+                        amount: 3000,
                     },
                 ],
                 effect: [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 50,
+                        increase: 1000,
                     },
 
                 ]
@@ -374,7 +617,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'swimming',
-                        increase: 50,
+                        increase: 1000,
                     },
 
                 ]
@@ -384,15 +627,15 @@ export const expos = [
                 text: "Your kobold found some berries that they picked.",
                 reward: [
                     {
-                        name: "food",
-                        amount: 30,
+                        name: "berries",
+                        amount: 300,
                     },
                 ],
                 effect: [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 50,
+                        increase: 1000,
                     },
 
                 ]
@@ -406,7 +649,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 100,
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'agility',
+                        increase: 1000,
                     },
                 ],
             },
@@ -417,7 +665,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
@@ -428,7 +676,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'swimming',
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
@@ -439,7 +687,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
@@ -450,7 +698,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'arcana',
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
@@ -461,12 +709,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 100,
+                        increase: 1000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'perception',
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
@@ -477,12 +725,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 100,
+                        increase: 1000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'perception',
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
@@ -491,7 +739,7 @@ export const expos = [
         costs:
             [
                 {
-                    name: "food",
+                    name: "rations",
                     amount: 200,
                 },
             ],
@@ -501,7 +749,7 @@ export const expos = [
         name: "Go on a picnic",
         color: "pink",
         partySize: 3,
-        rewards: [],
+        description: "Your kobolds have a nice time talking to eachother and eating good food.",
         skills: [
             "social",
         ],
@@ -547,7 +795,7 @@ export const expos = [
                     {
                         name: "Add skill",
                         skill: "arcana",
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
@@ -558,7 +806,7 @@ export const expos = [
                     {
                         name: "Add skill",
                         skill: "cooking",
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
 
@@ -572,7 +820,7 @@ export const expos = [
                     {
                         name: "Add skill",
                         skill: "persuation",
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
@@ -581,8 +829,24 @@ export const expos = [
         costs:
             [
                 {
-                    name: "food",
-                    amount: 200,
+                    name: "gourmet rations",
+                    amount: 2000,
+                },
+                {
+                    name: "berries",
+                    amount: 2000,
+                },
+                {
+                    name: "nuts",
+                    amount: 2000,
+                },
+                {
+                    name: "seeds",
+                    amount: 2000,
+                },
+                {
+                    name: "fruits",
+                    amount: 2000,
                 },
             ],
 
@@ -592,9 +856,7 @@ export const expos = [
         name: "Climb a mountain.",
         color: "gray",
         partySize: 1,
-        rewards: [
-            "Gaining skills"
-        ],
+        description: "Your kobold goes on a excursion to climb the local mountain.",
         skills: [
             "all",
         ],
@@ -624,14 +886,14 @@ export const expos = [
                 reward: [
                     {
                         name: 'gems',
-                        amount: 1,
+                        amount: 1000,
                     }
                 ],
                 effect: [
                     {
                         name: 'Add skill',
                         skill: 'agility',
-                        increase: 50,
+                        increase: 1000,
                     },
 
                 ]
@@ -643,12 +905,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 50,
+                        increase: 1000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'arcana',
-                        increase: 50,
+                        increase: 1000,
                     },
 
                 ]
@@ -662,7 +924,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 50,
+                        increase: 1000,
                     },
 
                 ]
@@ -673,14 +935,14 @@ export const expos = [
                 reward: [
                     {
                         name: "food",
-                        amount: 30,
+                        amount: 3000,
                     },
                 ],
                 effect: [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 50,
+                        increase: 1000,
                     },
 
                 ]
@@ -694,18 +956,18 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
             {
-                text: "Your kobold didn't make it all the way up, but they saw some pretty birds'.",
+                text: "Your kobold didn't make it all the way up, but they saw some pretty birds.",
                 reward: [],
                 effect: [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
@@ -716,7 +978,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'survival',
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
@@ -727,7 +989,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
@@ -738,7 +1000,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'survival',
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
@@ -749,12 +1011,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 100,
+                        increase: 1000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'perception',
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
@@ -765,12 +1027,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 100,
+                        increase: 1000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'agility',
-                        increase: 100,
+                        increase: 1000,
                     },
                 ],
             },
@@ -779,8 +1041,223 @@ export const expos = [
         costs:
             [
                 {
-                    name: "food",
+                    name: "rations",
                     amount: 200,
+                },
+            ],
+    },
+    //------------------------------------------------------------------------------------------
+    {
+        name: "Find egg rocks.",
+        color: "gray",
+        partySize: 1,
+        description: "Your kobolds go looking for the special rocks that can be imbued with divine energy to create a kobold that is the mix of two kobolds, given that their friendship is high enough.",
+        skills: [
+            "all",
+        ],
+        visibilityCheck: {
+        },
+        startTexts: [
+            "Your kobolds look carefully at a map before leaving.",
+            "Your say goodbye before they walk away.",
+        ],
+        skillchecks: [
+            {
+                skill: "mining",
+                difficulty: 20,
+            },
+            {
+                skill: "nature",
+                difficulty: 20,
+            },
+            {
+                skill: "perception",
+                difficulty: 20,
+            },
+            {
+                skill: "arcana",
+                difficulty: 20,
+            },
+            {
+                skill: "survival",
+                difficulty: 20,
+            },
+            {
+                skill: "animal handling",
+                difficulty: 20,
+            },
+            {
+                skill: "persuasion",
+                difficulty: 20,
+            },
+            {
+                skill: "navigation",
+                difficulty: 20,
+            }
+        ],
+        greatOutcomes: [
+            {
+                text: "Your kobolds managed to mine an egg rock.",
+                reward: [
+                    {
+                        name: 'egg rocks',
+                        amount: 1,
+                    }
+                ],
+                effect: []
+            },
+            {
+                text: "Your kobolds found an egg rock on an hill.",
+                reward: [
+                    {
+                        name: "egg rocks",
+                        amount: 1,
+                    },
+                ],
+                effect: [],
+            },
+        ],
+        goodOutcomes: [
+            {
+                text: "Your kobold did not find any egg rocks, but their skills increased.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'strength',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'arcana',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'survival',
+                        increase: 1000,
+                    },
+
+                ]
+
+            },
+            {
+                text: "Your kobolds did not find any egg rocks, but they observed a lizard with children.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'nature',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'animal handling',
+                        increase: 1000,
+                    },
+
+                ]
+            },
+        ],
+        badOutcomes: [
+            {
+                text: "Your kobolds got lost, but they did manage to find their way back to the den.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'survival',
+                        increase: 1000,
+                    },
+                ],
+            },
+            {
+                text: "Your kobolds maps turned out to not lead anywhere'.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'navigation',
+                        increase: 1000,
+                    },
+                ],
+            },
+            {
+                text: "Your kobolds walked in circles and eventually gave up.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'survival',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'navigation',
+                        increase: 1000,
+                    },
+                ],
+            },
+            {
+                text: "Your kobolds did find a source of egg rocks, but it was already mined.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'mining',
+                        increase: 1000,
+                    },
+                ],
+            },
+            {
+                text: "Your kobolds was interrupted by bad weather.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'survival',
+                        increase: 1000,
+                    },
+                ],
+            },
+            {
+                text: "Your kobolds had to turn back because of hostile wildlife.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'nature',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'animal handling',
+                        increase: 1000,
+                    },
+                ],
+            },
+            {
+                text: "Your kobolds found egg rocks, but were robbed by another kobold.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'intimidation',
+                        increase: 1000,
+                    },
+                ],
+            },
+        ],
+        length: 60000,
+        costs:
+            [
+                {
+                    name: "gourmet rations",
+                    amount: 2000,
+                },
+                {
+                    name: "maps",
+                    amount: 2000,
                 },
             ],
     },

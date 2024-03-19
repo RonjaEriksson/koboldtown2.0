@@ -21,6 +21,14 @@ function checkReqs(town, items) {
                 break;
             }
         }
+        const notBuildingReqs = reqs.not?.buildings;
+        for (const buildingReq of (notBuildingReqs || [])) {
+            const building = town.buildings?.find(e => e.name === buildingReq.name);
+            if (building && building.level >= buildingReq.level) {
+                valid = false;
+                break;
+            }
+        }
         if (valid) {
             validItems.push(item);
         }
@@ -61,7 +69,6 @@ Template.mainContainer.onCreated(function () {
     const resourceInterval = 1000;
     setInterval(function () {
         Meteor.call("increaseResource", localStorage.getItem("userId"));
-        Meteor.call('addJobExp', localStorage.getItem("userId"));
     }, resourceInterval);
 
     //Meteor.call("handleExpeditions", localStorage.getItem("userId")); (remove this maybe)
@@ -78,7 +85,7 @@ Template.mainContainer.helpers({
     },
     kobolds() {
         const instance = Template.instance();
-        return instance.kobolds.get();
+        return instance.kobolds.get().filter(k => !k.busy);
     },
     resources() {
         const instance = Template.instance();
@@ -97,7 +104,7 @@ Template.mainContainer.helpers({
         return validBuildings;
     },
     expos() {
-        return ExpeditionCollection.find({},{projection: {name:1, length:1, skills: 1, rewards: 1, color: 1, partySize: 1,}}).fetch();
+        return ExpeditionCollection.find({},{projection: {name:1, length:1, skills: 1, color: 1, partySize: 1, costs: 1, description: 1,}}).fetch();
     },
 });
 
@@ -168,7 +175,7 @@ Template.showKobold.events({
         instance.selectedJob.set(null);
     },
     "click .js-breed"(event, instance) {
-        const fatherId = document.getElementById("breedSelect").value;
+        const fatherId = instance.breedTarget.get();
         const motherId = instance.data._id;
         Meteor.call("mateKobolds",localStorage.getItem("userId"), motherId, fatherId);
     },
@@ -177,9 +184,10 @@ Template.showKobold.events({
     },
     "change .js-select-job"(event, instance) {
         instance.selectedJob.set(event.currentTarget.value);
+        console.log(event.currentTarget.value);
     },
     "click .js-chose-job"(event, instance) {
-        const job = document.getElementById("jobSelect").value;
+        const job = instance.selectedJob.get();
         if (instance.data.job) {
             Meteor.call("assignJob", localStorage.getItem("userId"), instance.data._id, instance.data.job, false);
         }
@@ -196,11 +204,11 @@ Template.showResource.onCreated(function () {
     instance.showDetails = new ReactiveVar(false);
     instance.currentTown = new ReactiveVar(null);
 
-    /*
+   
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
         });
-        */
+        
 });
 
 Template.showResource.helpers({
@@ -211,6 +219,11 @@ Template.showResource.helpers({
     visible() {
         const instance = Template.instance();
         return instance.data.visible;
+    },
+    gain() {
+        const instance = Template.instance();
+        console.log(instance.currentTown.get()?.resourceGain);
+        return instance.currentTown.get()?.resourceGain[instance.data.name] || 0;
     }
 });
 
@@ -248,7 +261,7 @@ Template.showJob.helpers({
     },
     koboldsAtJob() {
         const instance = Template.instance();
-        return instance.kobolds.get()?.filter(e => e.job === instance.data.name);
+        return instance.kobolds.get()?.filter(e => e.job?.name === instance.data.name);
     },
 });
 
@@ -264,11 +277,11 @@ Template.showExpo.onCreated(function () {
     instance.currentTown = new ReactiveVar(null);
     instance.kobolds = new ReactiveVar(null);
 
-    /*
+
     instance.autorun(function auto_townId() {
         instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
     });
-    */
+
     instance.autorun(function auto_kobolds() {
         instance.kobolds.set(KoboldCollection.find({ userId: localStorage.getItem("userId") }).fetch());
     });
@@ -295,6 +308,10 @@ Template.showExpo.helpers({
         const instance = Template.instance();
         return instance.data.rewards;      
     },
+    costs() {
+        const instance = Template.instance();
+        return instance.data.costs;
+    },
     kobolds() {
         const instance = Template.instance();
         return instance.kobolds.get();
@@ -303,9 +320,19 @@ Template.showExpo.helpers({
         const instance = Template.instance();
         return instance.slots.get();
     },
-    expoNotFilled() {
+    expoNotPrepared() {
         const instance = Template.instance();
-        return instance.slots.get().map(e => e.id).includes(0);
+        let resourcesAvailable = true;
+        const resources = instance.currentTown.get().resources;
+        const costs = instance.data.costs;
+        for (cost of costs) {
+            if ((resources.find(e => e.name === cost.name)?.stockpile || 0) < cost.amount) {
+                resourcesAvailable = false;
+                break;
+            }
+
+        }
+        return instance.slots.get().map(e => e.id).includes(0) || !resourcesAvailable;
     },
     availableKobolds() {
         const instance = Template.instance();

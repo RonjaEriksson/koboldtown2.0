@@ -148,67 +148,43 @@ Meteor.methods({
 
         let currentTownId = TownCollection.find({ userId: thisUserId }).fetch()[0]?._id;
         if (!currentTownId) {
+            const kobolds = [];
+            for (let i = 0; i < 3; i++) {
+                const color = generateRandomColor();
 
-            const redStats = generateStatsFromColor(
-                {
-                    r: 255,
-                    g: 0,
-                    b: 0,
-                }, LEVEL_ONE_STAT_TOTAL);
+                let highestValue = 0;
+                for (const value of Object.values(color)) {
+                    highestValue = value > highestValue ? value : highestValue;
+                }
+                highestValue = (highestValue + 50) < 255 ? highestValue + 50 : 255;
+
+                if (i === 0) {
+                    color.r = highestValue;
+                } else if (i === 1) {
+                    color.g = highestValue;
+                } else if (i === 2) {
+                    color.b = highestValue;
+                }
+
+                const stats = generateStatsFromColor(color, LEVEL_ONE_STAT_TOTAL);
+
+                const kobold = {
+                    name: koboldName(),
+                    userId: thisUserId,
+                    color: `rgb(${color.r}, ${color.g}, ${color.b})`,
+                    level: 1,
+                    r: color.r,
+                    g: color.g,
+                    b: color.b,
+                    physical: stats.physical,
+                    mental: stats.mental,
+                    social: stats.social,
+                    textColor: koboldTextColor(color.r, color.g, color.b),
+                };
+                kobolds.push(kobold);
+            }
+
             
-            const greenStats = generateStatsFromColor(
-                {
-                    r: 0,
-                    g: 255,
-                    b: 0,
-                }, LEVEL_ONE_STAT_TOTAL);
-
-            const blueStats = generateStatsFromColor(
-                {
-                    r: 0,
-                    g: 0,
-                    b: 255,
-                },LEVEL_ONE_STAT_TOTAL);
-
-            const kobolds = [
-                {
-                    name: koboldName(),
-                    userId: thisUserId,
-                    color: `rgb(${255}, ${0}, ${0})`,
-                    r: 255,
-                    g: 0,
-                    b: 0,
-                    physical: redStats.physical,
-                    mental: redStats.mental,
-                    social: redStats.social,
-                    textColor: koboldTextColor(255, 0, 0),
-                },
-                {
-                    name: koboldName(),
-                    userId: thisUserId,
-                    color: `rgb(${0}, ${255}, ${0})`,
-                    r: 0,
-                    g: 255,
-                    b: 0,
-                    physical: greenStats.physical,
-                    mental: greenStats.mental,
-                    social: greenStats.social,
-                    textColor: koboldTextColor(0, 255, 0),
-                },
-                {
-                    name: koboldName(),
-                    userId: thisUserId,
-                    color: `rgb(${0}, ${0}, ${255})`,
-                    r: 0,
-                    g: 0,
-                    b: 255,
-                    physical: blueStats.physical,
-                    mental: blueStats.mental,
-                    social: blueStats.social,
-                    textColor: koboldTextColor(0, 0, 255),
-                },
-
-            ];
 
             const town = {
                 userId: thisUserId,
@@ -275,9 +251,9 @@ Meteor.methods({
             return;
         }
 
-        rGenes = [motherKobold.r, fatherKobold.r, Math.round((motherKobold.r+fatherKobold.r)/2)];
-        gGenes = [motherKobold.g, fatherKobold.g,Math.round((motherKobold.g+fatherKobold.g)/2)];
-        bGenes = [motherKobold.b, fatherKobold.b, Math.round((motherKobold.b+fatherKobold.b)/2)];
+        rGenes = [motherKobold.r, fatherKobold.r, Math.round((motherKobold.r + fatherKobold.r) / 2), Math.round((motherKobold.r + motherKobold.r + fatherKobold.r) / 3), Math.round((motherKobold.r + fatherKobold.r + fatherKobold.r) / 3)];
+        gGenes = [motherKobold.g, fatherKobold.g, Math.round((motherKobold.g + fatherKobold.g) / 2), Math.round((motherKobold.g + motherKobold.g + fatherKobold.g) / 3), Math.round((motherKobold.g + fatherKobold.g + fatherKobold.g) / 3)];
+        bGenes = [motherKobold.b, fatherKobold.b, Math.round((motherKobold.b + fatherKobold.b) / 2), Math.round((motherKobold.b + motherKobold.b + fatherKobold.b) / 3), Math.round((motherKobold.b + fatherKobold.b + fatherKobold.b) / 3)];
 
         color = {
             r: rGenes[getRandomArrayIndex(rGenes.length)],
@@ -327,22 +303,17 @@ Meteor.methods({
                 color: sourceSkill.color,
             };
         }
+        let leveled = false;
         const skill = kobold.skills[skillName];
         skill.exp += exp;
-        if (exp > skill.level* skill.level * 1000) {
+        if (skill.exp > (skill.level +1) * (skill.level +1) * 1000) {
             skill.level++;
-            if (kobold.job) {
-                const job = kobold.job;
-                console.log(job);
-                //make this more elegant?
-                Meteor.call('assignJob', kobold.userId, kobold._id, job, false);
-                Meteor.call('assignJob', kobold.userId, kobold._id, job, true);
-            }
+            leveled = true;
         }
         kobold.exp = kobold.exp ? kobold.exp : 0;
         kobold.level = kobold.level ? kobold.level : 0;
         kobold.exp += exp;
-        if (exp > kobold.level * kobold.level * 10000) {
+        if (kobold.exp > kobold.level * kobold.level * 10000) {
             kobold.level++;
             color = {
                 r: kobold.r,
@@ -353,38 +324,70 @@ Meteor.methods({
             kobold.physical = stats.physical;
             kobold.mental = stats.mental;
             kobold.social = stats.social;
-
-            if (kobold.job) {
-                const job = kobold.job;
-                Meteor.call('assignJob', kobold.userId, kobold._id, job, false);
-                Meteor.call('assignJob', kobold.userId, kobold._id, job, true);
-            }
+            leveled = true;
         }
         KoboldCollection.update(koboldId, { $set: { skills: kobold.skills, level: kobold.level, exp: kobold.exp, physical: kobold.physical, mental: kobold.mental, social: kobold.social } });
+        if (kobold.job && leveled) {
+            const job = kobold.job;
+            Meteor.call('assignJob', kobold.userId, kobold._id, job, false);
+            Meteor.call('assignJob', kobold.userId, kobold._id, job, true);
+        }
 
     },
     'increaseResource'(thisUserId) {
         check(thisUserId, String);
 
-        const townResources = TownCollection.find({userId:thisUserId}, {projection: {resources: 1, jobs: 1}}).fetch()[0]?.resources;
+        const townResources = TownCollection.find({ userId: thisUserId }, { projection: { resources: 1, jobs: 1 } }).fetch()[0]?.resources;
+        const jobs = JobCollection.find({}).fetch();
         if(!townResources) {
             console.error("Found no town to update resources for.");
             return;
         }
-        for (const resource of townResources) {
-            const baseResource = resource.base ? townResources.find(e => e.name === resource.base) : false;
-            if (!baseResource || (baseResource.stockpile + baseResource.gain) >= 0) {
-                resource.stockpile += resource.gain;
-                if (resource.stockpile < 0) {
-                    resource.stockpile = 0;
+        const resourceGain = {};
+        const kobolds = KoboldCollection.find({ userId: thisUserId }).fetch();
+        for (const kobold of kobolds) {
+            if (kobold.job) {
+                const baseNames = kobold.job.gains.filter(e => e.gain < 0).map(e => e.name);
+                const baseResources = baseNames ? townResources.filter(e => baseNames.includes(e.name)) : [];
+                let baseAvailable = true;
+                for (const base of baseResources) {
+                    if ((base.stockpile + base.gain) < 0) {
+                        baseAvailable = false;
+                    } else {
+                        resourceGain[base] += kobold.job.gains.find(e => e.name === base).gain;
+                    }
+                }
+                if (!baseResources || baseAvailable) {
+                    for (resource of kobold.job.gains) {
+                        if (resourceGain[resource.name] === undefined) {
+                            console.log(resourceGain[resource.name]);
+                            resourceGain[resource.name] = 0;
+                            console.log(resourceGain[resource.name]);
+                        }
+                        const townResource = townResources.find(e => resource.name === e.name);
+                        townResource.stockpile += resource.gain;
+                        resourceGain[resource.name] += resource.gain;
+                        console.log(resource.gain);
+                        if (townResource.stockpile < 0) {
+                            townResource.stockpile = 0;
+                        }
+                    }
+                    const job = jobs.find(e => e.name === kobold.job.name)
+                    for (const skill of job.skillGains) {
+                        Meteor.call('increaseSkill', kobold._id, skill.name, skill.gain);
+                    }
                 }
 
             }
         }
-        TownCollection.update({userId: thisUserId}, {$set:{resources: townResources}})
+
+
+
+        TownCollection.update({userId: thisUserId}, {$set:{resources: townResources, resourceGain: resourceGain,}})
     },
     'addJobExp'(thisUserId) {
         check(thisUserId, String);
+        //remove this method it is unused
         const kobolds = KoboldCollection.find({ userId: thisUserId }).fetch();
         const jobs = JobCollection.find({}).fetch();
         for (const kobold of kobolds) {
@@ -438,13 +441,12 @@ Meteor.methods({
             if (!resource.visible) {
                 resource.visible = true;
             }
-            console.log(resourceName);
             if (starting) {
                 const gain = {
                     name: resourceName,
                     gain: sourceJob.production[resourceName],
                 };
-                if (gain.gain > 0) {
+                if (gain.gain >= 0) {
                     gain.gain += kobold[sourceJob.baseStat];
                     for (const skill of sourceJob.relevantSkills) {
                         gain.gain += (kobold?.skills?.[skill]?.level || 0);
@@ -455,9 +457,11 @@ Meteor.methods({
             if (starting) {
                 resource.gain += (job?.gains?.find(e => e.name === resourceName)?.gain || 0);
             } else {
+                console.log("reducing " + resource.name);
+                console.log(resource.gain);
                 resource.gain -= (job?.gains?.find(e => e.name === resourceName)?.gain || 0);
+                console.log(resource.gain);
             }
-            console.log(resource);
         }
         if(townJob.spotsOpen != "unlimited") {
             if(starting) {
@@ -481,14 +485,6 @@ Meteor.methods({
         const expedition = ExpeditionCollection.findOne(expeditionId);
         if (!expedition) {
             return;
-        }
-        const town = TownCollection.find({ userId: thisUserId }, { projection: { resources: 1, } }).fetch()[0];
-        for (const cost of expedition.costs) {
-            const resource = town.resources.find(e => e.name === cost.name);
-            if (!resource) {
-                console.error("Expedition cost resource not found");
-            }
-            resource.stockpile -= cost.amount;
         }
         const expo = {
             finishes: +Date.now() + expedition.length,
@@ -529,6 +525,7 @@ Meteor.methods({
             expo.result = expedition.badOutcomes[getRandomArrayIndex(expedition.badOutcomes.length)];
         }
         for (kobold of kobolds) {
+            console.log(kobold.job);
             if (kobold.job) {
                 Meteor.call('assignJob',thisUserId, kobold._id, kobold.job, false);
             }
@@ -541,8 +538,17 @@ Meteor.methods({
             dismissed: false,
             time: Date.now(),
             id: Random.id(),
-        } 
-        TownCollection.update({ userId: thisUserId }, { $addToSet: { expeditions: expo, notices: notice, resources: town.resources,}});
+        }
+        const town = TownCollection.find({ userId: thisUserId }, { projection: { resources: 1, } }).fetch()[0];
+        for (const cost of expedition.costs) {
+            const resource = town.resources.find(e => e.name === cost.name);
+            if (!resource) {
+                console.error("Expedition cost resource not found");
+                return;
+            }
+            resource.stockpile -= cost.amount;
+        }
+        TownCollection.update({ userId: thisUserId }, { $addToSet: { expeditions: expo, notices: notice, }, $set: { resources: town.resources }});
     },
     'handleExpeditions'(thisUserId) {
         check(thisUserId, String);
