@@ -185,7 +185,8 @@ export const expos = [
             "perception",
             "persuasion",
         ],
-        visibilityCheck: {
+        requirements: {
+            have: { 'town level': 50, }
         },
         startTexts: [
             "Your kobolds start walking, discussing what kobolds they meet out there.",
@@ -389,8 +390,7 @@ export const expos = [
         skills: [
             "strength",
         ],
-        visibilityCheck: {
-        },
+        requirements: {},
         startTexts: [
             "Your kobolds set off, carrying pickaxes.",
             "Your kobolds wave goodbye as they walk out of the den."
@@ -532,7 +532,8 @@ export const expos = [
         skills: [
             "all",
         ],
-        visibilityCheck: {
+        requirements: {
+            have: { 'town level': 3, }
         },
         startTexts: [
             "Your kobolds sets off, a spring in their step.",
@@ -753,7 +754,8 @@ export const expos = [
         skills: [
             "social",
         ],
-        visibilityCheck: {
+        requirements: {
+            have: { 'town level': 70, },
         },
         startTexts: [
             "Your kobolds set off carrying baskets of food.",
@@ -860,7 +862,8 @@ export const expos = [
         skills: [
             "all",
         ],
-        visibilityCheck: {
+        requirements: {
+            have: { 'town level': 5, },
         },
         startTexts: [
             "Your kobolds sets off, a backpack full of food for the journey.",
@@ -1055,7 +1058,8 @@ export const expos = [
         skills: [
             "all",
         ],
-        visibilityCheck: {
+        requirements: {
+            have: { 'town level': 75, },
         },
         startTexts: [
             "Your kobolds look carefully at a map before leaving.",
@@ -1260,5 +1264,181 @@ export const expos = [
                     amount: 2000,
                 },
             ],
+    },
+    //-------------------------------------------------------------------------------------
+    {
+        name: "Do an improv show.",
+        color: "darkGreen",
+        partySize: 3,
+        description: "Do some improv.Gain some friendship.",
+        skills: [
+            "acting",
+            "improv",
+        ],
+        requirements: {
+            have: {
+                buildings: [{name: 'theatre', level: 1}],
+            }
+        },
+        startTexts: [
+            "Your kobolds discuss the rules of 'yes, and' before starting.",
+            "Your kobolds walk away from the den doing a simple improv excercise."
+        ],
+        skillchecks: [
+            {
+                skill: "acting",
+                difficulty: 7,
+            },
+            {
+                skill: "improv",
+                difficulty: 7,
+            },
+        ],
+        greatOutcomes: [
+            {
+                text: "Your kobolds found some seeds, and a shiny rock!",
+                reward: [
+                    {
+                        name: "seeds",
+                        amount: 30,
+                    },
+                    {
+                        name: "gems",
+                        amount: 1,
+                    },
+                ],
+            },
+            {
+                text: "Your kobolds found a lot of seeds.",
+                reward: [
+                    {
+                        name: "seeds",
+                        amount: 50,
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found some fruits.",
+                reward: [
+                    {
+                        name: "fruits",
+                        amount: 10,
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found a lot of tasty nuts.",
+                reward: [
+                    {
+                        name: "nuts",
+                        amount: 50,
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found a patch of raspberries.",
+                reward: [
+                    {
+                        name: "berries",
+                        amount: 50,
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found a lot of diffrent kinds of food.",
+                reward: [
+                    {
+                        name: "food",
+                        amount: 10000,
+                    },
+                ]
+            },
+        ],
+        goodOutcomes: [
+            {
+                text: "Your kobolds found a plant and harvested it's seeds.",
+                reward: [
+                    {
+                        name: "seeds",
+                        amount: 10
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found some blueberries.",
+                reward: [
+                    {
+                        name: "berries",
+                        amount: 10
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found an apple tree.",
+                reward: [
+                    {
+                        name: "fruits",
+                        amount: 10
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found hazelnuts on the ground.",
+                reward: [
+                    {
+                        name: "nuts",
+                        amount: 10
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds found wild carrots.",
+                reward: [
+                    {
+                        name: "food",
+                        amount: 1000,
+                    }
+                ]
+
+            },
+        ],
+        badOutcomes: [
+            {
+                text: "Your kobolds return empty handed.",
+                reward: [],
+            },
+            {
+                text: "Your kobolds find no food, but their foraging skills improve.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'nature',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'survival',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'perception',
+                        increase: 1000,
+                    },
+
+                ]
+
+            },
+        ],
+        length: 30000,
+        costs:
+            [
+                {
+                    name: "food",
+                    amount: 200,
+                },
+            ],
+
     },
 ];

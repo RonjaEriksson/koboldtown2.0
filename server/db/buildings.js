@@ -241,4 +241,73 @@ export const buildings = [
             }
         ],
     },
+    {
+        name: 'library',
+        requirements: {
+            have: {
+                buildings: [
+                    { name: 'crafting hut', level: 5 },
+                    { name: 'town hall', level: 10 },
+                ],
+            }
+        },
+        color: 'grey',
+        costs: [
+            {
+                name: 'stone',
+                amount: 2000,
+            },
+            {
+                name: 'wood',
+                amount: 1000,
+            },
+            {
+                name: 'metal',
+                amount: 1000,
+            },
+            {
+                name: 'books',
+                amount: 50,
+            },
+            {
+                name: 'paper',
+                amount: 1000,
+            }
+        ],
+    },
+    {
+        name: 'temple',
+        requirements: {
+            have: {
+                'town level': 100,
+            }
+        },
+        color: 'grey',
+        costs: [
+            {
+                name: 'stone',
+                amount: 20000,
+            },
+            {
+                name: 'glass',
+                amount: 20000,
+            },
+            {
+                name: 'wood',
+                amount: 10000,
+            },
+            {
+                name: 'metal',
+                amount: 10000,
+            },
+            {
+                name: 'gems',
+                amount: 5000,
+            },
+            {
+                name: 'paper',
+                amount: 10000,
+            }
+        ],
+    },
 ]

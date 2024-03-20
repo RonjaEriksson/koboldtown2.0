@@ -12,6 +12,10 @@ function checkReqs(town, items) {
     const validItems = [];
     for (const item of items) {
         const reqs = item.requirements;
+        if (!reqs) {
+            validItems.push(item);
+            continue;
+        }
         const buildingReqs = reqs.have?.buildings;
         let valid = true;
         for (const buildingReq of (buildingReqs || [])) {
@@ -21,6 +25,10 @@ function checkReqs(town, items) {
                 break;
             }
         }
+        const townLevelReq = reqs.have?.['town level'];
+        if (townLevelReq && town.level < townLevelReq) { 
+            valid = false;
+        }
         const notBuildingReqs = reqs.not?.buildings;
         for (const buildingReq of (notBuildingReqs || [])) {
             const building = town.buildings?.find(e => e.name === buildingReq.name);
@@ -28,6 +36,11 @@ function checkReqs(town, items) {
                 valid = false;
                 break;
             }
+        }
+
+        const notTownLevelReq = reqs.not?.['town level'];
+        if (notTownLevelReq && town.level >= townLevelReq) {
+            valid = false;
         }
         if (valid) {
             validItems.push(item);
@@ -104,7 +117,10 @@ Template.mainContainer.helpers({
         return validBuildings;
     },
     expos() {
-        return ExpeditionCollection.find({},{projection: {name:1, length:1, skills: 1, color: 1, partySize: 1, costs: 1, description: 1,}}).fetch();
+        const instance = Template.instance();
+        const expos = ExpeditionCollection.find({}, { projection: { name: 1, length: 1, skills: 1, color: 1, partySize: 1, costs: 1, description: 1, requirements: 1, } }).fetch();
+        const validExpos = checkReqs(instance.currentTown.get(), expos);
+        return validExpos;
     },
 });
 
@@ -258,6 +274,14 @@ Template.showJob.helpers({
     resourceProduction(resource) {
         const instance = Template.instance();
         return instance.data.production[resource];      
+    },
+    resources() {
+        const instance = Template.instance();
+        return Object.keys(instance.data.production).filter(e => instance.data.production[e] >= 0);
+    },
+    costs() {
+        const instance = Template.instance();
+        return Object.keys(instance.data.production).filter(e => instance.data.production[e] < 0);
     },
     koboldsAtJob() {
         const instance = Template.instance();

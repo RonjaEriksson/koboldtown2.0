@@ -3,21 +3,18 @@ export const resources = [
         name: "stone",
         stockpile: 0,
         visible: true,
-        gain: 0,
         color: "gray",
     },
     {
         name: "wood",
         stockpile: 0,
         visible: true,
-        gain: 0,
         color: "brown",
     },
     {
         name: "food",
         stockpile: 0,
         visible: true,
-        gain: 0,
         color: "green",
     },
     {
@@ -25,7 +22,6 @@ export const resources = [
         base: ["food"],
         stockpile: 0,
         visible: false,
-        gain: 0,
         color: "chocolate",
     },
     {
@@ -33,7 +29,6 @@ export const resources = [
         base: ["food"],
         stockpile: 0,
         visible: false,
-        gain: 0,
         color: "red",
     },
     {
@@ -41,7 +36,6 @@ export const resources = [
         base: ["food"],
         stockpile: 0,
         visible: false,
-        gain: 0,
         color: "red",
     },
     {
@@ -49,7 +43,6 @@ export const resources = [
         base: ["food"],
         stockpile: 0,
         visible: false,
-        gain: 0,
         color: "red",
     },
     {
@@ -57,7 +50,6 @@ export const resources = [
         base: ["food",],
         stockpile: 0,
         visible: false,
-        gain: 0,
         color: "chocolate",
     },
     {
@@ -65,7 +57,6 @@ export const resources = [
         base: ["stone",],
         stockpile: 0,
         visible: false,
-        gain: 0,
         color: "white",
     },
     {
@@ -73,7 +64,6 @@ export const resources = [
         base: ["stone",],
         stockpile: 0,
         visible: false,
-        gain: 0,
         color: "silver",
     },
     {
@@ -81,7 +71,6 @@ export const resources = [
         base: ["food",],
         stockpile: 0,
         visible: false,
-        gain: 0,
         color: "orange",
     },
     {
@@ -89,7 +78,6 @@ export const resources = [
         base: ["food","nuts","seeds","berries","fruits"],
         stockpile: 0,
         visible: false,
-        gain: 0,
         color: "orange",
     },
     {
@@ -97,7 +85,6 @@ export const resources = [
         base: ["stone",],
         stockpile: 0,
         visible: false,
-        gain: 0,
         color: "tan",
     },
     {
@@ -105,7 +92,6 @@ export const resources = [
         base: ["sand",],
         stockpile: 0,
         visible: false,
-        gain: 0,
         color: "lightblue",
     },
     {
@@ -113,7 +99,6 @@ export const resources = [
         base: ["wood",],
         stockpile: 0,
         visible: false,
-        gain: 0,
         color: "grey",
     },
     {
@@ -121,7 +106,6 @@ export const resources = [
         base: ["paper", "ink"],
         stockpile: 0,
         visible: false,
-        gain: 0,
         color: "grey",
     },
     {
@@ -129,7 +113,20 @@ export const resources = [
         base: ["paper", "ink"],
         stockpile: 0,
         visible: false,
-        gain: 0,
+        color: "grey",
+    },
+    {
+        name: "drawings",
+        base: ["paper", "ink"],
+        stockpile: 0,
+        visible: false,
+        color: "grey",
+    },
+    {
+        name: "oregami",
+        base: ["paper",],
+        stockpile: 0,
+        visible: false,
         color: "grey",
     },
     {
@@ -137,14 +134,26 @@ export const resources = [
         base: ["metal", "gems"],
         stockpile: 0,
         visible: false,
-        gain: 0,
         color: "grey",
     },
     {
         name: "egg rocks",
         stockpile: 0,
         visible: false,
-        gain: 0,
+        color: "grey",
+    },
+    {
+        name: "divinity",
+        base: ["jewlery", "fruits", "nuts", "berries", "drawings", "oregami",],
+        stockpile: 0,
+        visible: false,
+        color: "grey",
+    },
+    {
+        name: "eggs",
+        base: ["egg rocks"],
+        stockpile: 0,
+        visible: false,
         color: "grey",
     },
 ]

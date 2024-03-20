@@ -664,6 +664,7 @@ export const jobs = [
             "skillgain",
         ],
         production: {
+            drawings: 0,
             ink: -1,
             paper: -1,
         },
@@ -690,12 +691,45 @@ export const jobs = [
         }
     },
     {
+        name: "write a book",
+        color: "navy",
+        resources: [
+            "skillgain",
+        ],
+        production: {
+            books: 0,
+            ink: -1,
+            paper: -1,
+        },
+        baseStat: 'social',
+        relevantSkills: [
+            "writing",
+        ],
+        skillGains: [
+            {
+                name: "writing",
+                gain: 10,
+            },
+            {
+                name: "persuasion",
+                gain: 10,
+            },
+        ],
+        spotsOpen: 1,
+        requirements: {
+            have: {
+                buildings: [{ name: 'crafting hut', level: 10 }],
+            }
+        }
+    },
+    {
         name: "make oregami",
         color: "navy",
         resources: [
             "skillgain",
         ],
         production: {
+            oregami: 0,
             paper: -2,
         },
         baseStat: 'mental',
@@ -703,10 +737,6 @@ export const jobs = [
             "crafting",
         ],
         skillGains: [
-            {
-                name: "agility",
-                gain: 10,
-            },
             {
                 name: "crafting",
                 gain: 10,
@@ -744,34 +774,6 @@ export const jobs = [
         requirements: {
             have: {
                 buildings: [{ name: 'crafting hut', level: 15 }],
-            }
-        }
-    },
-    {
-        name: "do an improv show",
-        color: "navy",
-        resources: [
-            "skillgain",
-        ],
-        production: {},
-        baseStat: 'social',
-        relevantSkills: [
-            "improv",
-        ],
-        skillGains: [
-            {
-                name: "improv",
-                gain: 10,
-            },
-            {
-                name: "persuasion",
-                gain: 10,
-            },
-        ],
-        spotsOpen: 3,
-        requirements: {
-            have: {
-                buildings: [{ name: 'theatre', level: 1 }],
             }
         }
     },
@@ -854,6 +856,69 @@ export const jobs = [
         requirements: {
             have: {
                 buildings: [{ name: 'orchard', level: 1 }],
+            }
+        }
+    },
+    {
+        name: "worship",
+        color: "chocolate",
+        resources: [
+            "seeds",
+        ],
+        production: {
+            divinity: 1,
+            jewlery: -3,
+            fruits: -3,
+            berries: -3,
+            nuts: -3,
+            drawings: -3,
+            oregami: -3,
+        },
+        baseStat: 'social',
+        relevantSkills: [
+            "religion",
+        ],
+        skillGains: [
+            {
+                name: "religion",
+                gain: 20,
+            },
+        ],
+        spotsOpen: 1,
+        requirements: {
+            have: {
+                buildings: [{ name: 'temple', level: 1 }],
+            }
+        }
+    },
+    {
+        name: "transform egg rocks",
+        color: "chocolate",
+        resources: [
+            "seeds",
+        ],
+        production: {
+            eggs: 1,
+            'egg rocks': -1,
+            divinity: 10000,
+        },
+        'max production': {
+            eggs: 1,
+        },
+        baseStat: 'mental',
+        relevantSkills: [
+            "arcana",
+        ],
+        skillGains: [
+            {
+                name: "arcana",
+                gain: 20,
+            },
+        ],
+        spotsOpen: 1,
+        requirements: {
+            have: {
+                buildings: [{ name: 'temple', level: 30 }],
             }
         }
     },

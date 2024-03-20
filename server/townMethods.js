@@ -23,12 +23,18 @@ async function doExpedition(expo, thisUserId) {
     if (!expo) {
         return;
     }
+    
     const wait = expo.finishes - +Date.now()
     if (wait > 0) {
         const result = await expeditionWait(wait);
     }
+    let infoText = expo.result.text;
+    if (expo.result.reward.length) {
+        infoText += " (Found ";
+    }
     const town = TownCollection.find({ userId: thisUserId }, { projection: { resources: 1 } }).fetch()[0];
     for (reward of expo.result.reward) {
+        infoText += reward.amount + " " + reward.name + ", ";
         const resource = town.resources.find(e => e.name === reward.name)
         if (resource) {
             resource.stockpile += reward.amount;
@@ -40,6 +46,12 @@ async function doExpedition(expo, thisUserId) {
             town.resources.push(sourceResource);
         }
     }
+    
+    if (expo.result.reward.length) {
+        infoText = infoText.slice(0, -2);
+        infoText += ".";
+    }
+    
     for (effect of expo.result.effect || []) {
         switch (effect.name) {
             case 'Add kobold':
@@ -58,13 +70,36 @@ async function doExpedition(expo, thisUserId) {
                 break;
         }
     }
+
+    if (expo.result.reward.length) {
+        infoText += ")";
+    }
     const notice = {
-        text: expo.result.text,
+        text: infoText,
         dismissed: false,
         time: Date.now(),
         id: Random.id(),
     } 
-    TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources }, $addToSet: { notices: notice } });
+    let returnText = "(";
+    const kobolds = KoboldCollection.find({ _id: { $in: expo.koboldIds } }).fetch();
+    returnText += kobolds[0].name;
+    for (let i = 1; i < kobolds.length - 1; i++) {
+        returnText += ", " + kobolds[i];
+    }
+    if (kobolds.length > 1) {
+        returnText += " and " + kobolds[kobolds.length - 1].name;
+    }
+    returnText += " has returned from the expedition.)"
+
+    const returnNotice = {
+        text: returnText,
+        dismissed: false,
+        time: Date.now(),
+        id: Random.id(),
+    }
+    
+    let notices = [returnNotice, notice,];
+    TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources }, $addToSet: { notices: { $each: notices } } });
     TownCollection.update({ userId: thisUserId }, { $pull: { expeditions: { id: expo.id } } });
     for (koboldId of expo.koboldIds) {
         console.log(koboldId);
@@ -184,7 +219,13 @@ Meteor.methods({
                 kobolds.push(kobold);
             }
 
-            
+
+            const welcomeNotice = {
+                text: "Welcome to your brand new kobold town. Under your leadership I am sure that it will flourish.",
+                dismissed: false,
+                time: Date.now(),
+                id: Random.id(),
+            }
 
             const town = {
                 userId: thisUserId,
@@ -192,6 +233,8 @@ Meteor.methods({
                 dragonName: "RymdensRegent",
                 resources: ResourceCollection.find({}).fetch(),
                 jobs: [],
+                level: 0,
+                notices: [welcomeNotice]
             };
             TownCollection.insert(town);
             //KoboldCollection.insertMany(kobolds); //try this
@@ -228,6 +271,13 @@ Meteor.methods({
             textColor: koboldTextColor(color.r, color.g, color.b),
         };
         console.log("added wandering kobold");
+        const arrivalNotice = {
+            text: kobold.name + " has joined your town.",
+            dismissed: false,
+            time: Date.now(),
+            id: Random.id(),
+        }
+        TownCollection.update({ userId:thisUserId }, { $addToSet: {notices: arrivalNotice}})
         KoboldCollection.insert(kobold);
     },
     'mateKobolds'(thisUserId, motherKoboldId, fatherKoboldId) {
@@ -273,6 +323,7 @@ Meteor.methods({
             name: koboldName(),
             userId: thisUserId,
             color: `rgb(${color.r}, ${color.g}, ${color.b})`,
+            level: 1,
             r: color.r,
             g: color.g,
             b: color.b,
@@ -281,6 +332,14 @@ Meteor.methods({
             social: stats.social,
             textColor: koboldTextColor(color.r, color.g, color.b),
         }
+        const birthNotice = {
+            text: "A new kobold steps out of the egg and says their name is " + kobold.name + ".",
+            dismissed: false,
+            time: Date.now(),
+            id: Random.id(),
+        }
+        TownCollection.update({ userId: thisUserId }, { $addToSet: { notices: birthNotice } });
+        console.log(birthNotice);
         KoboldCollection.insert(kobold);
     },
     'increaseSkill'(koboldId, skillName, exp) {
@@ -289,6 +348,7 @@ Meteor.methods({
         check(exp, Number);
         const kobold = KoboldCollection.find(koboldId).fetch()[0]; //add projection here
         const sourceSkill = SkillCollection.find({ name: skillName }).fetch()[0];
+        let infoText = "";
         if (!kobold) {
             console.error("Did not find kobold");
             return;
@@ -308,6 +368,7 @@ Meteor.methods({
         skill.exp += exp;
         if (skill.exp > (skill.level +1) * (skill.level +1) * 1000) {
             skill.level++;
+            infoText += kobold.name + " has reached level " + skill.level + " in " + skillName + "."; 
             leveled = true;
         }
         kobold.exp = kobold.exp ? kobold.exp : 0;
@@ -325,8 +386,21 @@ Meteor.methods({
             kobold.mental = stats.mental;
             kobold.social = stats.social;
             leveled = true;
+            if (infoText) {
+                infoText += " ";
+            }
+            infoText += kobold.name + " has reached level " + kobold.level + ".";
         }
+        const notice = {
+            text: infoText,
+            dismissed: false,
+            time: Date.now(),
+            id: Random.id(),
+        } 
         KoboldCollection.update(koboldId, { $set: { skills: kobold.skills, level: kobold.level, exp: kobold.exp, physical: kobold.physical, mental: kobold.mental, social: kobold.social } });
+        if (notice.text) {
+            TownCollection.update({ userId: kobold.userId }, { $addToSet: { notices: notice } });
+        }
         if (kobold.job && leveled) {
             const job = kobold.job;
             Meteor.call('assignJob', kobold.userId, kobold._id, job, false);
@@ -365,7 +439,6 @@ Meteor.methods({
                         const townResource = townResources.find(e => resource.name === e.name);
                         townResource.stockpile += resource.gain;
                         resourceGain[resource.name] += resource.gain;
-                        console.log(resource.gain);
                         if (townResource.stockpile < 0) {
                             townResource.stockpile = 0;
                         }
@@ -450,15 +523,10 @@ Meteor.methods({
                         gain.gain += (kobold?.skills?.[skill]?.level || 0);
                     }
                 }
+                if (sourceJob["max production"]?.[resourceName] && gain.gain > sourceJob["max production"][resourceName]) {
+                    gain.gain = sourceJob["max production"][resourceName];
+                }
                 job.gains.push(gain);
-            }
-            if (starting) {
-                resource.gain += (job?.gains?.find(e => e.name === resourceName)?.gain || 0);
-            } else {
-                console.log("reducing " + resource.name);
-                console.log(resource.gain);
-                resource.gain -= (job?.gains?.find(e => e.name === resourceName)?.gain || 0);
-                console.log(resource.gain);
             }
         }
         if(townJob.spotsOpen != "unlimited") {
@@ -490,7 +558,7 @@ Meteor.methods({
             id: Random.id(),
             koboldIds: koboldIds,
         }
-        const kobolds = KoboldCollection.find({ _id: { $in: koboldIds}});
+        const kobolds = KoboldCollection.find({ _id: { $in: koboldIds}}).fetch();
         let checksPassed = 0;
         let checksCritPassed = 0;
         for (const skillcheck of expedition.skillchecks) {
@@ -530,13 +598,24 @@ Meteor.methods({
             Meteor.call('setKoboldBusy', kobold._id, true);
         }
         doExpedition(expo, thisUserId);
-        //add custom text to each expo to show here
+
+        let infoText = expedition.startTexts[getRandomArrayIndex(expedition.startTexts.length)] + " (";
+        infoText += kobolds[0].name;
+        for (let i = 1; i < kobolds.length - 1; i++) {
+            infoText += ", " + kobolds[i];
+        }
+        if (kobolds.length > 1) {
+            infoText += " and " + kobolds[kobolds.length - 1].name;
+        } 
+        infoText += " has left the den.)"
+        
         const notice = {
-            text: expedition.startTexts[getRandomArrayIndex(expedition.startTexts.length)],
+            text: infoText,
             dismissed: false,
             time: Date.now(),
             id: Random.id(),
         }
+
         const town = TownCollection.find({ userId: thisUserId }, { projection: { resources: 1, } }).fetch()[0];
         for (const cost of expedition.costs) {
             const resource = town.resources.find(e => e.name === cost.name);
@@ -546,7 +625,7 @@ Meteor.methods({
             }
             resource.stockpile -= cost.amount;
         }
-        TownCollection.update({ userId: thisUserId }, { $addToSet: { expeditions: expo, notices: notice, }, $set: { resources: town.resources }});
+        TownCollection.update({ userId: thisUserId }, { $addToSet: { expeditions: expo, notices: notice }, $set: { resources: town.resources }});
     },
     'handleExpeditions'(thisUserId) {
         check(thisUserId, String);
@@ -565,7 +644,7 @@ Meteor.methods({
     'build'(thisUserId, buildingId) {
         check(thisUserId, String);
         check(buildingId, String);
-        const town = TownCollection.find({ userId: thisUserId }, { projection: { buildings: 1 , resources: 1,} }).fetch()[0];
+        const town = TownCollection.find({ userId: thisUserId }, { projection: { buildings: 1 , resources: 1, level: 1,} }).fetch()[0];
         const building = BuildingCollection.find(buildingId).fetch()[0];
         let townBuilding = town.buildings?.find(e => e.name === building.name);
         if (!town.buildings) {
@@ -587,7 +666,11 @@ Meteor.methods({
             resource.stockpile -= realCost;
         }
         townBuilding.level++; 
-        TownCollection.update({userId: thisUserId }, { $set: { buildings: town.buildings, resources: town.resources } });
+        if (!town.level) {
+            town.level = 0;
+        }
+        town.level++;
+        TownCollection.update({userId: thisUserId }, { $set: { buildings: town.buildings, resources: town.resources, level: town.level } });
     },
     'dismissNotice'(thisUserId, noticeId) {
         check(thisUserId, String);

@@ -80,6 +80,16 @@ export const skills = [
         color: 'yellow',
     },
     {
+        name: 'religion',
+        base: 'social',
+        color: 'yellow',
+    },
+    {
+        name: 'writing',
+        base: 'social',
+        color: 'yellow',
+    },
+    {
         name: 'animal handling',
         base: 'social',
         color: 'lightgreen',

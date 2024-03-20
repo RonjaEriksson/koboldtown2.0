@@ -134,18 +134,27 @@
 
     {{#if showDetails}}
         <div class="details" style="border-color: {{color}};">
-            Produces:
+            Base production:
             <br>
             <ul>
                 {{#each resource in resources}}
                 <li>{{resourceProduction resource}}&nbsp;{{resource}}</li>
                 {{/each}}
             </ul>
+            {{#if costs}}
+                Cost:
+                <br>
+                <ul>
+                    {{#each cost in costs}}
+                    <li>{{resourceProduction cost}}&nbsp;{{cost}}</li>
+                    {{/each}}
+                </ul>
+            {{/if}}
             Currently working this job:
             <ul>
                 {{#each kobold in koboldsAtJob}}
-                    <li class="kobold-list" style="color: {{kobold.textColor}}; background-color: {{kobold.color}}">{{kobold.name}}</li>
-                    <br>
+                <li class="kobold-list" style="color: {{kobold.textColor}}; background-color: {{kobold.color}}">{{kobold.name}}</li>
+                <br>
                 {{/each}}
             </ul>
             <br>
