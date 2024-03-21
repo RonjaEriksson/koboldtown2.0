@@ -79,7 +79,7 @@ Template.mainContainer.onCreated(function () {
     setInterval(function() {
     }, checkCompletionInterval);
 
-    const resourceInterval = 1000;
+    const resourceInterval = 10000;
     setInterval(function () {
         Meteor.call("increaseResource", localStorage.getItem("userId"));
     }, resourceInterval);
