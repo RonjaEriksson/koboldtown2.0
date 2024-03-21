@@ -32,7 +32,7 @@ async function doExpedition(expo, thisUserId) {
     if (expo.result.reward.length) {
         infoText += " (Found ";
     }
-    const town = TownCollection.find({ userId: thisUserId }, { projection: { resources: 1 } }).fetch()[0];
+    const town = TownCollection.find({ userId: thisUserId }, { projection: { resources: 1, culture: 1, } }).fetch()[0];
     for (reward of expo.result.reward) {
         infoText += reward.amount + " " + reward.name + ", ";
         const resource = town.resources.find(e => e.name === reward.name)
@@ -68,6 +68,11 @@ async function doExpedition(expo, thisUserId) {
                 console.log("adding friendship");
                 console.log(effect.points);
                 break;
+            case 'Add culture':
+                console.log("adding culture");
+                console.log(effect.increase);
+                town.culture++;
+                break;
         }
     }
 
@@ -99,7 +104,7 @@ async function doExpedition(expo, thisUserId) {
     }
     
     let notices = [returnNotice, notice,];
-    TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources }, $addToSet: { notices: { $each: notices } } });
+    TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources, culture: town.culture, }, $addToSet: { notices: { $each: notices } } });
     TownCollection.update({ userId: thisUserId }, { $pull: { expeditions: { id: expo.id } } });
     for (koboldId of expo.koboldIds) {
         console.log(koboldId);
@@ -234,6 +239,7 @@ Meteor.methods({
                 resources: ResourceCollection.find({}).fetch(),
                 jobs: [],
                 level: 0,
+                culture: 0,
                 notices: [welcomeNotice]
             };
             TownCollection.insert(town);
@@ -338,8 +344,14 @@ Meteor.methods({
             time: Date.now(),
             id: Random.id(),
         }
-        TownCollection.update({ userId: thisUserId }, { $addToSet: { notices: birthNotice } });
-        console.log(birthNotice);
+        const town = TownCollection.findOne({ userId: thisUserId });
+        const eggs = town.resources.find(e => e.name === eggs);
+        if (!eggs) {
+            console.error("No egg to create kobold from.");
+            return;
+        }
+        eggs.stockpile--;
+        TownCollection.update({ userId: thisUserId }, { $addToSet: { notices: birthNotice } }, { $set: { resources: town.resources } });
         KoboldCollection.insert(kobold);
     },
     'increaseSkill'(koboldId, skillName, exp) {
@@ -421,17 +433,18 @@ Meteor.methods({
         const kobolds = KoboldCollection.find({ userId: thisUserId }).fetch();
         for (const kobold of kobolds) {
             if (kobold.job) {
-                const baseNames = kobold.job.gains.filter(e => e.gain < 0).map(e => e.name);
+                const bases = kobold.job.gains.filter(e => e.gain < 0);
+                const baseNames = bases.map(e => e.name);
                 const baseResources = baseNames ? townResources.filter(e => baseNames.includes(e.name)) : [];
                 let baseAvailable = true;
-                for (const base of baseResources) {
-                    if ((base.stockpile + base.gain) < 0) {
+                for (const base of bases) {
+                    if (!(townResources.find(e => e.name === base.name)) || (townResources.find(e => e.name === base.name).stockpile  + base.gain) < 0) {
                         baseAvailable = false;
                     } else {
-                        resourceGain[base] += kobold.job.gains.find(e => e.name === base.name).gain;
+                        resourceGain[base.name] += kobold.job.gains.find(e => e.name === base.name).gain;
                     }
                 }
-                if (!baseResources || baseAvailable) {
+                if (!bases || baseAvailable) {
                     for (resource of kobold.job.gains) {
                         if (resourceGain[resource.name] === undefined) {
                             resourceGain[resource.name] = 0;
@@ -607,7 +620,12 @@ Meteor.methods({
         if (kobolds.length > 1) {
             infoText += " and " + kobolds[kobolds.length - 1].name;
         } 
-        infoText += " has left the den.)"
+        let time = expedition.length / 60000;
+        let minutes = " minutes"
+        if (time === 1) {
+            minutes = " minute";
+        }
+        infoText += " has left the den. They will be back in " + time + minutes + ".)";
         
         const notice = {
             text: infoText,

@@ -163,12 +163,17 @@ Template.showKobold.helpers({
         const validJobs = checkReqs(instance.currentTown.get(), jobs);
         return validJobs.filter(function (job) {
             const townJob = instance.currentTown.get().jobs.find(e => e.name === job.name);
+            console.log(townJob);
             return !townJob || townJob.spotsOpen > 0 || townJob.spotsOpen === "unlimited";
         });
     },
     isBusy() { 
         const instance = Template.instance();
         return instance.data.busy;
+    },
+    cannotAffordBreeding() {
+        const instance = Template.instance();
+        return !instance.currentTown.get()?.resources?.find(e = e.name === "eggs") || instance.currentTown.get()?.resources?.find(e = e.name === "eggs")?.stockpile <= 0;
     },
     breedTarget() {
         const instance = Template.instance();

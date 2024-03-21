@@ -513,7 +513,7 @@ export const jobs = [
         }
     },
     {
-        name: "smelt",
+        name: "basic smelting",
         color: "gold",
         resources: [
             "metal",
@@ -537,7 +537,100 @@ export const jobs = [
         requirements: {
             have: {
                 buildings: [{ name: 'smelter', level: 1 }],
+            },
+            not: {
+                buildings: [{ name: 'smelter', level: 10 }],
             }
+        }
+    },
+    {
+        name: "skilled smelting",
+        color: "gold",
+        resources: [
+            "metal",
+        ],
+        production: {
+            metal: 10,
+            stone: -30,
+        },
+        baseStat: 'physical',
+        relevantSkills: [
+            "mining",
+            "smelting",
+        ],
+        skillGains: [
+            {
+                name: "smelting",
+                gain: 20,
+            },
+        ],
+        spotsOpen: 1,
+        requirements: {
+            have: {
+                buildings: [{ name: 'smelter', level: 10 }],
+            },
+            not: {
+                buildings: [{ name: 'smelter', level: 20 }],
+            }
+        }
+    },
+    {
+        name: "advanced smelting",
+        color: "gold",
+        resources: [
+            "metal",
+        ],
+        production: {
+            metal: 100,
+            stone: -300,
+        },
+        baseStat: 'physical',
+        relevantSkills: [
+            "mining",
+            "smelting",
+        ],
+        skillGains: [
+            {
+                name: "smelting",
+                gain: 20,
+            },
+        ],
+        spotsOpen: 1,
+        requirements: {
+            have: {
+                buildings: [{ name: 'smelter', level: 20 }],
+            },
+            not: {
+                buildings: [{ name: 'smelter', level: 30 }],
+            }
+        }
+    },
+    {
+        name: "expert smelting",
+        color: "gold",
+        resources: [
+            "metal",
+        ],
+        production: {
+            metal: 1000,
+            stone: -3000,
+        },
+        baseStat: 'physical',
+        relevantSkills: [
+            "mining",
+            "smelting",
+        ],
+        skillGains: [
+            {
+                name: "smelting",
+                gain: 20,
+            },
+        ],
+        spotsOpen: 1,
+        requirements: {
+            have: {
+                buildings: [{ name: 'smelter', level: 30 }],
+            },
         }
     },
     {
@@ -815,7 +908,7 @@ export const jobs = [
             seeds: 1,
             food: -3,
         },
-        baseStat: 'mental',
+        baseStat: 'physical',
         relevantSkills: [
             "harvesting",
         ],
@@ -842,7 +935,7 @@ export const jobs = [
             fruits: 1,
             food: -3,
         },
-        baseStat: 'mental',
+        baseStat: 'physical',
         relevantSkills: [
             "harvesting",
         ],
@@ -856,6 +949,60 @@ export const jobs = [
         requirements: {
             have: {
                 buildings: [{ name: 'orchard', level: 1 }],
+            }
+        }
+    },
+    {
+        name: "harvest nuts",
+        color: "chocolate",
+        resources: [
+            "seeds",
+        ],
+        production: {
+            nuts: 1,
+            food: -3,
+        },
+        baseStat: 'physical',
+        relevantSkills: [
+            "harvesting",
+        ],
+        skillGains: [
+            {
+                name: "harvesting",
+                gain: 20,
+            },
+        ],
+        spotsOpen: 1,
+        requirements: {
+            have: {
+                buildings: [{ name: 'orchard', level: 10 }, { name: 'farm', level: 30 } ],
+            }
+        }
+    },
+    {
+        name: "harvest berries",
+        color: "chocolate",
+        resources: [
+            "seeds",
+        ],
+        production: {
+            berries: 1,
+            food: -3,
+        },
+        baseStat: 'physical',
+        relevantSkills: [
+            "harvesting",
+        ],
+        skillGains: [
+            {
+                name: "harvesting",
+                gain: 20,
+            },
+        ],
+        spotsOpen: 1,
+        requirements: {
+            have: {
+                buildings: [{ name: 'orchard', level: 20 }, { name: 'farm', level: 40 }],
             }
         }
     },
@@ -884,7 +1031,7 @@ export const jobs = [
                 gain: 20,
             },
         ],
-        spotsOpen: 1,
+        spotsOpen: "unlimited",
         requirements: {
             have: {
                 buildings: [{ name: 'temple', level: 1 }],

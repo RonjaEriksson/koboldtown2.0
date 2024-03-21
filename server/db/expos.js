@@ -1296,138 +1296,511 @@ export const expos = [
         ],
         greatOutcomes: [
             {
-                text: "Your kobolds found some seeds, and a shiny rock!",
-                reward: [
+                text: "Your kobolds had a great time! They will have in jokes for months to come.",
+                reward: [],
+                effect: [
                     {
-                        name: "seeds",
-                        amount: 30,
+                        name: 'Add friendship',
+                        points: 10,
                     },
                     {
-                        name: "gems",
-                        amount: 1,
+                        name: 'Add skill',
+                        skill: 'improv',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 1000,
+                    },
+                    {
+                        name: "Add culture",
+                        increase: 10,
+                    },
+
+                ]
+            },
+            {
+                text: "Your kobolds laughed so much at their own jokes that they could hardly breathe.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add friendship',
+                        points: 15,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'improv',
+                        increase: 1000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 1000,
+                    },
+                    {
+                        name: "Add culture",
+                        increase: 5,
+                    },
+
+                ]
+            },
+            {
+                text: "Your kobolds made up a ridiculous story featuring several dragons and one lizard.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add friendship',
+                        points: 10,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'improv',
+                        increase: 2000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 1000,
+                    },
+                    {
+                        name: "Add culture",
+                        increase: 10,
+                    },
+
+                ]
+            },
+            {
+                text: "Your kobolds story featured a lot of lizards and goblins performing a heist.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add friendship',
+                        points: 10,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'improv',
+                        increase: 2000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 1000,
+                    },
+                    {
+                        name: "Add culture",
+                        increase: 10,
+                    },
+
+                ]
+            },
+            {
+                text: "Your kobolds are still singing the songs they improvised.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add friendship',
+                        points: 10,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'improv',
+                        increase: 2000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 1000,
+                    },
+                    {
+                        name: "Add culture",
+                        increase: 10,
+                    },
+
+                ]
+            },
+            {
+                text: "Your kobolds had a fun time doing very bad impressions of one another.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add friendship',
+                        points: 10,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'improv',
+                        increase: 2000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 1000,
+                    },
+                    {
+                        name: "Add culture",
+                        increase: 10,
+                    },
+
+                ]
+            }, ,
+        ],
+        goodOutcomes: [
+            {
+                text: "Your kobolds had a bit of trouble in the beginning, but they recovered and put on a very funny show.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add friendship',
+                        points: 10,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'improv',
+                        increase: 2000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 2000,
+                    },
+                    {
+                        name: "Add culture",
+                        increase: 5,
+                    },
+
+                ]
+            },
+            {
+                text: "Your kobolds improvised a story about Bibbles the red kobold living in a human village.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add friendship',
+                        points: 10,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'improv',
+                        increase: 2000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 2000,
+                    },
+                    {
+                        name: "Add culture",
+                        increase: 5,
+                    },
+
+                ]
+            },
+            {
+                text: "Your kobolds improvised a story about Lenny the lizard.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add friendship',
+                        points: 10,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'improv',
+                        increase: 2000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 2000,
+                    },
+                    {
+                        name: "Add culture",
+                        increase: 5,
+                    },
+
+                ]
+            },
+            {
+                text: "Your kobolds come back out of breath from all the laughing.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add friendship',
+                        points: 20,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'improv',
+                        increase: 2000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 2000,
+                    },
+                    {
+                        name: "Add culture",
+                        increase: 1,
+                    },
+
+                ]
+            },
+            {
+                text: "Your kobolds were joined by a traveling dragon, and are in awe of their improv prowess.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add friendship',
+                        points: 5,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'improv',
+                        increase: 3000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 2000,
+                    },
+                    {
+                        name: "Add culture",
+                        increase: 1,
+                    },
+
+                ]
+            },
+        ],
+        badOutcomes: [
+            {
+                text: "Your kobolds end up arguing more than improvising.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'improv',
+                        increase: 2000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 2000,
+                    },
+
+                ]
+            },
+            { 
+                text: "Your kobolds interrupt one another constantly.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add skill',
+                        skill: 'improv',
+                        increase: 2000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'persuasion',
+                        increase: 2000,
+                    },
+
+                ]
+            }
+        ],
+        length: 30000,
+        costs:
+            [
+                {
+                    name: "gourmet rations",
+                    amount: 2000,
+                },
+            ],
+
+    },
+    {
+        name: "Hold an art art exhibition.",
+        color: "darkGreen",
+        partySize: 2,
+        description: "Show off your kobolds beautiful artwork.",
+        skills: [
+            "persuasion",
+            "drawing",
+        ],
+        requirements: {
+            have: {
+                buildings: [{ name: 'crafting hut', level: 10 } ],
+            }
+        },
+        startTexts: [
+            "Your kobolds goes through a folder of paintings, chosing the best ones.",
+            "Your kobolds arrange drawings into themed collections."
+        ],
+        skillchecks: [
+            {
+                skill: "drawing",
+                difficulty: 10,
+            },
+            {
+                skill: "persuasion",
+                difficulty: 10,
+            },
+        ],
+        greatOutcomes: [
+            {
+                text: "Your kobolds drawings impress a lot of visiting kobolds! One gifts you fancy necklaces from their collection.",
+                reward: [
+                    {
+                        name: "jewlery",
+                        amount: 3000,
                     },
                 ],
-            },
-            {
-                text: "Your kobolds found a lot of seeds.",
-                reward: [
+                effect: [
                     {
-                        name: "seeds",
-                        amount: 50,
+                        name: 'Add culture',
+                        increase: 5,
                     },
                 ]
             },
             {
-                text: "Your kobolds found some fruits.",
+                text: "An artistic kobold is impressed by your artwork and trades you for some of his drawings.",
                 reward: [
                     {
-                        name: "fruits",
-                        amount: 10,
+                        name: "drawings",
+                        amount: 500,
+                    },
+                ],
+                effect: [
+                    {
+                        name: 'Add culture',
+                        increase: 5,
                     },
                 ]
             },
             {
-                text: "Your kobolds found a lot of tasty nuts.",
-                reward: [
+                text: "A dragon passing by loves your kobolds drawings and he takes them all.",
+                reward: [],
+                effect: [
                     {
-                        name: "nuts",
-                        amount: 50,
+                        name: 'Add culture',
+                        increase: 10,
                     },
                 ]
             },
             {
-                text: "Your kobolds found a patch of raspberries.",
+                text: "Your kobolds discussed the themes of some of the paintings with visitors.",
+                reward: [],
+                effect: [
+                    {
+                        name: 'Add culture',
+                        increase: 10,
+                    },
+                ]
+            },
+            {
+                text: "Your kobolds traded a beautiful fingerpainting for some berries.",
                 reward: [
                     {
                         name: "berries",
                         amount: 50,
                     },
+                ],
+                effect: [
+                    {
+                        name: 'Add culture',
+                        increase: 5,
+                    },
                 ]
             },
             {
-                text: "Your kobolds found a lot of diffrent kinds of food.",
-                reward: [
+                text: "A visiting goblin is moved to tears by one of your kobolds paintings+.",
+                reward: [],
+                effect: [
                     {
-                        name: "food",
-                        amount: 10000,
+                        name: 'Add culture',
+                        increase: 20,
                     },
                 ]
             },
         ],
         goodOutcomes: [
             {
-                text: "Your kobolds found a plant and harvested it's seeds.",
-                reward: [
+                text: "Your kobolds are happy about showing off their art.",
+                reward: [],
+                effect: [
                     {
-                        name: "seeds",
-                        amount: 10
+                        name: 'Add culture',
+                        increase: 10,
                     },
                 ]
             },
             {
-                text: "Your kobolds found some blueberries.",
+                text: "Your kobolds sell some of their paintings.",
                 reward: [
                     {
-                        name: "berries",
+                        name: "gems",
                         amount: 10
+                    },
+                ],
+                effect: [
+                    {
+                        name: 'Add culture',
+                        increase: 5,
                     },
                 ]
             },
             {
-                text: "Your kobolds found an apple tree.",
-                reward: [
+                text: "Your kobolds lizard painting recieves much praise.",
+                reward: [],
+                effect: [
                     {
-                        name: "fruits",
-                        amount: 10
+                        name: 'Add culture',
+                        increase: 10,
                     },
                 ]
             },
             {
-                text: "Your kobolds found hazelnuts on the ground.",
-                reward: [
+                text: "Your kobolds painting of the sky really impresses kobolds from another town.",
+                reward: [],
+                effect: [
                     {
-                        name: "nuts",
-                        amount: 10
+                        name: 'Add culture',
+                        increase: 10,
                     },
                 ]
             },
             {
-                text: "Your kobolds found wild carrots.",
-                reward: [
+                text: "Your kobolds recieve a lot of inspiraion from the visitors.",
+                reward: [],
+                effect: [
                     {
-                        name: "food",
-                        amount: 1000,
-                    }
+                        name: 'Add culture',
+                        increase: 10,
+                    },
                 ]
 
             },
         ],
         badOutcomes: [
             {
-                text: "Your kobolds return empty handed.",
-                reward: [],
-            },
-            {
-                text: "Your kobolds find no food, but their foraging skills improve.",
+                text: "Your kobolds argue about what a painting 'really means'.",
                 reward: [],
                 effect: [
                     {
-                        name: 'Add skill',
-                        skill: 'nature',
-                        increase: 1000,
+                        name: 'Add culture',
+                        increase: 5,
                     },
                     {
                         name: 'Add skill',
-                        skill: 'survival',
+                        skill: 'persuasion',
                         increase: 1000,
                     },
-                    {
-                        name: 'Add skill',
-                        skill: 'perception',
-                        increase: 1000,
-                    },
-
                 ]
+            },
+            {
+                text: "A dragon is really rude about your paintings.",
+                reward: [],
 
             },
         ],
@@ -1435,8 +1808,8 @@ export const expos = [
         costs:
             [
                 {
-                    name: "food",
-                    amount: 200,
+                    name: "drawings",
+                    amount: 2000,
                 },
             ],
 
