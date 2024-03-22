@@ -700,7 +700,7 @@ Meteor.methods({
             const resource = town.resources.find(e => e.name === cost.name);
             const realCost = cost.amount * costMultiplier;
             resource.stockpile -= realCost;
-            if (resource.stockplie < 0) {
+            if (resource.stockpile < 0) {
                 console.error("Funds for building not found.")
                 return;
             }
