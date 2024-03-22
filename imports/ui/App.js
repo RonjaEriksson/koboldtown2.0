@@ -58,8 +58,11 @@ Template.mainContainer.onCreated(function () {
     Meteor.subscribe("kobold");
     Meteor.subscribe("job");
     Meteor.subscribe("building");
+    //const resourceInterval = 100000;
+    const resourceInterval = 10000; //this is while testing only
     instance.currentTown = new ReactiveVar(null);
     instance.kobolds = new ReactiveVar(null);
+    instance.countdown = new ReactiveVar(resourceInterval);
     //localStorage.setItem("userId", `${Random.id()}`); //uncomment this when you want to reset town
     //Meteor.call('addWanderingKobold', localStorage.getItem("userId")); //test of adding wandering kobold
     instance.autorun(function auto_townId() {
@@ -75,15 +78,15 @@ Template.mainContainer.onCreated(function () {
         instance.kobolds.set(KoboldCollection.find({ userId: localStorage.getItem("userId") }).fetch());
     });
 
-    const checkCompletionInterval = 60000;
-    setInterval(function() {
-    }, checkCompletionInterval);
-
-    const resourceInterval = 10000;
-    setInterval(function () {
+    
+    Meteor.setInterval(function () {
         Meteor.call("increaseResource", localStorage.getItem("userId"));
+        instance.countdown.set(resourceInterval);
     }, resourceInterval);
 
+    Meteor.setInterval(function () {
+        instance.countdown.set(instance.countdown.get() - 1000);
+    }, 1000)
     //Meteor.call("handleExpeditions", localStorage.getItem("userId")); (remove this maybe)
 });
 
@@ -91,6 +94,10 @@ Template.mainContainer.helpers({
     notReady() {
         const instance = Template.instance();
         return !instance.currentTown.get();
+    },
+    countdown() {
+        const instance = Template.instance();
+        return instance.countdown.get()/1000;
     },
     townName() {
         const instance = Template.instance();
@@ -136,7 +143,7 @@ Template.showKobold.onCreated(function () {
     instance.selectedJob = new ReactiveVar(null);
 
     instance.autorun(function auto_townId() {
-        instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }, { projection: {jobs:1, buildings: 1,}}));
+        instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }, { projection: {jobs:1, buildings: 1, resources: 1, updateInterval: 1,}}));
     });
 
     instance.autorun(function auto_kobolds() {
@@ -163,9 +170,18 @@ Template.showKobold.helpers({
         const validJobs = checkReqs(instance.currentTown.get(), jobs);
         return validJobs.filter(function (job) {
             const townJob = instance.currentTown.get().jobs.find(e => e.name === job.name);
-            console.log(townJob);
             return !townJob || townJob.spotsOpen > 0 || townJob.spotsOpen === "unlimited";
         });
+    },
+    jobInactive() {
+        const instance = Template.instance();
+        const resources = instance.currentTown.get().resources;
+        for (const gain of instance.data.job?.gains || []) {
+            if (resources.find(e => e.name === gain.name).stockpile + gain.gain*instance.currentTown.get().updateInterval < 0) {
+                return true;
+            }
+        }
+        return false;
     },
     isBusy() { 
         const instance = Template.instance();
@@ -173,7 +189,7 @@ Template.showKobold.helpers({
     },
     cannotAffordBreeding() {
         const instance = Template.instance();
-        return !instance.currentTown.get()?.resources?.find(e = e.name === "eggs") || instance.currentTown.get()?.resources?.find(e = e.name === "eggs")?.stockpile <= 0;
+        return !instance.currentTown.get()?.resources?.find(e => e.name === "eggs") || instance.currentTown.get()?.resources?.find(e => e.name === "eggs")?.stockpile <= 0;
     },
     breedTarget() {
         const instance = Template.instance();
@@ -260,11 +276,9 @@ Template.showJob.onCreated(function () {
     instance.currentTown = new ReactiveVar(null);
     instance.kobolds = new ReactiveVar(null);
 
-    /*
     instance.autorun(function auto_townId() {
-        instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }));
+        instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }, { projection: {resources: 1, updateInterval: 1,}}));
     });
-    */
 
     instance.autorun(function auto_kobolds() {
         instance.kobolds.set(KoboldCollection.find({ userId: localStorage.getItem("userId") }).fetch());
@@ -283,6 +297,15 @@ Template.showJob.helpers({
     resources() {
         const instance = Template.instance();
         return Object.keys(instance.data.production).filter(e => instance.data.production[e] >= 0);
+    },
+    resourceColor(cost) {
+        const instance = Template.instance();
+        console.log(cost);
+        if (instance.currentTown.get().resources.find(e => e.name === cost).stockpile + instance.data.production[cost] * instance.currentTown.get().updateInterval < 0) {
+            return "red";
+        } else {
+            return "white";
+        }
     },
     costs() {
         const instance = Template.instance();
@@ -443,6 +466,17 @@ Template.showBuilding.helpers({
         const instance = Template.instance();
         const costMultiplier = (+instance.currentTown.get()?.buildings?.find(e => e.name === instance.data.name)?.level || 0) + 1;
         return cost.amount * costMultiplier;
+    },
+    resourceColor(cost) {
+        const instance = Template.instance();
+        const resources = instance.currentTown.get()?.resources;
+        const costMultiplier = (+instance.currentTown.get()?.buildings?.find(e => e.name === instance.data.name)?.level || 0) + 1;
+        if (resources.find(e => e.name === cost.name).stockpile < cost.amount * costMultiplier) {
+            return "red";
+        } else {
+            return "white";
+        }
+        
     },
     cannotAfford() {
         const instance = Template.instance();

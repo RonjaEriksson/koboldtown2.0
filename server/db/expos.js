@@ -148,17 +148,17 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'survival',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'perception',
-                        increase: 1000,
+                        increase: 10000,
                     },
 
                 ]
@@ -220,22 +220,22 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'arcana',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'healing',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'animal handling',
-                        increase: 1000,
+                        increase: 10000,
                     },
 
                 ]
@@ -292,7 +292,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 2000,
+                        increase: 20000,
                     },
 
                 ]
@@ -305,7 +305,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 1000,
+                        increase: 10000,
                     },
 
                 ]
@@ -317,7 +317,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'arcana',
-                        increase: 1000,
+                        increase: 10000,
                     },
 
                 ]
@@ -336,12 +336,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'intimidation',
-                        increase: 1000,
+                        increase: 10000,
                     }
                 ]
             },
@@ -411,14 +411,14 @@ export const expos = [
                 reward: [
                     {
                         name: 'gems',
-                        amount: 1000,
+                        amount: 10000,
                     }
                 ],
                 effect: [
                     {
                         name: 'Add skill',
                         skill: 'mining',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ]
             },
@@ -434,7 +434,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'mining',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ]
             },
@@ -450,7 +450,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'mining',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ]
             },
@@ -468,7 +468,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'mining',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ]
             },
@@ -484,7 +484,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'mining',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ]
 
@@ -507,7 +507,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'mining',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ]
 
@@ -570,7 +570,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 1000,
+                        increase: 10000,
                     },
 
                 ]
@@ -582,12 +582,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'animal handling',
-                        increase: 1000,
+                        increase: 10000,
                     },
 
                 ]
@@ -606,7 +606,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 1000,
+                        increase: 10000,
                     },
 
                 ]
@@ -618,7 +618,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'swimming',
-                        increase: 1000,
+                        increase: 10000,
                     },
 
                 ]
@@ -636,7 +636,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 1000,
+                        increase: 10000,
                     },
 
                 ]
@@ -650,12 +650,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'agility',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -666,7 +666,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -677,7 +677,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'swimming',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -688,7 +688,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -699,7 +699,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'arcana',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -710,12 +710,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'perception',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -726,12 +726,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'perception',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -797,7 +797,7 @@ export const expos = [
                     {
                         name: "Add skill",
                         skill: "arcana",
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -808,7 +808,7 @@ export const expos = [
                     {
                         name: "Add skill",
                         skill: "cooking",
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
 
@@ -822,7 +822,7 @@ export const expos = [
                     {
                         name: "Add skill",
                         skill: "persuation",
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -896,7 +896,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'agility',
-                        increase: 1000,
+                        increase: 10000,
                     },
 
                 ]
@@ -908,12 +908,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'arcana',
-                        increase: 1000,
+                        increase: 10000,
                     },
 
                 ]
@@ -927,7 +927,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 1000,
+                        increase: 10000,
                     },
 
                 ]
@@ -945,7 +945,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 1000,
+                        increase: 10000,
                     },
 
                 ]
@@ -959,7 +959,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -970,7 +970,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -981,7 +981,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'survival',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -992,7 +992,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -1003,7 +1003,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'survival',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -1014,12 +1014,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'perception',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -1030,12 +1030,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'agility',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ],
             },
@@ -1053,7 +1053,7 @@ export const expos = [
     {
         name: "Find egg rocks.",
         color: "gray",
-        partySize: 1,
+        partySize: 3,
         description: "Your kobolds go looking for the special rocks that can be imbued with divine energy to create a kobold that is the mix of two kobolds, given that their friendship is high enough.",
         skills: [
             "all",
@@ -1129,17 +1129,32 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'strength',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'arcana',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'survival',
-                        increase: 1000,
+                        increase: 10000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'navigation',
+                        increase: 10000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'animal handling',
+                        increase: 10000,
+                    },
+                    {
+                        name: 'Add skill',
+                        skill: 'perception',
+                        increase: 10000,
                     },
 
                 ]
@@ -1152,12 +1167,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'animal handling',
-                        increase: 1000,
+                        increase: 10000,
                     },
 
                 ]
@@ -1171,7 +1186,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'survival',
-                        increase: 1000,
+                        increase: 100000,
                     },
                 ],
             },
@@ -1182,7 +1197,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'navigation',
-                        increase: 1000,
+                        increase: 100000,
                     },
                 ],
             },
@@ -1193,12 +1208,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'survival',
-                        increase: 1000,
+                        increase: 100000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'navigation',
-                        increase: 1000,
+                        increase: 100000,
                     },
                 ],
             },
@@ -1209,7 +1224,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'mining',
-                        increase: 1000,
+                        increase: 100000,
                     },
                 ],
             },
@@ -1220,7 +1235,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'survival',
-                        increase: 1000,
+                        increase: 100000,
                     },
                 ],
             },
@@ -1231,12 +1246,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'nature',
-                        increase: 1000,
+                        increase: 100000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'animal handling',
-                        increase: 1000,
+                        increase: 100000,
                     },
                 ],
             },
@@ -1247,7 +1262,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'intimidation',
-                        increase: 1000,
+                        increase: 100000,
                     },
                 ],
             },
@@ -1306,12 +1321,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'improv',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: "Add culture",
@@ -1331,12 +1346,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'improv',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: "Add culture",
@@ -1356,12 +1371,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'improv',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: "Add culture",
@@ -1381,12 +1396,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'improv',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: "Add culture",
@@ -1406,12 +1421,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'improv',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: "Add culture",
@@ -1431,12 +1446,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'improv',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 1000,
+                        increase: 10000,
                     },
                     {
                         name: "Add culture",
@@ -1458,12 +1473,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'improv',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: "Add culture",
@@ -1483,12 +1498,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'improv',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: "Add culture",
@@ -1508,12 +1523,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'improv',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: "Add culture",
@@ -1533,12 +1548,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'improv',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: "Add culture",
@@ -1558,12 +1573,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'improv',
-                        increase: 3000,
+                        increase: 30000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: "Add culture",
@@ -1581,12 +1596,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'improv',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 2000,
+                        increase: 20000,
                     },
 
                 ]
@@ -1598,12 +1613,12 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'improv',
-                        increase: 2000,
+                        increase: 20000,
                     },
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 2000,
+                        increase: 20000,
                     },
 
                 ]
@@ -1794,7 +1809,7 @@ export const expos = [
                     {
                         name: 'Add skill',
                         skill: 'persuasion',
-                        increase: 1000,
+                        increase: 10000,
                     },
                 ]
             },

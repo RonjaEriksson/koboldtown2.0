@@ -13,7 +13,9 @@
     <div class="container">
         <div class="section">
             Resources
-
+            <br>
+            Resource gain in {{countdown}} seconds.
+            
             {{#each resource in resources}}
             {{> showResource resource}}
             {{/each}}
@@ -75,33 +77,33 @@
             Social: {{social}}
             <br>
             {{#each skill in skills}}
-                {{#if skill.level}}
-                    <p style="color: {{skill.color}};">{{skill.name}} : {{skill.level}}</p>
-                {{/if}}
+            {{#if skill.level}}
+            <p style="color: {{skill.color}};">{{skill.name}} : {{skill.level}}</p>
+            {{/if}}
             {{/each}}
-            Current job: {{#if job}}{{job.name}}{{else}}None{{/if}}
+            Current job: {{#if job}}{{job.name}}{{else}}None{{/if}} {{#if jobInactive}}(Inactive){{/if}}
             {{#if job}}
-                <button class="js-quit-job">Quit job</button>
+            <button class="js-quit-job">Quit job</button>
             {{/if}}
             <br>
             <select style="background-color: {{breedTarget.color}}; color: {{breedTarget.textColor}};" class="js-breed-select" id="breedSelect">
                 <option selected style="background-color: white; color: black;">Breed With</option>
                 {{#each otherKobold in kobolds}}
-                    {{#unless isCurrentKobold otherKobold._id}}
-                        {{#unless otherKobold.busy}}
-                            <option style="background-color: {{otherKobold.color}}; color: {{otherKobold.textColor}}" value="{{otherKobold._id}}">{{otherKobold.name}}</option>
-                        {{/unless}}
-                    {{/unless}}
+                {{#unless isCurrentKobold otherKobold._id}}
+                {{#unless otherKobold.busy}}
+                <option style="background-color: {{otherKobold.color}}; color: {{otherKobold.textColor}}" value="{{otherKobold._id}}">{{otherKobold.name}}</option>
+                {{/unless}}
+                {{/unless}}
                 {{/each}}
             </select>
             <button title="Breeding requires an egg" disabled={{cannotAffordBreeding}} class="js-breed">Confirm</button>
-    
+
             <br>
 
             <select class="js-select-job" style="color: {{selectedJob.color}};" id="jobSelect">
                 <option selected style="color: black; background-color: white;">Chose job</option>
                 {{#each job in jobs}}
-                    <option style="color: {{job.color}};" value="{{job.name}}">{{job.name}}</option>
+                <option style="color: {{job.color}};" value="{{job.name}}">{{job.name}}</option>
                 {{/each}}
             </select>
             <button disabled={{isBusy}} class="js-chose-job">Confirm</button>
@@ -146,7 +148,7 @@
                 <br>
                 <ul>
                     {{#each cost in costs}}
-                    <li>{{resourceProduction cost}}&nbsp;{{cost}}</li>
+                        <li style="color:{{resourceColor cost}};">{{resourceProduction cost}}&nbsp;{{cost}}</li>
                     {{/each}}
                 </ul>
             {{/if}}
@@ -206,7 +208,7 @@
             Cost:
             <br>
             {{#each cost in costs}}
-                {{cost.name}} : {{totalCost cost}}
+                <p style="color: {{resourceColor cost}};">{{cost.name}} : {{totalCost cost}}</p>
             <br>
             {{/each}}
             <button class="js-build" disabled={{cannotAfford}}>{{#if level}}Upgrade{{else}}Build{{/if}}</button>

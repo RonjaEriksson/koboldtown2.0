@@ -310,4 +310,41 @@ export const buildings = [
             }
         ],
     },
+    {
+        name: 'school',
+        requirements: {
+            have: {
+                buildings: [
+                    { name: 'library', level: 10 },
+                ],
+            }
+        },
+        color: 'grey',
+        costs: [
+            {
+                name: 'stone',
+                amount: 2000,
+            },
+            {
+                name: 'wood',
+                amount: 1000,
+            },
+            {
+                name: 'metal',
+                amount: 1000,
+            },
+            {
+                name: 'glass',
+                amount: 1000,
+            },
+            {
+                name: 'books',
+                amount: 500,
+            },
+            {
+                name: 'paper',
+                amount: 1000,
+            }
+        ],
+    },
 ]

@@ -50,6 +50,11 @@ export const skills = [
         color: 'pink',
     },
     {
+        name: 'history',
+        base: 'mental',
+        color: 'pink',
+    },
+    {
         name: 'writing',
         base: 'mental',
         color: 'navy',
@@ -111,6 +116,11 @@ export const skills = [
     },
     {
         name: 'mining',
+        base: 'physical',
+        color: 'grey',
+    },
+    {
+        name: 'woodworking',
         base: 'physical',
         color: 'grey',
     },

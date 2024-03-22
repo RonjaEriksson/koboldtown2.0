@@ -10,6 +10,7 @@ import { JobCollection } from '../imports/api/JobCollection';
 import { BuildingCollection } from '../imports/api/BuildingCollection';
 
 const LEVEL_ONE_STAT_TOTAL = 5;
+const UPDATE_INTERVAL = 100;
 
 function expeditionWait(wait) {
   return new Promise((resolve) => {
@@ -89,7 +90,7 @@ async function doExpedition(expo, thisUserId) {
     const kobolds = KoboldCollection.find({ _id: { $in: expo.koboldIds } }).fetch();
     returnText += kobolds[0].name;
     for (let i = 1; i < kobolds.length - 1; i++) {
-        returnText += ", " + kobolds[i];
+        returnText += ", " + kobolds[i].name;
     }
     if (kobolds.length > 1) {
         returnText += " and " + kobolds[kobolds.length - 1].name;
@@ -97,13 +98,13 @@ async function doExpedition(expo, thisUserId) {
     returnText += " has returned from the expedition.)"
 
     const returnNotice = {
-        text: returnText,
+        text: infoText + " " + returnText,
         dismissed: false,
         time: Date.now(),
         id: Random.id(),
     }
     
-    let notices = [returnNotice, notice,];
+    let notices = [returnNotice];
     TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources, culture: town.culture, }, $addToSet: { notices: { $each: notices } } });
     TownCollection.update({ userId: thisUserId }, { $pull: { expeditions: { id: expo.id } } });
     for (koboldId of expo.koboldIds) {
@@ -240,7 +241,13 @@ Meteor.methods({
                 jobs: [],
                 level: 0,
                 culture: 0,
-                notices: [welcomeNotice]
+                notices: [welcomeNotice],
+                resourceGain: {
+                    wood: 0,
+                    stone: 0,
+                    food: 0,
+                },
+                updateInterval: UPDATE_INTERVAL,
             };
             TownCollection.insert(town);
             //KoboldCollection.insertMany(kobolds); //try this
@@ -360,7 +367,8 @@ Meteor.methods({
         check(exp, Number);
         const kobold = KoboldCollection.find(koboldId).fetch()[0]; //add projection here
         const sourceSkill = SkillCollection.find({ name: skillName }).fetch()[0];
-        let infoText = "";
+        let skillText = "";
+        let levelText = "";
         if (!kobold) {
             console.error("Did not find kobold");
             return;
@@ -378,15 +386,15 @@ Meteor.methods({
         let leveled = false;
         const skill = kobold.skills[skillName];
         skill.exp += exp;
-        if (skill.exp > (skill.level +1) * (skill.level +1) * 1000) {
+        while (skill.exp > (skill.level +1) * (skill.level +1) * 1000) {
             skill.level++;
-            infoText += kobold.name + " has reached level " + skill.level + " in " + skillName + "."; 
+            skillText = kobold.name + " has reached level " + skill.level + " in " + skillName + "."; 
             leveled = true;
         }
         kobold.exp = kobold.exp ? kobold.exp : 0;
         kobold.level = kobold.level ? kobold.level : 0;
         kobold.exp += exp;
-        if (kobold.exp > kobold.level * kobold.level * 10000) {
+        while (kobold.exp > kobold.level * kobold.level * 10000) {
             kobold.level++;
             color = {
                 r: kobold.r,
@@ -398,13 +406,19 @@ Meteor.methods({
             kobold.mental = stats.mental;
             kobold.social = stats.social;
             leveled = true;
-            if (infoText) {
-                infoText += " ";
+            levelText += kobold.name + " has reached level " + kobold.level + ".";
+        }
+        noticeText = "";
+        if (skillText) {
+            noticeText += skillText;
+        } if (levelText) {
+            if (noticeText) {
+                noticeText += " ";
             }
-            infoText += kobold.name + " has reached level " + kobold.level + ".";
+            noticeText += levelText;
         }
         const notice = {
-            text: infoText,
+            text: noticeText,
             dismissed: false,
             time: Date.now(),
             id: Random.id(),
@@ -423,25 +437,29 @@ Meteor.methods({
     'increaseResource'(thisUserId) {
         check(thisUserId, String);
 
-        const townResources = TownCollection.find({ userId: thisUserId }, { projection: { resources: 1, jobs: 1 } }).fetch()[0]?.resources;
+        const town = TownCollection.find({ userId: thisUserId }, { projection: { resources: 1, jobs: 1, updateInterval: 1, } }).fetch()[0];
         const jobs = JobCollection.find({}).fetch();
-        if(!townResources) {
+        if(!town) {
             console.error("Found no town to update resources for.");
             return;
+        }
+        if (!town.updateInterval) {
+            town.updateInterval = UPDATE_INTERVAL;
         }
         const resourceGain = {};
         const kobolds = KoboldCollection.find({ userId: thisUserId }).fetch();
         for (const kobold of kobolds) {
             if (kobold.job) {
                 const bases = kobold.job.gains.filter(e => e.gain < 0);
-                const baseNames = bases.map(e => e.name);
-                const baseResources = baseNames ? townResources.filter(e => baseNames.includes(e.name)) : [];
                 let baseAvailable = true;
                 for (const base of bases) {
-                    if (!(townResources.find(e => e.name === base.name)) || (townResources.find(e => e.name === base.name).stockpile  + base.gain) < 0) {
+                    if (!(town.resources.find(e => e.name === base.name)) || (town.resources.find(e => e.name === base.name).stockpile  + base.gain*town.updateInterval) < 0) {
                         baseAvailable = false;
                     } else {
-                        resourceGain[base.name] += kobold.job.gains.find(e => e.name === base.name).gain;
+                        if (resourceGain[base.name] === undefined) {
+                            resourceGain[base.name] = 0;
+                        }
+                        //resourceGain[base.name] += kobold.job.gains.find(e => e.name === base.name).gain* town.updateInterval;
                     }
                 }
                 if (!bases || baseAvailable) {
@@ -449,16 +467,16 @@ Meteor.methods({
                         if (resourceGain[resource.name] === undefined) {
                             resourceGain[resource.name] = 0;
                         }
-                        const townResource = townResources.find(e => resource.name === e.name);
-                        townResource.stockpile += resource.gain;
-                        resourceGain[resource.name] += resource.gain;
+                        const townResource = town.resources.find(e => resource.name === e.name);
+                        townResource.stockpile += resource.gain*town.updateInterval;
+                        resourceGain[resource.name] += resource.gain*town.updateInterval;
                         if (townResource.stockpile < 0) {
                             townResource.stockpile = 0;
                         }
                     }
                     const job = jobs.find(e => e.name === kobold.job.name)
                     for (const skill of job.skillGains) {
-                        Meteor.call('increaseSkill', kobold._id, skill.name, skill.gain);
+                        Meteor.call('increaseSkill', kobold._id, skill.name, skill.gain*town.updateInterval);
                     }
                 }
 
@@ -467,29 +485,15 @@ Meteor.methods({
 
 
 
-        TownCollection.update({userId: thisUserId}, {$set:{resources: townResources, resourceGain: resourceGain,}})
+        TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources, resourceGain: resourceGain, updateInterval: town.updateInterval } })
     },
-    'addJobExp'(thisUserId) {
-        check(thisUserId, String);
-        //remove this method it is unused
-        const kobolds = KoboldCollection.find({ userId: thisUserId }).fetch();
-        const jobs = JobCollection.find({}).fetch();
-        for (const kobold of kobolds) {
-            if (kobold.job) {
-                const job = jobs.find(e => e.name === kobold.job.name)
-                for (const skill of job.skillGains)
-                    Meteor.call('increaseSkill', kobold._id, skill.name, skill.gain);
-            }
-        }
-    },
-
     'assignJob'(thisUserId, koboldId, job, starting) {
         check(thisUserId, String);
         check(koboldId, String);
         check(job, { name: String, gains: Array});
         check(starting, Boolean);
 
-        const town = TownCollection.findOne({ userId: thisUserId }, { projection: {resources: 1, jobs: 1,}});
+        const town = TownCollection.findOne({ userId: thisUserId }, { projection: {resources: 1, jobs: 1, resourceGain: 1, updateInterval: 1}});
         const kobold = KoboldCollection.findOne(koboldId);
         const sourceJob = JobCollection.findOne({ name: job.name });
         if (!kobold) {
@@ -503,6 +507,9 @@ Meteor.methods({
         if (!town) {
             console.error("Did not find chosen town.")
             return;
+        }
+        if (!town.updateInterval) {
+            town.updateInterval = UPDATE_INTERVAL;
         }
         let townJob = town.jobs.find(e => e.name === job.name);
         if (!townJob) {
@@ -542,6 +549,17 @@ Meteor.methods({
                 job.gains.push(gain);
             }
         }
+        for (const gain of job.gains) {
+            if (!town.resourceGain[gain.name]) {
+                town.resourceGain[gain.name] = 0;
+            }
+            if (starting) {
+                town.resourceGain[gain.name] += gain.gain * town.updateInterval;
+            } else {
+                town.resourceGain[gain.name] -= gain.gain * town.updateInterval;
+            }
+
+        }
         if(townJob.spotsOpen != "unlimited") {
             if(starting) {
                 townJob.spotsOpen--;
@@ -554,7 +572,7 @@ Meteor.methods({
             job = null;
         }
 
-        TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources , jobs: town.jobs} });
+        TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources , jobs: town.jobs, resourceGain: town.resourceGain, updateInterval: town.updateInterval} });
         KoboldCollection.update(koboldId, { $set: { job: job } });
     },
     'addExpedition'(thisUserId, expeditionId, koboldIds) {
@@ -615,7 +633,7 @@ Meteor.methods({
         let infoText = expedition.startTexts[getRandomArrayIndex(expedition.startTexts.length)] + " (";
         infoText += kobolds[0].name;
         for (let i = 1; i < kobolds.length - 1; i++) {
-            infoText += ", " + kobolds[i];
+            infoText += ", " + kobolds[i].name;
         }
         if (kobolds.length > 1) {
             infoText += " and " + kobolds[kobolds.length - 1].name;

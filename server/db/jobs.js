@@ -271,17 +271,12 @@ export const jobs = [
         },
         baseStat: 'physical',
         relevantSkills: [
-            "agility",
-            "strength",
+            "woodworking",
         ],
         skillGains: [
             {
-                name: "strength",
-                gain: 10,
-            },
-            {
-                name: "agility",
-                gain: 10,
+                name: "woodworking",
+                gain: 20,
             },
         ],
         spotsOpen: 1,
@@ -305,17 +300,12 @@ export const jobs = [
         },
         baseStat: 'physical',
         relevantSkills: [
-            "agility",
-            "strength",
+            "woodworking",
         ],
         skillGains: [
             {
-                name: "strength",
-                gain: 10,
-            },
-            {
-                name: "agility",
-                gain: 10,
+                name: "woodworking",
+                gain: 20,
             },
         ],
         spotsOpen: 1,
@@ -339,17 +329,12 @@ export const jobs = [
         },
         baseStat: 'physical',
         relevantSkills: [
-            "agility",
-            "strength",
+            "woodworking",
         ],
         skillGains: [
             {
-                name: "strength",
-                gain: 10,
-            },
-            {
-                name: "agility",
-                gain: 10,
+                name: "woodworking",
+                gain: 20,
             },
         ],
         spotsOpen: 1,
@@ -373,17 +358,12 @@ export const jobs = [
         },
         baseStat: 'physical',
         relevantSkills: [
-            "agility",
-            "strength",
+            "woodworking",
         ],
         skillGains: [
             {
-                name: "strength",
-                gain: 10,
-            },
-            {
-                name: "agility",
-                gain: 10,
+                name: "woodworking",
+                gain: 20,
             },
         ],
         spotsOpen: 1,
@@ -435,6 +415,7 @@ export const jobs = [
         relevantSkills: [
             "survival",
             "drawing",
+            "navigation",
         ],
         skillGains: [
             {
@@ -443,6 +424,10 @@ export const jobs = [
             },
             {
                 name: "drawing",
+                gain: 10,
+            },
+            {
+                name: "navigation",
                 gain: 10,
             },
         ],
@@ -1003,6 +988,79 @@ export const jobs = [
         requirements: {
             have: {
                 buildings: [{ name: 'orchard', level: 20 }, { name: 'farm', level: 40 }],
+            }
+        }
+    },
+    {
+        name: "read books",
+        color: "chocolate",
+        resources: [
+            "seeds",
+        ],
+        production: {
+            books: -3,
+        },
+        baseStat: 'mental',
+        relevantSkills: [],
+        skillGains: [
+            {
+                name: "history",
+                gain: 100,
+            },
+            {
+                name: "navigation",
+                gain: 100,
+            },
+            {
+                name: "arcana",
+                gain: 100,
+            },
+            {
+                name: "writing",
+                gain: 200,
+            },
+            {
+                name: "religion",
+                gain: 100,
+            },
+
+        ],
+        spotsOpen: 1,
+        requirements: {
+            have: {
+                buildings: [{ name: 'library', level: 20 },],
+            }
+        }
+    },
+    {
+        name: "attend trade school",
+        color: "chocolate",
+        resources: [
+            "seeds",
+        ],
+        production: {
+            books: -3,
+        },
+        baseStat: 'mental',
+        relevantSkills: [],
+        skillGains: [
+            {
+                name: "mining",
+                gain: 100,
+            },
+            {
+                name: "farming",
+                gain: 100,
+            },
+            {
+                name: "woodworking",
+                gain: 100,
+            },
+        ],
+        spotsOpen: 1,
+        requirements: {
+            have: {
+                buildings: [{ name: 'school', level: 1 },],
             }
         }
     },
