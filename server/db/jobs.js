@@ -1,7 +1,7 @@
 export const jobs = [
     {
         name: "scavenge",
-        color: "darkGrey",
+        color: "#85744a",
         resources: [
             "food",
             "stone",
@@ -23,18 +23,18 @@ export const jobs = [
                 gain: 5,
             },
         ],
-        spotsOpen: "unlimited",
-        requirements: {}
+        requirements: {},
     },
     {
-        name: "basic farming",
-        color: "lightGreen",
+        name: "farming",
+        color: "#4ad970",
         resources: [
             "food",
         ],
         production: {
             food: 3,
         },
+        levelScaling: true,
         baseStat: 'physical',
         relevantSkills: [
             "nature",
@@ -46,105 +46,14 @@ export const jobs = [
                 gain: 10,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'farm', level: 1 }],
             },
-            not: {
-                buildings: [{ name: 'farm', level: 10 }],
-            }
         }
     },
     {
-        name: "skilled farming",
-        color: "lightGreen",
-        resources: [
-            "food",
-        ],
-        production: {
-            food: 30,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "nature",
-            "farming"
-        ],
-        skillGains: [
-            {
-                name: "farming",
-                gain: 10,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'farm', level: 10 }],
-            },
-            not: {
-                buildings: [{ name: 'farm', level: 20 }],
-            }
-        }
-    },
-    {
-        name: "advanced farming",
-        color: "lightGreen",
-        resources: [
-            "food",
-        ],
-        production: {
-            food: 300,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "nature",
-            "farming"
-        ],
-        skillGains: [
-            {
-                name: "farming",
-                gain: 10,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'farm', level: 20 }],
-            },
-            not: {
-                buildings: [{ name: 'farm', level: 30 }],
-            }
-        }
-    },
-    {
-        name: "expert farming",
-        color: "lightGreen",
-        resources: [
-            "food",
-        ],
-        production: {
-            food: 3000,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "nature",
-            "farming"
-        ],
-        skillGains: [
-            {
-                name: "farming",
-                gain: 10,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'farm', level: 30 }],
-            }
-        }
-    },
-    {
-        name: "basic mining",
+        name: "mining",
         color: "grey",
         resources: [
             "stone",
@@ -157,111 +66,21 @@ export const jobs = [
             "mining",
             "strength",
         ],
+        levelScaling: true,
         skillGains: [
             {
                 name: "mining",
                 gain: 20,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'quarry', level: 1 }],
             },
-            not: {
-                buildings: [{ name: 'quarry', level: 10 }],
-            }
         }
     },
     {
-        name: "skilled mining",
-        color: "grey",
-        resources: [
-            "stone",
-        ],
-        production: {
-            stone: 30,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "mining",
-            "strength",
-        ],
-        skillGains: [
-            {
-                name: "mining",
-                gain: 20,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'quarry', level: 10 }],
-            },
-            not: {
-                buildings: [{ name: 'quarry', level: 20 }],
-            }
-        }
-    },
-    {
-        name: "advanced mining",
-        color: "grey",
-        resources: [
-            "stone",
-        ],
-        production: {
-            stone: 300,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "mining",
-            "strength",
-        ],
-        skillGains: [
-            {
-                name: "mining",
-                gain: 20,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'quarry', level: 20 }],
-            },
-            not: {
-                buildings: [{ name: 'quarry', level: 30 }],
-            }
-        }
-    },
-    {
-        name: "expert mining",
-        color: "grey",
-        resources: [
-            "stone",
-        ],
-        production: {
-            stone: 3000,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "mining",
-            "strength",
-        ],
-        skillGains: [
-            {
-                name: "mining",
-                gain: 20,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'quarry', level: 30 }],
-            }
-        }
-    },
-    {
-        name: "basic sawing",
+        name: "sawing",
         color: "brown",
         resources: [
             "wood",
@@ -269,6 +88,7 @@ export const jobs = [
         production: {
             wood: 3,
         },
+        levelscaling: true,
         baseStat: 'physical',
         relevantSkills: [
             "woodworking",
@@ -279,103 +99,15 @@ export const jobs = [
                 gain: 20,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'lumber yard', level: 1 }],
-            },
-            not: {
-                buildings: [{ name: 'lumber yard', level: 10 }],
-            }
-        }
-    },
-    {
-        name: "skilled sawing",
-        color: "brown",
-        resources: [
-            "wood",
-        ],
-        production: {
-            wood: 30,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "woodworking",
-        ],
-        skillGains: [
-            {
-                name: "woodworking",
-                gain: 20,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'lumber yard', level: 10 }],
-            },
-            not: {
-                buildings: [{ name: 'lumber yard', level: 20 }],
-            }
-        }
-    },
-    {
-        name: "advanced sawing",
-        color: "brown",
-        resources: [
-            "wood",
-        ],
-        production: {
-            wood: 300,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "woodworking",
-        ],
-        skillGains: [
-            {
-                name: "woodworking",
-                gain: 20,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'lumber yard', level: 20 }],
-            },
-            not: {
-                buildings: [{ name: 'lumber yard', level: 30 }],
-            }
-        }
-    },
-    {
-        name: "expert sawing",
-        color: "brown",
-        resources: [
-            "wood",
-        ],
-        production: {
-            wood: 3000,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "woodworking",
-        ],
-        skillGains: [
-            {
-                name: "woodworking",
-                gain: 20,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'lumber yard', level: 30 }],
             },
         }
     },
     {
         name: "make paper",
-        color: "grey",
+        color: "#948a70",
         resources: [
             "paper",
         ],
@@ -402,7 +134,7 @@ export const jobs = [
     },
     {
         name: "make maps",
-        color: "grey",
+        color: "#14592a",
         resources: [
             "maps",
         ],
@@ -431,7 +163,6 @@ export const jobs = [
                 gain: 10,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'town hall', level: 10 }],
@@ -440,7 +171,7 @@ export const jobs = [
     },
     {
         name: "crush rocks",
-        color: "silver",
+        color: "#757166",
         resources: [
             "sand",
         ],
@@ -458,7 +189,6 @@ export const jobs = [
                 gain: 20,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'quarry', level: 3 }],
@@ -467,7 +197,7 @@ export const jobs = [
     },
     {
         name: "mine gems",
-        color: "silver",
+        color: "#504463",
         resources: [
             "gems",
         ],
@@ -490,7 +220,6 @@ export const jobs = [
                 gain: 10,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'quarry', level: 30 }],
@@ -498,8 +227,8 @@ export const jobs = [
         }
     },
     {
-        name: "basic smelting",
-        color: "gold",
+        name: "smelting",
+        color: "#7e7d80",
         resources: [
             "metal",
         ],
@@ -507,6 +236,7 @@ export const jobs = [
             metal: 1,
             stone: -3,
         },
+        levelscaling: true,
         baseStat: 'physical',
         relevantSkills: [
             "mining",
@@ -518,103 +248,9 @@ export const jobs = [
                 gain: 20,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'smelter', level: 1 }],
-            },
-            not: {
-                buildings: [{ name: 'smelter', level: 10 }],
-            }
-        }
-    },
-    {
-        name: "skilled smelting",
-        color: "gold",
-        resources: [
-            "metal",
-        ],
-        production: {
-            metal: 10,
-            stone: -30,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "mining",
-            "smelting",
-        ],
-        skillGains: [
-            {
-                name: "smelting",
-                gain: 20,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'smelter', level: 10 }],
-            },
-            not: {
-                buildings: [{ name: 'smelter', level: 20 }],
-            }
-        }
-    },
-    {
-        name: "advanced smelting",
-        color: "gold",
-        resources: [
-            "metal",
-        ],
-        production: {
-            metal: 100,
-            stone: -300,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "mining",
-            "smelting",
-        ],
-        skillGains: [
-            {
-                name: "smelting",
-                gain: 20,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'smelter', level: 20 }],
-            },
-            not: {
-                buildings: [{ name: 'smelter', level: 30 }],
-            }
-        }
-    },
-    {
-        name: "expert smelting",
-        color: "gold",
-        resources: [
-            "metal",
-        ],
-        production: {
-            metal: 1000,
-            stone: -3000,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "mining",
-            "smelting",
-        ],
-        skillGains: [
-            {
-                name: "smelting",
-                gain: 20,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'smelter', level: 30 }],
             },
         }
     },
@@ -638,7 +274,6 @@ export const jobs = [
                 gain: 20,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'glassblowing studio', level: 1 }],
@@ -647,7 +282,7 @@ export const jobs = [
     },
     {
         name: "cooking",
-        color: "gold",
+        color: "#31948f",
         resources: [
             "rations",
         ],
@@ -665,7 +300,6 @@ export const jobs = [
                 gain: 20,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'kitchen', level: 1 }],
@@ -674,7 +308,7 @@ export const jobs = [
     },
     {
         name: "gourmet cooking",
-        color: "gold",
+        color: "#2a6696",
         resources: [
             "rations",
         ],
@@ -696,7 +330,6 @@ export const jobs = [
                 gain: 20,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'kitchen', level: 20 }],
@@ -704,47 +337,16 @@ export const jobs = [
         }
     },
     {
-        name: "make ink",
-        color: "navy",
-        resources: [
-            "ink",
-        ],
-        production: {
-            ink: 0,
-            food: -5,
-        },
-        baseStat: 'mental',
-        relevantSkills: [
-            "harvesting",
-            "crafting",
-        ],
-        skillGains: [
-            {
-                name: "harvesting",
-                gain: 10,
-            },
-            {
-                name: "crafting",
-                gain: 10,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'crafting hut', level: 1 }],
-            }
-        }
-    },
-    {
-        name: "paint",
-        color: "navy",
+        name: "craft",
+        color: "#653eb5",
         resources: [
             "skillgain",
         ],
         production: {
             drawings: 0,
+            oregami: 0,
             ink: -1,
-            paper: -1,
+            paper: -4,
         },
         baseStat: 'mental',
         relevantSkills: [
@@ -761,7 +363,6 @@ export const jobs = [
                 gain: 10,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'crafting hut', level: 5 }],
@@ -769,15 +370,15 @@ export const jobs = [
         }
     },
     {
-        name: "write a book",
-        color: "navy",
+        name: "write books",
+        color: "#135669",
         resources: [
             "skillgain",
         ],
         production: {
             books: 0,
-            ink: -1,
-            paper: -1,
+            ink: -10,
+            paper: -10,
         },
         baseStat: 'social',
         relevantSkills: [
@@ -793,34 +394,6 @@ export const jobs = [
                 gain: 10,
             },
         ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'crafting hut', level: 10 }],
-            }
-        }
-    },
-    {
-        name: "make oregami",
-        color: "navy",
-        resources: [
-            "skillgain",
-        ],
-        production: {
-            oregami: 0,
-            paper: -2,
-        },
-        baseStat: 'mental',
-        relevantSkills: [
-            "crafting",
-        ],
-        skillGains: [
-            {
-                name: "crafting",
-                gain: 10,
-            },
-        ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'crafting hut', level: 10 }],
@@ -829,7 +402,7 @@ export const jobs = [
     },
     {
         name: "make jewlery",
-        color: "navy",
+        color: "#7445a1",
         resources: [
             "jewlery",
         ],
@@ -848,7 +421,6 @@ export const jobs = [
                 gain: 10,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'crafting hut', level: 15 }],
@@ -856,123 +428,18 @@ export const jobs = [
         }
     },
     {
-        name: "write a play",
-        color: "green",
-        resources: [
-            "skillgain",
-        ],
-        production: {},
-        baseStat: 'social',
-        relevantSkills: [
-            "writing",
-        ],
-        skillGains: [
-            {
-                name: "writing",
-                gain: 10,
-            },
-            {
-                name: "persuasion",
-                gain: 10,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'theatre', level: 5 }, { name: 'town hall', level: 5 }],
-            }
-        }
-    },
-    {
-        name: "harvest seeds",
-        color: "chocolate",
+        name: "refine food",
+        color: "#9c227f",
         resources: [
             "seeds",
         ],
         production: {
             seeds: 1,
-            food: -3,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "harvesting",
-        ],
-        skillGains: [
-            {
-                name: "harvesting",
-                gain: 20,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'farm', level: 3 }],
-            }
-        }
-    },
-    {
-        name: "harvest fruit",
-        color: "chocolate",
-        resources: [
-            "seeds",
-        ],
-        production: {
             fruits: 1,
-            food: -3,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "harvesting",
-        ],
-        skillGains: [
-            {
-                name: "harvesting",
-                gain: 20,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'orchard', level: 1 }],
-            }
-        }
-    },
-    {
-        name: "harvest nuts",
-        color: "chocolate",
-        resources: [
-            "seeds",
-        ],
-        production: {
             nuts: 1,
-            food: -3,
-        },
-        baseStat: 'physical',
-        relevantSkills: [
-            "harvesting",
-        ],
-        skillGains: [
-            {
-                name: "harvesting",
-                gain: 20,
-            },
-        ],
-        spotsOpen: 1,
-        requirements: {
-            have: {
-                buildings: [{ name: 'orchard', level: 10 }, { name: 'farm', level: 30 } ],
-            }
-        }
-    },
-    {
-        name: "harvest berries",
-        color: "chocolate",
-        resources: [
-            "seeds",
-        ],
-        production: {
             berries: 1,
-            food: -3,
+            ink: 1,
+            food: -30,
         },
         baseStat: 'physical',
         relevantSkills: [
@@ -984,16 +451,15 @@ export const jobs = [
                 gain: 20,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
-                buildings: [{ name: 'orchard', level: 20 }, { name: 'farm', level: 40 }],
+                buildings: [{ name: 'farm', level: 10 }],
             }
         }
     },
     {
         name: "read books",
-        color: "chocolate",
+        color: "#314d78",
         resources: [
             "seeds",
         ],
@@ -1025,7 +491,6 @@ export const jobs = [
             },
 
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'library', level: 20 },],
@@ -1034,7 +499,7 @@ export const jobs = [
     },
     {
         name: "attend trade school",
-        color: "chocolate",
+        color: "#668c53",
         resources: [
             "seeds",
         ],
@@ -1057,7 +522,6 @@ export const jobs = [
                 gain: 100,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
                 buildings: [{ name: 'school', level: 1 },],
@@ -1066,7 +530,7 @@ export const jobs = [
     },
     {
         name: "worship",
-        color: "chocolate",
+        color: "#875e2b",
         resources: [
             "seeds",
         ],
@@ -1089,7 +553,6 @@ export const jobs = [
                 gain: 20,
             },
         ],
-        spotsOpen: "unlimited",
         requirements: {
             have: {
                 buildings: [{ name: 'temple', level: 1 }],
@@ -1098,14 +561,14 @@ export const jobs = [
     },
     {
         name: "transform egg rocks",
-        color: "chocolate",
+        color: "#766ca6",
         resources: [
             "seeds",
         ],
         production: {
             eggs: 1,
             'egg rocks': -1,
-            divinity: 10000,
+            divinity: -1000,
         },
         'max production': {
             eggs: 1,
@@ -1120,10 +583,9 @@ export const jobs = [
                 gain: 20,
             },
         ],
-        spotsOpen: 1,
         requirements: {
             have: {
-                buildings: [{ name: 'temple', level: 30 }],
+                buildings: [{ name: 'temple', level: 10 }],
             }
         }
     },

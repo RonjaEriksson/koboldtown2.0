@@ -18,6 +18,12 @@ body {
     width: 80%;
 }
 
+.notice-board-title {
+    display: flex;
+    width: 15%;
+    justify-content: space-between;
+}
+
 .clickable {
     cursor: pointer;
     margin-left:0;

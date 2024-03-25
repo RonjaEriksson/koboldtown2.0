@@ -2,7 +2,7 @@ export const buildings = [
     {
         name: 'farm',
         requirements: {},
-        color: 'green',
+        color: '#4ad970',
         costs: [
             {
                 name: "food",
@@ -33,32 +33,13 @@ export const buildings = [
         ],
     },
     {
-        name: 'orchard',
-        requirements: {
-            have: {
-                buildings: [{ name: 'farm', level: 20 }],
-            }
-        },
-        color: 'green',
-        costs: [
-            {
-                name: "food",
-                amount: 500,
-            },
-            {
-                name: "seeds",
-                amount: 100,
-            },
-        ],
-    },
-    {
         name: 'paper mill',
         requirements: {
             have: {
                 buildings: [{ name: 'lumber yard', level: 10 }],
             }
         },
-        color: 'grey',
+        color: '#ebe2d5',
         costs: [
             {
                 name: 'stone',
@@ -81,7 +62,7 @@ export const buildings = [
                 buildings: [{ name: 'quarry', level: 5 }],
             }
         },
-        color: 'gold',
+        color: 'silver',
         costs: [
             {
                 name: 'stone',
@@ -123,7 +104,7 @@ export const buildings = [
                 buildings: [{ name: 'farm', level: 5 }],
             }
         },
-        color: 'yellow',
+        color: '#31948f',
         costs: [
             {
                 name: 'stone',
@@ -184,7 +165,7 @@ export const buildings = [
             ],
         }
     },
-    color: 'grey',
+        color: '#63359c',
     costs: [
         {
             name: 'stone',
@@ -217,7 +198,7 @@ export const buildings = [
                 ],
             }
         },
-        color: 'grey',
+        color: 'pink',
         costs: [
             {
                 name: 'stone',
@@ -251,7 +232,7 @@ export const buildings = [
                 ],
             }
         },
-        color: 'grey',
+        color: '#0b3763',
         costs: [
             {
                 name: 'stone',
@@ -282,7 +263,7 @@ export const buildings = [
                 'town level': 100,
             }
         },
-        color: 'grey',
+        color: '#edc042',
         costs: [
             {
                 name: 'stone',
@@ -319,7 +300,7 @@ export const buildings = [
                 ],
             }
         },
-        color: 'grey',
+        color: '#206b1a',
         costs: [
             {
                 name: 'stone',

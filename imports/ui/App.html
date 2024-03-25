@@ -52,7 +52,12 @@
         </div>
     </div>
     <div class="noticeSection">
-        Noticeboard
+        <div class="notice-board-title">
+            Noticeboard
+            <div class="clickable js-click-dismiss-all" style="color:black; background-color:white; display: inline-block;">
+                Clear Noticeboard
+            </div>
+        </div>
         <br>
         {{> noticeboard}}
     </div>
@@ -65,49 +70,54 @@
     </div>
 
     {{#if showDetails}}
-        <div class="details" style="border-color: {{color}};">
-            Color: {{color}}
-            <br>
-            Level: {{level}}
-            <br>
-            Physical: {{physical}}
-            <br>
-            Mental: {{mental}}
-            <br>
-            Social: {{social}}
-            <br>
+<div class="details" style="border-color: {{color}};">
+    Color: {{color}}
+    <br>
+    Level: {{level}}
+    <br>
+    Physical: {{physical}}
+    <br>
+    Mental: {{mental}}
+    <br>
+    Social: {{social}}
+    <br>
+    <div class="clickable js-click-skills" style="color:black; background-color:white;">
+        {{#if showSkills}}Hide Skills{{else}}Show Skills{{/if}}
+    </div>
+        {{#if showSkills}}
             {{#each skill in skills}}
-            {{#if skill.level}}
-            <p style="color: {{skill.color}};">{{skill.name}} : {{skill.level}}</p>
-            {{/if}}
+                {{#if skill.level}}
+                <p style="color: {{skill.color}};">{{skill.name}} : {{skill.level}}</p>
+                {{/if}}
             {{/each}}
-            Current job: {{#if job}}{{job.name}}{{else}}None{{/if}} {{#if jobInactive}}(Inactive){{/if}}
-            {{#if job}}
-            <button class="js-quit-job">Quit job</button>
-            {{/if}}
-            <br>
-            <select style="background-color: {{breedTarget.color}}; color: {{breedTarget.textColor}};" class="js-breed-select" id="breedSelect">
-                <option selected style="background-color: white; color: black;">Breed With</option>
-                {{#each otherKobold in kobolds}}
-                {{#unless isCurrentKobold otherKobold._id}}
-                {{#unless otherKobold.busy}}
-                <option style="background-color: {{otherKobold.color}}; color: {{otherKobold.textColor}}" value="{{otherKobold._id}}">{{otherKobold.name}}</option>
-                {{/unless}}
-                {{/unless}}
-                {{/each}}
-            </select>
-            <button title="Breeding requires an egg" disabled={{cannotAffordBreeding}} class="js-breed">Confirm</button>
+        {{/if}}
+    Current job: {{#if job}}{{job.name}}{{else}}None{{/if}} {{#if jobInactive}}(Inactive){{/if}}
+    {{#if job}}
+    <button class="js-quit-job">Quit job</button>
+    {{/if}}
+    <br>
+    <select style="background-color: {{breedTarget.color}}; color: {{breedTarget.textColor}};" class="js-breed-select" id="breedSelect">
+        <option selected style="background-color: white; color: black;">Breed With</option>
+        {{#each otherKobold in kobolds}}
+        {{#unless isCurrentKobold otherKobold._id}}
+        {{#unless otherKobold.busy}}
+        <option style="background-color: {{otherKobold.color}}; color: {{otherKobold.textColor}}" value="{{otherKobold._id}}">{{otherKobold.name}}</option>
+        {{/unless}}
+        {{/unless}}
+        {{/each}}
+    </select>
+    <button title="Breeding requires an egg" disabled={{cannotAffordBreeding}} class="js-breed">Confirm</button>
 
-            <br>
+    <br>
 
-            <select class="js-select-job" style="color: {{selectedJob.color}};" id="jobSelect">
-                <option selected style="color: black; background-color: white;">Chose job</option>
-                {{#each job in jobs}}
-                <option style="color: {{job.color}};" value="{{job.name}}">{{job.name}}</option>
-                {{/each}}
-            </select>
-            <button disabled={{isBusy}} class="js-chose-job">Confirm</button>
-        </div>
+    <select class="js-select-job" style="color: {{selectedJob.color}};" id="jobSelect">
+        <option selected style="color: black; background-color: white;">Chose job</option>
+        {{#each job in jobs}}
+        <option style="color: {{job.color}};" value="{{job.name}}">{{job.name}}</option>
+        {{/each}}
+    </select>
+    <button disabled={{isBusy}} class="js-chose-job">Confirm</button>
+</div>
     {{/if}}
     
     <br>

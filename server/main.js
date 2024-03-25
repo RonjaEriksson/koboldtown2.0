@@ -47,7 +47,7 @@ Meteor.startup(() => {
         ExpeditionCollection.update({ name: expo.name }, { $set: expo }, { upsert: true });
     }
 
-   //SkillCollection.remove({}); //uncomment this when loading in the skill collection from plaintext
+   SkillCollection.remove({}); //uncomment this when loading in the skill collection from plaintext
     for (const skill of skills) {
         SkillCollection.update({ name: skill.name }, { $set: skill }, { upsert: true });
     }
@@ -57,7 +57,7 @@ Meteor.startup(() => {
         ResourceCollection.update({ name: resource.name }, { $set: resource }, { upsert: true });
     }
 
-    //JobCollection.remove({}); //uncomment this when loading in the job collection from plaintext
+    JobCollection.remove({}); //uncomment this when loading in the job collection from plaintext
     for (const job of jobs) {
 
         JobCollection.update({ name: job.name }, { $set: job }, { upsert: true });

@@ -1,3 +1,4 @@
+const UpdateInterval = 100;
 export const expos = [
     {
         name: "Forage for food.",
@@ -178,7 +179,7 @@ export const expos = [
     //------------------------------------------------------------------------------
     {
         name: "Search for kobolds.",
-        color: "grey",
+        color: "#7e4f9c",
         partySize: 2,
         description: "Try and find other kobolds to interact with.",
         skills: [
@@ -384,7 +385,7 @@ export const expos = [
     //--------------------------------------------------------------------------------
     {
         name: "Mine outside.",
-        color: "white",
+        color: "grey",
         partySize: 1,
         description: "Go outside and mine.",
         skills: [
@@ -856,7 +857,7 @@ export const expos = [
     //-------------------------------------------------------------------------
     {
         name: "Climb a mountain.",
-        color: "gray",
+        color: "#4f9c73",
         partySize: 1,
         description: "Your kobold goes on a excursion to climb the local mountain.",
         skills: [
@@ -1052,7 +1053,7 @@ export const expos = [
     //------------------------------------------------------------------------------------------
     {
         name: "Find egg rocks.",
-        color: "gray",
+        color: "#521ba6",
         partySize: 2,
         description: "Your kobolds go looking for the special rocks that can be imbued with divine energy to create a kobold that is the mix of two kobolds, given that their friendship is high enough.",
         skills: [
@@ -1105,7 +1106,7 @@ export const expos = [
                 reward: [
                     {
                         name: 'egg rocks',
-                        amount: 1,
+                        amount: 1*UpdateInterval,
                     }
                 ],
                 effect: []
@@ -1115,7 +1116,7 @@ export const expos = [
                 reward: [
                     {
                         name: "egg rocks",
-                        amount: 1,
+                        amount: 1 * UpdateInterval,
                     },
                 ],
                 effect: [],
@@ -1283,7 +1284,7 @@ export const expos = [
     //-------------------------------------------------------------------------------------
     {
         name: "Do an improv show.",
-        color: "darkGreen",
+        color: "#6d9cd6",
         partySize: 3,
         description: "Do some improv.Gain some friendship.",
         skills: [
@@ -1636,7 +1637,7 @@ export const expos = [
     },
     {
         name: "Hold an art art exhibition.",
-        color: "darkGreen",
+        color: "#2cab96",
         partySize: 2,
         description: "Show off your kobolds beautiful artwork.",
         skills: [

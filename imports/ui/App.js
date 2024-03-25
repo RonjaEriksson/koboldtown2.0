@@ -80,14 +80,14 @@ Template.mainContainer.onCreated(function () {
 
     
     Meteor.setInterval(function () {
-        Meteor.call("increaseResource", localStorage.getItem("userId"));
+        Meteor.callAsync("increaseResource", localStorage.getItem("userId"));
         instance.countdown.set(resourceInterval);
     }, resourceInterval);
 
     Meteor.setInterval(function () {
         instance.countdown.set(instance.countdown.get() - 1000);
     }, 1000)
-    //Meteor.call("handleExpeditions", localStorage.getItem("userId")); (remove this maybe)
+
 });
 
 Template.mainContainer.helpers({
@@ -132,18 +132,22 @@ Template.mainContainer.helpers({
 });
 
 Template.mainContainer.events({
+    'click .js-click-dismiss-all'(event, instance) {
+        Meteor.call('dismissAllNotices', localStorage.getItem("userId"));
+    },
 })
 
 Template.showKobold.onCreated(function () {
     const instance = Template.instance();
     instance.showDetails = new ReactiveVar(false);
+    instance.showSkills = new ReactiveVar(false);
     instance.currentTown = new ReactiveVar(null);
     instance.kobolds = new ReactiveVar(null);
     instance.breedTarget = new ReactiveVar(null);
     instance.selectedJob = new ReactiveVar(null);
 
     instance.autorun(function auto_townId() {
-        instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }, { projection: {jobs:1, buildings: 1, resources: 1, updateInterval: 1,}}));
+        instance.currentTown.set(TownCollection.findOne({ userId: localStorage.getItem("userId") }, { projection: {buildings: 1, resources: 1, updateInterval: 1,}}));
     });
 
     instance.autorun(function auto_kobolds() {
@@ -155,6 +159,10 @@ Template.showKobold.helpers({
     showDetails() {
         const instance = Template.instance();
         return instance.showDetails.get();
+    },
+    showSkills() {
+        const instance = Template.instance();
+        return instance.showSkills.get();
     },
     kobolds() {
         const instance = Template.instance();
@@ -168,10 +176,7 @@ Template.showKobold.helpers({
         const instance = Template.instance();
         const jobs = JobCollection.find({}).fetch();
         const validJobs = checkReqs(instance.currentTown.get(), jobs);
-        return validJobs.filter(function (job) {
-            const townJob = instance.currentTown.get().jobs.find(e => e.name === job.name);
-            return !townJob || townJob.spotsOpen > 0 || townJob.spotsOpen === "unlimited";
-        });
+        return validJobs;
     },
     jobInactive() {
         const instance = Template.instance();
@@ -197,7 +202,8 @@ Template.showKobold.helpers({
     },
     selectedJob() {
         const instance = Template.instance();
-        return instance.currentTown.get()?.jobs?.find(e => e.name === instance.selectedJob.get());
+        return JobCollection.find({ name: instance.selectedJob.get()});
+        //return instance.currentTown.get()?.jobs?.find(e => e.name === instance.selectedJob.get());
     },
     skills() {
         const instance = Template.instance();
@@ -210,6 +216,9 @@ Template.showKobold.events({
         instance.showDetails.set(!instance.showDetails.get());
         instance.breedTarget.set(null);
         instance.selectedJob.set(null);
+    },
+    "click .js-click-skills"(event, instance) {
+        instance.showSkills.set(!instance.showSkills.get());
     },
     "click .js-breed"(event, instance) {
         const fatherId = instance.breedTarget.get();
@@ -292,7 +301,12 @@ Template.showJob.helpers({
     },
     resourceProduction(resource) {
         const instance = Template.instance();
-        return instance.data.production[resource];      
+        const maxProduction = instance.data['max production']?.[resource];
+        let trueProduction = instance.data.production[resource] * instance.currentTown.get().updateInterval;
+        if (maxProduction && trueProduction > maxProduction) {
+            trueProduction = maxProduction;
+        }
+        return trueProduction;
     },
     resources() {
         const instance = Template.instance();
@@ -301,6 +315,7 @@ Template.showJob.helpers({
     resourceColor(cost) {
         const instance = Template.instance();
         console.log(cost);
+        console.log(instance.currentTown.get().resources.find(e => e.name === cost).stockpile);
         if (instance.currentTown.get().resources.find(e => e.name === cost).stockpile + instance.data.production[cost] * instance.currentTown.get().updateInterval < 0) {
             return "red";
         } else {

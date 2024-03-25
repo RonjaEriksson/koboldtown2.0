@@ -246,7 +246,6 @@ Meteor.methods({
                 townName: "Kobold Ville",
                 dragonName: "RymdensRegent",
                 resources: ResourceCollection.find({}).fetch(),
-                jobs: [],
                 level: 0,
                 culture: 0,
                 notices: [welcomeNotice],
@@ -501,7 +500,7 @@ Meteor.methods({
         check(job, { name: String, gains: Array});
         check(starting, Boolean);
 
-        const town = TownCollection.findOne({ userId: thisUserId }, { projection: {resources: 1, jobs: 1, resourceGain: 1, updateInterval: 1}});
+        const town = TownCollection.findOne({ userId: thisUserId }, { projection: {resources: 1, resourceGain: 1, updateInterval: 1}});
         const kobold = KoboldCollection.findOne(koboldId);
         const sourceJob = JobCollection.findOne({ name: job.name });
         if (!kobold) {
@@ -519,26 +518,22 @@ Meteor.methods({
         if (!town.updateInterval) {
             town.updateInterval = UPDATE_INTERVAL;
         }
-        let townJob = town.jobs.find(e => e.name === job.name);
-        if (!townJob) {
-            town.jobs.push({
-                name: job.name,
-                spotsOpen: sourceJob.spotsOpen,
-            })
-            townJob = town.jobs.find(e => e.name === job.name);
-        }
+
         job = starting ? { name: job.name, gains: [] } : job;
 
         for(const resourceName of Object.keys(sourceJob.production)) {
             let resource = town.resources.find(e => e.name === resourceName);
+            const sourceResource = ResourceCollection.find({}).fetch().find(e => e.name === resourceName);
             if (!resource) {
-                const sourceResource = ResourceCollection.find({}).fetch().find(e => e.name === resourceName);
                 sourceResource.visible = true;
                 town.resources.push(sourceResource);
                 resource = town.resources.find(e => e.name === resourceName);
             }
             if (!resource.visible) {
                 resource.visible = true;
+            }
+            if (!resource.color != sourceResource.color) {
+                resource.color = sourceResource.color;
             }
             if (starting) {
                 const gain = {
@@ -549,10 +544,14 @@ Meteor.methods({
                     gain.gain += kobold[sourceJob.baseStat];
                     for (const skill of sourceJob.relevantSkills) {
                         gain.gain += (kobold?.skills?.[skill]?.level || 0);
+                        if (sourceJob.levelScaling) {
+                            gain.gain += Math.floor((kobold?.skills?.[skill]?.level || 0)**1.1);
+                        }
                     }
                 }
                 if (sourceJob["max production"]?.[resourceName] && gain.gain > sourceJob["max production"][resourceName]) {
                     gain.gain = sourceJob["max production"][resourceName];
+
                 }
                 job.gains.push(gain);
             }
@@ -568,19 +567,12 @@ Meteor.methods({
             }
 
         }
-        if(townJob.spotsOpen != "unlimited") {
-            if(starting) {
-                townJob.spotsOpen--;
-            } else {
-                townJob.spotsOpen++;
-            }
-        }
 
         if (!starting) {
             job = null;
         }
 
-        TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources , jobs: town.jobs, resourceGain: town.resourceGain, updateInterval: town.updateInterval} });
+        TownCollection.update({ userId: thisUserId }, { $set: { resources: town.resources, resourceGain: town.resourceGain, updateInterval: town.updateInterval} });
         KoboldCollection.update(koboldId, { $set: { job: job } });
     },
     'addExpedition'(thisUserId, expeditionId, koboldIds) {
@@ -624,13 +616,16 @@ Meteor.methods({
             if (checksCritPassed >= expedition.skillchecks.length / 2) {
                 console.log("generating a great result");
                 expo.result = expedition.greatOutcomes[getRandomArrayIndex(expedition.greatOutcomes.length)];
+                console.log(expo.result);
             } else {
                 console.log("generating a good result");
                 expo.result = expedition.goodOutcomes[getRandomArrayIndex(expedition.goodOutcomes.length)];
+                console.log(expo.result);
             }
         } else {
             console.log("generating a bad result");
             expo.result = expedition.badOutcomes[getRandomArrayIndex(expedition.badOutcomes.length)];
+            console.log(expo.result);
         }
         for (kobold of kobolds) {
             console.log(kobold.job);
@@ -733,5 +728,9 @@ Meteor.methods({
         notice.dismissed = true;
         TownCollection.update({ userId: thisUserId }, { $set: { notices: town.notices } });
     },
+    'dismissAllNotices'(thisUserId) {
+        check(thisUserId, String);
+        TownCollection.update({ userId: thisUserId }, { $set: { notices: [] } });
+    }
 
 });

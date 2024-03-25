@@ -2,47 +2,47 @@ export const skills = [
     {
         name: 'nature',
         base: 'mental',
-        color: 'green',
+        color: '#4ad970',
     },
     {
         name: 'perception',
         base: 'mental',
-        color: 'grey',
+        color: '#756f94',
     },
     {
         name: 'survival',
         base: 'mental',
-        color: 'red',
+        color: '#756f94',
     },
     {
         name: "smelting",
         base: "mental",
-        color: "gold",
+        color: "silver",
     },
     {
         name: 'arcana',
         base: 'mental',
-        color: 'blue',
+        color: '#756f94',
     },
     {
         name: 'crafting',
         base: 'mental',
-        color: 'brown',
+        color: '#b8a16c',
     },
     {
         name: 'drawing',
         base: 'mental',
-        color: 'brown',
+        color: '#acb58d',
     },
     {
         name: 'harvesting',
         base: 'mental',
-        color: 'chocolate',
+        color: 'pink',
     },
     {
         name: 'cooking',
         base: 'mental',
-        color: 'brown',
+        color: 'pink',
     },
     {
         name: 'healing',
@@ -52,12 +52,12 @@ export const skills = [
     {
         name: 'history',
         base: 'mental',
-        color: 'pink',
+        color: '#756f94',
     },
     {
         name: 'writing',
         base: 'mental',
-        color: 'navy',
+        color: '#acb58d',
     },
     {
         name: 'glass blowing',
@@ -67,52 +67,52 @@ export const skills = [
     {
         name: 'navigation',
         base: 'mental',
-        color: 'lightblue',
+        color: '#756f94',
     },
     {
         name: 'persuasion',
         base: 'social',
-        color: 'yellow',
+        color: '#acb58d',
     },
     {
         name: 'acting',
         base: 'social',
-        color: 'yellow',
+        color: '#acb58d',
     },
     {
         name: 'improv',
         base: 'social',
-        color: 'yellow',
+        color: '#acb58d',
     },
     {
         name: 'religion',
         base: 'social',
-        color: 'yellow',
+        color: '#875e2b',
     },
     {
         name: 'writing',
         base: 'social',
-        color: 'yellow',
+        color: '#acb58d',
     },
     {
         name: 'animal handling',
         base: 'social',
-        color: 'lightgreen',
+        color: '#4ad970',
     },
     {
         name: 'intimidation',
         base: 'social',
-        color: 'yellow',
+        color: '#8f432e',
     },
     {
         name: 'strength',
         base: 'physical',
-        color: 'red',
+        color: '#8f432e',
     },
     {
         name: 'agility',
         base: 'physical',
-        color: 'brown',
+        color: '#78ad9c',
     },
     {
         name: 'mining',
@@ -122,7 +122,7 @@ export const skills = [
     {
         name: 'woodworking',
         base: 'physical',
-        color: 'grey',
+        color: 'brown',
     },
     {
         name: 'swimming',
@@ -132,6 +132,6 @@ export const skills = [
     {
         name: 'farming',
         base: 'physical',
-        color: 'lightgreen',
+        color: '#4ad970',
     },
 ];
