@@ -24,6 +24,14 @@ async function doExpedition(expo, thisUserId) {
     if (!expo) {
         return;
     }
+
+    if (!expo.result) {
+        TownCollection.update({ userId: thisUserId }, { $pull: { expeditions: { id: expo.id } } });
+        for (koboldId of expo.koboldIds) {
+            console.log(koboldId);
+            Meteor.call('setKoboldBusy', koboldId, false);
+        }
+    }
     
     const wait = expo.finishes - +Date.now()
     if (wait > 0) {
@@ -614,11 +622,14 @@ Meteor.methods({
         }
         if (checksPassed === expedition.skillchecks.length) {
             if (checksCritPassed >= expedition.skillchecks.length / 2) {
+                console.log("generating a great result");
                 expo.result = expedition.greatOutcomes[getRandomArrayIndex(expedition.greatOutcomes.length)];
             } else {
+                console.log("generating a good result");
                 expo.result = expedition.goodOutcomes[getRandomArrayIndex(expedition.goodOutcomes.length)];
             }
         } else {
+            console.log("generating a bad result");
             expo.result = expedition.badOutcomes[getRandomArrayIndex(expedition.badOutcomes.length)];
         }
         for (kobold of kobolds) {
@@ -661,6 +672,7 @@ Meteor.methods({
             }
             resource.stockpile -= cost.amount;
         }
+        console.log(expo);
         TownCollection.update({ userId: thisUserId }, { $addToSet: { expeditions: expo, notices: notice }, $set: { resources: town.resources }});
     },
     'handleExpeditions'(thisUserId) {
@@ -668,6 +680,7 @@ Meteor.methods({
         const town = TownCollection.find({ userId: thisUserId }, { projection: { expeditions: 1, kobolds: 1 } }).fetch()[0];
         if (town.expeditions) {
             for (const expo of town.expeditions) {
+                console.log(expo);
                 doExpedition(expo, thisUserId);
             }
         }

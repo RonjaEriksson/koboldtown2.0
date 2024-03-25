@@ -1053,7 +1053,7 @@ export const expos = [
     {
         name: "Find egg rocks.",
         color: "gray",
-        partySize: 3,
+        partySize: 2,
         description: "Your kobolds go looking for the special rocks that can be imbued with divine energy to create a kobold that is the mix of two kobolds, given that their friendship is high enough.",
         skills: [
             "all",
